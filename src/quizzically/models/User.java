@@ -5,6 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 import quizzically.lib.MySQL;
@@ -33,6 +34,23 @@ public class User {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public HashMap<String, String> search(String param, String username) {
+		HashMap<String, String> results = new HashMap<String, String>();
+		
+		String[] cols = {"name", "username"};
+		ResultSet users = sql.get(cols, TABLE, "name LIKE '" + param + "%'");
+		
+		try {
+			while(users.next()) {
+				if (users.getString("username").equals(username)) continue;
+				results.put(users.getString("username"), users.getString("name"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return results;
 	}
 	
 	public String getName() {

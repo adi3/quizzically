@@ -9,6 +9,13 @@
 <body>
 	<h1>Hello <%= request.getAttribute("name") %>!</h1>
 	
+	<form action="SearchUsers" method="post">
+		<div>
+			<input type="text" name="param" />
+			<input type="submit" value="Search" />
+		</div>
+	</form>
+	
 	<p>Here's your info. Better pretty this up!</p>
 	<ul>
 		<li>Name: <%= request.getAttribute("name") %>
@@ -16,8 +23,10 @@
 		<li>Email: <%= request.getAttribute("email") %>
 	</ul>
 	
-	<a href="UpdateProfile">Update Profile</a> | <a href="ChangePassword">Change Password</a>
-	<br />
-	<a href="Logout">Log Out</a>
+	<% if (request.getAttribute("username").equals(request.getSession().getAttribute("user"))) { %>
+		<a href="UpdateProfile">Update Profile</a> | <a href="ChangePassword">Change Password</a>
+		<br />
+		<a href="Logout">Log Out</a>
+	<% } %>
 </body>
 </html>

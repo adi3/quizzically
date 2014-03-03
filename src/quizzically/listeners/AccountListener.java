@@ -1,4 +1,4 @@
-package quizically.listeners;
+package quizzically.listeners;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
