@@ -18,7 +18,7 @@ public class Account {
 		sql = new MySQL();
 	}
 	
-	public boolean accountExists(String username) {
+	private boolean accountExists(String username) {
 		ResultSet set = sql.get("users", "username = '" + username + "'");
 		
 		try {
@@ -44,7 +44,7 @@ public class Account {
 		}
 	}
 	
-	public ArrayList<String> createAccount(String name, String email, String username, String password) {
+	public ArrayList<String> createAccount(String name, String email, String username, String password, boolean isAdmin) {
 		ArrayList<String> errors = validateInput(name, email, username, password);
 		if (errors.size() != 0) return errors;
 		
@@ -53,7 +53,8 @@ public class Account {
 		if (salted_pass == null) errors.add("Problem saving registration. Please try a different password.");
 		if (errors.size() != 0) return errors;
 		
-		String[] vals = {name, email, "0", username, salted_pass, salt};
+		String admin = isAdmin ? "1" : "0";
+		String[] vals = {name, email, admin, username, salted_pass, salt};
 		int status = sql.insert(TABLE, vals);
 		if (status == 0) errors.add("Trouble saving registration. Please try again.");
 		return errors;
@@ -63,6 +64,7 @@ public class Account {
 		ArrayList<String> errors = new ArrayList<String>();
 		if (name.isEmpty()) errors.add("You must provide a name for registration.");
 		if (email.isEmpty()) errors.add("You must provide an email for registration.");
+		if (!this.isValidEmail(email)) errors.add("You must enter a valid email address.");
 		if (this.accountExists(username)) errors.add("The username already exists. Please choose a different one.");
 		if (!this.isStrongPass(password)) errors.add("Please ensure your password meets our strength requirements.");
 		return errors;
@@ -70,8 +72,12 @@ public class Account {
 	
 	// valid password has one digit, one letter and one special character.
 	// no whitespaces allowed. length must be at least 6
-	public boolean isStrongPass(String password) {
-		return password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[@#$%^&+=])(?=\\S+$).{6,}$");
+	private boolean isStrongPass(String password) {
+		return password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[!@#$%^&+=])(?=\\S+$).{6,}$");
+	}
+	
+	public boolean isValidEmail(String email) {
+		return email.matches("^[_A-Za-z0-9-\\+]+@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
 	}
 	
 	private int getSalt() {

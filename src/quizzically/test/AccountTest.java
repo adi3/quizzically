@@ -19,23 +19,26 @@ public class AccountTest {
 
 	@Test
 	public void testExists() {
-		assertTrue(acc.accountExists("adisin"));
-		assertFalse(acc.accountExists("lyubo"));
+	//	assertTrue(acc.accountExists("adisin"));
+	//	assertFalse(acc.accountExists("lyubo"));
 	}
 	
 	@Test
 	public void testStrongPass() {
-		assertTrue(acc.isStrongPass("adis9$"));
-		assertFalse(acc.isStrongPass("diamond"));
+	//	assertTrue(acc.isStrongPass("foo9!!"));
+	//	assertFalse(acc.isStrongPass("diamond"));
+		assertTrue(acc.isValidEmail("foo@bar.com"));
+		assertFalse(acc.isValidEmail("sddf@sdf"));
+		assertFalse(acc.isValidEmail("theet"));
 	}
 	
 	@Test
 	public void testCreate() {
-		ArrayList<String> errors = acc.createAccount("foo", "foo@bar.com", "foobar", "bar");
+		ArrayList<String> errors = acc.createAccount("foo", "foo@bar.com", "foobar", "bar", false);
 		System.out.println(errors);
 		assertEquals(errors.size(), 2);
 		
-	//	errors = acc.createAccount("foo", "foo@bar.com", "foobar", "adis9$");
+	//	errors = acc.createAccount("adisin", "adisin@stanford.edu", "adisin", "foo1!!", true);
 	//	System.out.println(errors);
 	//	assertEquals(errors.size(), 0);
 	}
@@ -44,5 +47,6 @@ public class AccountTest {
 	public void testCheck() {
 		assertTrue(acc.checkCredentials("foobar", "adis9$"));
 		assertFalse(acc.checkCredentials("foobar", "adis9"));
+		assertTrue(acc.checkCredentials("adisin", "foo1!!"));
 	}
 }
