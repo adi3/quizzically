@@ -38,7 +38,7 @@ public class AccountTest {
 		System.out.println(errors);
 		assertEquals(errors.size(), 2);
 		
-	//	errors = acc.createAccount("adisin", "adisin@stanford.edu", "adisin", "foo1!!", true);
+	//	errors = acc.createAccount("Adi Singh", "adisin@stanford.edu", "adisin", "foo1!!", true);
 	//	System.out.println(errors);
 	//	assertEquals(errors.size(), 0);
 	}

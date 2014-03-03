@@ -5,10 +5,10 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Log In</title>
+<title>Change Password:  <%= request.getAttribute("name") %></title>
 </head>
 <body>
-	<h1>Log In</h1>
+	<h1>Change Password</h1>
 	<% ArrayList<String> errors = (ArrayList<String>)request.getAttribute("errors"); %>
 	<% if (errors != null && !errors.isEmpty()) { %>
 		<ul>
@@ -18,15 +18,12 @@
 		</ul>
 	<% } %>
 	
-	<form action="Login" method="post">
+	<form action="ChangePassword" method="post">
 		<div>
-			<p>Username: <input type="text" name="username" value="<%= request.getAttribute("username") %>" /></p>
-			<p>Password: <input type="password" name="password" /></p>
-			<input type="submit" value="Log in" />
+			<p>Password: <input type="password" name="pass" /></p>
+			<p>Confirm Password: <input type="password" name="passConf" /></p>
+			<input type="submit" value="Change" />
 		</div>
 	</form>
-	<p>
-		<a href="Register">Create New Account</a>
-	</p>
 </body>
 </html>

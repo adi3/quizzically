@@ -1,5 +1,7 @@
 package quizzically.models;
 
+import static org.junit.Assert.assertTrue;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
@@ -45,7 +47,9 @@ public class Account {
 	}
 	
 	public ArrayList<String> createAccount(String name, String email, String username, String password, boolean isAdmin) {
-		ArrayList<String> errors = validateInput(name, email, username, password);
+		ArrayList<String> errors = validateInput(name, email, username);
+		if (this.accountExists(username)) errors.add("The username already exists. Please choose a different one.");
+		if (!this.isStrongPass(password)) errors.add("Please ensure your password meets our strength requirements.");
 		if (errors.size() != 0) return errors;
 		
 		String salt = Integer.toString(getSalt());
@@ -60,13 +64,41 @@ public class Account {
 		return errors;
 	}
 	
-	private ArrayList<String> validateInput(String name, String email, String username, String password) {
+	public ArrayList<String> updateAccount(String usernameOld, String name, String email, String username) {
+		ArrayList<String> errors = validateInput(name, email, username);
+		if (errors.size() != 0) return errors;
+		
+		int status = sql.update("users", "name = '" + name + "', "
+										+ "email = '" + email + "', "
+										+ "username = '" + username + "' ",
+										"username = '" + usernameOld + "'");
+		if (status == 0) errors.add("Trouble updating profile. Please try again.");
+		return errors;
+	}
+	
+	public ArrayList<String> updatePassword(String username, String pass, String passConf) {
+		ArrayList<String> errors = new ArrayList<String>();
+		if (!pass.equals(passConf)) errors.add("Please ensure both password entries match.");
+		if (!this.isStrongPass(pass)) errors.add("Please ensure your password meets our strength requirements.");
+		if (errors.size() != 0) return errors;
+		
+		String salt = Integer.toString(getSalt());
+		String salted_pass = getSaltedPass(pass, salt);
+		if (salted_pass == null) errors.add("Problem saving registration. Please try a different password.");
+		if (errors.size() != 0) return errors;
+		
+		int status = sql.update("users", "password = '" + salted_pass + "', "
+										+ "salt = '" + salt + "' ",
+										"username = '" + username + "'");
+		if (status == 0) errors.add("Trouble updating profile. Please try again.");
+		return errors;
+	}
+	
+	private ArrayList<String> validateInput(String name, String email, String username) {
 		ArrayList<String> errors = new ArrayList<String>();
 		if (name.isEmpty()) errors.add("You must provide a name for registration.");
 		if (email.isEmpty()) errors.add("You must provide an email for registration.");
 		if (!this.isValidEmail(email)) errors.add("You must enter a valid email address.");
-		if (this.accountExists(username)) errors.add("The username already exists. Please choose a different one.");
-		if (!this.isStrongPass(password)) errors.add("Please ensure your password meets our strength requirements.");
 		return errors;
 	}
 	

@@ -10,18 +10,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import quizzically.models.Account;
+import quizzically.models.User;
 
 /**
- * Servlet implementation class Register
+ * Servlet implementation class UpdateProfile
  */
-@WebServlet("/Register")
-public class Register extends HttpServlet {
+@WebServlet("/UpdateProfile")
+public class UpdateProfile extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Register() {
+    public UpdateProfile() {
         super();
     }
 
@@ -29,10 +30,19 @@ public class Register extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setAttribute("name", "");
-		request.setAttribute("email", "");
-		request.setAttribute("username", "");
-		request.getRequestDispatcher("Register.jsp").forward(request, response); 
+		String username = (String) request.getSession().getAttribute("user");
+		User user = new User(username);
+		
+		String name = user.getName();
+		name = name == null ? "" : name;
+		request.setAttribute("name", name);
+		
+		String email = user.getEmail();
+		email = email == null ? "" : email;
+		request.setAttribute("email", email);
+		
+		request.setAttribute("username", username);
+		request.getRequestDispatcher("UpdateProfile.jsp").forward(request, response);
 	}
 
 	/**
@@ -43,9 +53,9 @@ public class Register extends HttpServlet {
 		String name = request.getParameter("name");
 		String email = request.getParameter("email");
 		String username = request.getParameter("username");
-		String password = request.getParameter("password");
 		
-		ArrayList<String> errors = acc.createAccount(name, email, username, password, false);
+		String usernameOld = (String) request.getSession().getAttribute("user");
+		ArrayList<String> errors = acc.updateAccount(usernameOld, name, email, username);
 		if (errors.isEmpty()) {
 			request.getSession().setAttribute("user", username);	//TODO: check if this should be hashed?
 			response.sendRedirect("Profile");
@@ -60,7 +70,7 @@ public class Register extends HttpServlet {
 			request.setAttribute("username", username);
 			
 			request.setAttribute("errors", errors);
-			request.getRequestDispatcher("Register.jsp").forward(request, response); 
+			request.getRequestDispatcher("UpdateProfile.jsp").forward(request, response); 
 		}
 	}
 

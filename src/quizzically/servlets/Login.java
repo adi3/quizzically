@@ -30,6 +30,7 @@ public class Login extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		request.setAttribute("username", "");
 		request.getRequestDispatcher("LogIn.jsp").forward(request, response); 
 	}
 
@@ -38,17 +39,19 @@ public class Login extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Account acc = (Account) this.getServletContext().getAttribute("acc");
-		String user = request.getParameter("user");
-		String pass = request.getParameter("pass");
+		String username = request.getParameter("username");
+		String password = request.getParameter("password");
 		
-		if (acc.checkCredentials(user, pass)) {
-			request.getSession().setAttribute("user", user);	//TODO: check if this should be hashed?
-			request.getRequestDispatcher("Welcome.jsp").forward(request, response); 
+		if (acc.checkCredentials(username, password)) {
+			request.getSession().setAttribute("user", username);	//TODO: check if this should be hashed?
+			response.sendRedirect("Profile");
 		} else {
 			ArrayList<String> errors = new ArrayList<String>();
 			errors.add("Your credentials could not be verified. Please try again.");
 			request.setAttribute("errors", errors);
-			request.setAttribute("user", user);
+			
+			username = username == null ? "" : username;
+			request.setAttribute("username", username);
 			request.getRequestDispatcher("LogIn.jsp").forward(request, response); 
 		}
 	}
