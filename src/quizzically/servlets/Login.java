@@ -30,8 +30,13 @@ public class Login extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setAttribute("username", "");
-		request.getRequestDispatcher("LogIn.jsp").forward(request, response); 
+		String username = (String) request.getSession().getAttribute("user");
+		if (username != null) {
+			response.sendRedirect("Profile");
+		} else {
+			request.setAttribute("username", "");
+			request.getRequestDispatcher("LogIn.jsp").forward(request, response); 
+		}
 	}
 
 	/**

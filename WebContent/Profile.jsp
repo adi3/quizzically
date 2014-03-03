@@ -17,5 +17,7 @@
 	</ul>
 	
 	<a href="UpdateProfile">Update Profile</a> | <a href="ChangePassword">Change Password</a>
+	<br />
+	<a href="Logout">Log Out</a>
 </body>
 </html>

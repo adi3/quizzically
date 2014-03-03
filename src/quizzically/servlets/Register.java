@@ -29,10 +29,15 @@ public class Register extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setAttribute("name", "");
-		request.setAttribute("email", "");
-		request.setAttribute("username", "");
-		request.getRequestDispatcher("Register.jsp").forward(request, response); 
+		String username = (String) request.getSession().getAttribute("user");
+		if (username != null) {
+			response.sendRedirect("Profile");
+		} else {
+			request.setAttribute("name", "");
+			request.setAttribute("email", "");
+			request.setAttribute("username", "");
+			request.getRequestDispatcher("Register.jsp").forward(request, response);
+		}
 	}
 
 	/**
