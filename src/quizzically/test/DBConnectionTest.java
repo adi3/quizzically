@@ -27,19 +27,9 @@ public class DBConnectionTest {
 		assertTrue(users.getRow() > 0);
 	}
 	
-	@Test
-	public void testGetSome() throws SQLException {
-		String[] cols = {"name", "email"};
-		ResultSet users = sql.get(cols, "users");
-		while(users.next()) {
-			System.out.println(users.getString(1) + " " + users.getString(2));
-		}
-		users.last();
-		assertTrue(users.getRow() > 0);
-	}
 	
 	@Test
-	public void testGetSomeMore() throws SQLException {
+	public void testGetSome() throws SQLException {
 		String[] cols = {"email"};
 		ResultSet user = sql.get(cols, "users", "name = 'Dominic Becker'");
 		while(user.next()) {

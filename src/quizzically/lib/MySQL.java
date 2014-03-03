@@ -9,50 +9,78 @@ public class MySQL {
 
 	private Statement stmt;
 	
-	public MySQL() throws ClassNotFoundException, SQLException {
-		stmt = new DBConnection().getStatement();
+	public MySQL() {
+		try {
+			stmt = new DBConnection().getStatement();
+		} catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
-	public ResultSet get(String table) throws SQLException {
-		return stmt.executeQuery("SELECT * FROM " + table);
+	private ResultSet executeQuery(String sql) {
+		try {
+			return stmt.executeQuery(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
-	public ResultSet get(String[] cols, String table) throws SQLException {
+	private int executeUpdate(String sql) {
+		try {
+			return stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+	
+	public ResultSet get(String table) {
+		return this.executeQuery("SELECT * FROM " + table);
+	}
+	
+	/*
+	public ResultSet get(String[] cols, String table) {
 		String strCols = Arrays.asList(cols).toString();
 		strCols = strCols.substring(1, strCols.length() - 1);
-		return stmt.executeQuery("SELECT " + strCols + " FROM " + table);
+		return this.executeQuery("SELECT " + strCols + " FROM " + table);
+	}
+	*/
+	
+	public ResultSet get(String table, String where) {
+		return this.executeQuery("SELECT * FROM " + table + " WHERE " + where);
 	}
 	
-	public ResultSet get(String[] cols, String table, String where) throws SQLException {
+	public ResultSet get(String[] cols, String table, String where) {
 		String strCols = Arrays.asList(cols).toString();
 		strCols = strCols.substring(1, strCols.length() - 1);
-		return stmt.executeQuery("SELECT " + strCols + " FROM " + table + " WHERE " + where);
+		return this.executeQuery("SELECT " + strCols + " FROM " + table + " WHERE " + where);
 	}
 	
-	public int insert(String table, String[] vals) throws SQLException {
-		String cols = "(name, email, is_admin)";
+	public int insert(String table, String[] vals) {
+		String cols = "(name, email, is_admin, username, password, salt)";	// TODO : model should return these
 		String sql = "INSERT INTO " + table + " " + cols + " VALUES (";
 		
 		for (String val : vals) sql += "'" + val + "',";
 		sql = sql.replaceAll(",$", ")");
-		return stmt.executeUpdate(sql);
+		return this.executeUpdate(sql);
 	}
 	
-	public int insert(String table, String[] cols, String[] vals) throws SQLException {
+	public int insert(String table, String[] cols, String[] vals) {
 		String strCols = Arrays.asList(cols).toString();
 		strCols = strCols.substring(1, strCols.length() - 1);
 		String sql = "INSERT INTO " + table + " (" + strCols + ") VALUES (";
 		
 		for (String val : vals) sql += "'" + val + "',";
 		sql = sql.replaceAll(",$", ")");
-		return stmt.executeUpdate(sql);
+		return this.executeUpdate(sql);
 	}
 	
-	public int update(String table, String set, String where) throws SQLException {
-		return stmt.executeUpdate("UPDATE " + table + " SET " + set + " WHERE " + where);
+	public int update(String table, String set, String where) {
+		return this.executeUpdate("UPDATE " + table + " SET " + set + " WHERE " + where);
 	}
 	
-	public int delete(String table, String where) throws SQLException {
-		return stmt.executeUpdate("DELETE FROM " + table + " WHERE " + where);
+	public int delete(String table, String where) {
+		return this.executeUpdate("DELETE FROM " + table + " WHERE " + where);
 	}
 }
