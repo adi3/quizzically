@@ -31,6 +31,9 @@ public class SearchUsers extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String param = (String) request.getAttribute("param");
+		if (param == null) param = "";
+		request.setAttribute("param", param);
 		request.getRequestDispatcher("SearchUsers.jsp").forward(request, response);
 	}
 
@@ -48,7 +51,7 @@ public class SearchUsers extends HttpServlet {
 			errors.add("Search parameter cannot be empty.");
 			request.setAttribute("errors", errors);
 		} else {
-			HashMap<String, String> users = user.search(param, username);
+			ArrayList<User> users = user.search(param, username);
 			request.setAttribute("param", param);
 			request.setAttribute("users", users);
 		}

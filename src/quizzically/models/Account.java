@@ -20,6 +20,10 @@ public class Account {
 		sql = new MySQL();
 	}
 	
+	public void close() {
+		sql.close();
+	}
+	
 	private boolean accountExists(String username) {
 		ResultSet set = sql.get("users", "username = '" + username + "'");
 		
@@ -58,8 +62,9 @@ public class Account {
 		if (errors.size() != 0) return errors;
 		
 		String admin = isAdmin ? "1" : "0";
+		String[] cols = {"name", "email", "is_admin", "username", "password", "salt"};
 		String[] vals = {name, email, admin, username, salted_pass, salt};
-		int status = sql.insert(TABLE, vals);
+		int status = sql.insert(TABLE, cols, vals);
 		if (status == 0) errors.add("Trouble saving registration. Please try again.");
 		return errors;
 	}

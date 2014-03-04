@@ -5,18 +5,19 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
 import quizzically.models.Account;
+import quizzically.models.User;
 
 /**
  * Application Lifecycle Listener implementation class AccountListener
  *
  */
 @WebListener
-public class AccountListener implements ServletContextListener {
+public class ContextListener implements ServletContextListener {
 
     /**
      * Default constructor. 
      */
-    public AccountListener() {
+    public ContextListener() {
         // TODO Auto-generated constructor stub
     }
 
@@ -31,7 +32,8 @@ public class AccountListener implements ServletContextListener {
      * @see ServletContextListener#contextDestroyed(ServletContextEvent)
      */
     public void contextDestroyed(ServletContextEvent arg0) {
-        // TODO Auto-generated method stub
+    	Account acc = (Account) arg0.getServletContext().getAttribute("acc");
+    	acc.close();
     }
 	
 }

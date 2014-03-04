@@ -1,6 +1,5 @@
 <%@page import="java.util.ArrayList"%>
-<%@page import="java.util.HashMap"%>
-<%@page import="java.util.Map"%>
+<%@page import="quizzically.models.*"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -29,15 +28,18 @@
 	
 	<br />
 	
-	<% HashMap<String, String> users = (HashMap<String, String>)request.getAttribute("users"); %>
+	<% String param = (String) request.getAttribute("param"); %>
+	<% ArrayList<User> users = (ArrayList<User>)request.getAttribute("users"); %>
 	<% if (users == null || users.isEmpty()) { %>
-		<p>Unable to find users beginning with <b><%= request.getAttribute("param") %></b>.</p>
+		<% if (!param.isEmpty()) { %>
+			<p>Unable to find users beginning with <b><%= param %></b>.</p>
+		<% } %>
 	<% } else { %>
-		<p>Found the following users beginning with <b><%= request.getAttribute("param") %></b>:</p>
+		<p>Found the following users beginning with <b><%= param %></b>:</p>
 		<ul>
-			<% for (Map.Entry<String, String> user : users.entrySet()) { %>
+			<% for (User user : users) { %>
 				<li>
-					<a href="Profile?user=<%= user.getKey() %>" ><%= user.getValue() %></a>
+					<a href="Profile?user=<%= user.getUsername() %>" ><%= user.getName() %></a>
 				</li>	
 			<% } %>
 		</ul>

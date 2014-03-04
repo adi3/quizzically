@@ -7,14 +7,20 @@ import java.util.Arrays;
 
 public class MySQL {
 
+	private DBConnection con;
 	private Statement stmt;
 	
 	public MySQL() {
 		try {
-			stmt = new DBConnection().getStatement();
+			con = new DBConnection();
+			stmt = con.getStatement();
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void close() {
+		con.close();
 	}
 	
 	private ResultSet executeQuery(String sql) {
@@ -57,6 +63,15 @@ public class MySQL {
 		return this.executeQuery("SELECT " + strCols + " FROM " + table + " WHERE " + where);
 	}
 	
+	public ResultSet getFriends(String id) {
+		String sql = "SELECT u2.username from users u1, users u2, friends f "
+						+ "WHERE ((f.id_1 = u1.id AND f.id_2 = u2.id) "
+						+ "OR (f.id_1 = u2.id AND f.id_2 = u1.id)) "
+						+ "AND u1.id = " + id;
+		return this.executeQuery(sql);
+	}
+	
+	/*
 	public int insert(String table, String[] vals) {
 		String cols = "(name, email, is_admin, username, password, salt)";	// TODO : model should return these
 		String sql = "INSERT INTO " + table + " " + cols + " VALUES (";
@@ -65,6 +80,7 @@ public class MySQL {
 		sql = sql.replaceAll(",$", ")");
 		return this.executeUpdate(sql);
 	}
+	*/
 	
 	public int insert(String table, String[] cols, String[] vals) {
 		String strCols = Arrays.asList(cols).toString();
