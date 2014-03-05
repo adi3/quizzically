@@ -7,13 +7,14 @@ import java.util.Arrays;
 
 public class MySQL {
 
+	// singleton
+	private static MySQL instance = null;
+
 	private DBConnection con;
-	private Statement stmt;
 	
-	public MySQL() {
+	private MySQL() {
 		try {
 			con = new DBConnection();
-			stmt = con.getStatement();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
@@ -24,9 +25,21 @@ public class MySQL {
 	public void close() {
 		con.close();
 	}
+
+	/**
+	 * Get a MySQL singleton object
+	 */
+	public static MySQL getInstance() {
+		if (instance != null) {
+			return instance;
+		}
+		instance = new MySQL();
+		return instance;
+	}
 	
 	private ResultSet executeQuery(String sql) {
 		try {
+			Statement stmt = con.getStatement();
 			return stmt.executeQuery(sql);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -36,6 +49,7 @@ public class MySQL {
 	
 	private int executeUpdate(String sql) {
 		try {
+			Statement stmt = con.getStatement();
 			return stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -72,7 +86,7 @@ public class MySQL {
 						+ "AND u1.id = " + id;
 		return this.executeQuery(sql);
 	}
-	
+
 	/*
 	public int insert(String table, String[] vals) {
 		String cols = "(name, email, is_admin, username, password, salt)";	// TODO : model should return these

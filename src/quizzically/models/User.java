@@ -24,7 +24,7 @@ public class User {
 	
 	public User(String username) {
 		this.username = username;
-		sql = new MySQL();
+		sql = MySQL.getInstance();
 		
 		ResultSet user = sql.get(USERS_TABLE, "username = '" + username + "'");
 		try {

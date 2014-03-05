@@ -11,17 +11,14 @@ import java.util.Random;
 
 import quizzically.lib.MySQL;
 
+// TODO this looks like it needs to be static
 public class Account {
 	
 	private MySQL sql;
 	private static final String TABLE = "users";
 	
 	public Account() {
-		sql = new MySQL();
-	}
-	
-	public void close() {
-		sql.close();
+		sql = MySQL.getInstance();
 	}
 	
 	private boolean accountExists(String username) {
