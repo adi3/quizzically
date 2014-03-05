@@ -74,8 +74,15 @@ public class User {
 	public boolean addFriend(User friend) {
 		String[] cols = {"id_1", "id_2"};
 		String[] vals = {this.id, friend.getId()};
-		int status = sql.insert(MyDBInfo.FRIENDS_TABLE, cols, vals);
-		return status == 1;
+		// FIXME: precompute ResultSet
+		ResultSet genKeys = sql.insert(MyDBInfo.FRIENDS_TABLE, cols, vals);
+		if(genKeys == null) return false;
+		try{
+			return genKeys.first(); // true when insertion succeeded
+		} catch (SQLException e){
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 	public String getName() {

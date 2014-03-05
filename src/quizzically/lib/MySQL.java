@@ -57,6 +57,25 @@ public class MySQL {
 		}
 	}
 	
+	/**
+	 * Similar to executeUpdate, but returns ResultSet of generated
+	 * keys instead of number of affected rows. If no insertions were made
+	 * the ResultSet will be empty (or null on error)
+	 * @param sql
+	 * @return ResultSet of generated keys
+	 */
+	private ResultSet executeInsertion(String sql) {
+		try {
+			Statement stmt = con.getStatement();
+			stmt.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+			return stmt.getGeneratedKeys();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	
 	public ResultSet get(String table) {
 		return this.executeQuery("SELECT * FROM " + table);
 	}
@@ -98,14 +117,14 @@ public class MySQL {
 	}
 	*/
 	
-	public int insert(String table, String[] cols, String[] vals) {
+	public ResultSet insert(String table, String[] cols, String[] vals) {
 		String strCols = Arrays.asList(cols).toString();
 		strCols = strCols.substring(1, strCols.length() - 1);
 		String sql = "INSERT INTO " + table + " (" + strCols + ") VALUES (";
 		
 		for (String val : vals) sql += "'" + val + "',";
 		sql = sql.replaceAll(",$", ")");
-		return this.executeUpdate(sql);
+		return executeInsertion(sql);
 	}
 	
 	public int update(String table, String set, String where) {
