@@ -4,3 +4,12 @@
 *.jar
 *.war
 *.ear
+
+# os x
+.DS_Store
+
+# vim
+.vimrc
+*.swp
+*.swo
+Session.vim
