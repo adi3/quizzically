@@ -17,7 +17,7 @@ public class MultipleChoiceQuestion extends Question {
 	public int grade(Set<Response> responses) {
 		Response response;
 		ChoiceResponse rsp;
-		Answer correctAnswer;
+		Answer correctAnswer = null;
 
 		if (responses.size() != 1) {
 			throw new InvalidResponseException("Expected one answer but received multiple");
@@ -31,6 +31,16 @@ public class MultipleChoiceQuestion extends Question {
 
 		// check the response is correct
 		correctAnswer = answers().get(0);
+		for (Answer a : answers()) {
+			if (a.correct()) {
+				correctAnswer = a;
+			}
+		}
+
+		if (correctAnswer == null) {
+			return -1; // TODO just throw an exception here, wtf happened?
+		}
+
 		return correctAnswer.id() == rsp.id() ? 1 : 0;
 	}
 
