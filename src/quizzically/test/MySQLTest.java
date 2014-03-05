@@ -14,7 +14,7 @@ public class MySQLTest {
 	
 	@Before
 	public void testConnection() throws ClassNotFoundException, SQLException {
-		sql = new MySQL();
+		sql = MySQL.getInstance();
 	}
 	
 	@Test
