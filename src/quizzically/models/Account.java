@@ -9,12 +9,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Random;
 
+import quizzically.config.MyDBInfo;
 import quizzically.lib.MySQL;
 
 public class Account {
 	
 	private MySQL sql;
-	private static final String TABLE = "users";
 	
 	public Account() {
 		sql = new MySQL();
@@ -39,7 +39,7 @@ public class Account {
 	public boolean checkCredentials(String username, String password) {
 		if (!this.accountExists(username)) return false;
 		String[] cols = {"password, salt"};
-		ResultSet user = sql.get(cols, TABLE, "username = '" + username + "'");
+		ResultSet user = sql.get(cols, MyDBInfo.USERS_TABLE, "username = '" + username + "'");
 		try {
 			user.first();
 			String salted_pass = getSaltedPass(password, user.getString(2));
@@ -64,7 +64,7 @@ public class Account {
 		String admin = isAdmin ? "1" : "0";
 		String[] cols = {"name", "email", "is_admin", "username", "password", "salt"};
 		String[] vals = {name, email, admin, username, salted_pass, salt};
-		int status = sql.insert(TABLE, cols, vals);
+		int status = sql.insert(MyDBInfo.USERS_TABLE, cols, vals);
 		if (status == 0) errors.add("Trouble saving registration. Please try again.");
 		return errors;
 	}

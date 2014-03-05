@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+import quizzically.config.MyDBInfo;
 import quizzically.lib.MySQL;
 
 public class User {
@@ -19,14 +20,13 @@ public class User {
 	private boolean isAdmin;
 	
 	private MySQL sql;
-	private static final String USERS_TABLE = "users";
-	private static final String FRIENDS_TABLE = "friends";
+
 	
 	public User(String username) {
 		this.username = username;
 		sql = new MySQL();
 		
-		ResultSet user = sql.get(USERS_TABLE, "username = '" + username + "'");
+		ResultSet user = sql.get(MyDBInfo.USERS_TABLE, "username = '" + username + "'");
 		try {
 			user.first();
 			this.id = user.getString("id");
@@ -40,7 +40,7 @@ public class User {
 	
 	public ArrayList<User> search(String param, String username) {
 		String[] cols = {"username"};
-		ResultSet users = sql.get(cols, USERS_TABLE, "name LIKE '" + param + "%'");
+		ResultSet users = sql.get(cols, MyDBInfo.USERS_TABLE, "name LIKE '" + param + "%'");
 		
 		try {
 			ArrayList<User> results = new ArrayList<User>();
@@ -56,7 +56,7 @@ public class User {
 	}
 	
 	public ArrayList<User> getFriends() {
-		ResultSet set = sql.get(USERS_TABLE, "username = '" + this.getUsername() + "'");
+		ResultSet set = sql.get(MyDBInfo.USERS_TABLE, "username = '" + this.getUsername() + "'");
 		
 		try {
 			set.first();
@@ -74,7 +74,7 @@ public class User {
 	public boolean addFriend(User friend) {
 		String[] cols = {"id_1", "id_2"};
 		String[] vals = {this.id, friend.getId()};
-		int status = sql.insert(FRIENDS_TABLE, cols, vals);
+		int status = sql.insert(MyDBInfo.FRIENDS_TABLE, cols, vals);
 		return status == 1;
 	}
 	
