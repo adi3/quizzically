@@ -14,7 +14,9 @@ public class MySQL {
 		try {
 			con = new DBConnection();
 			stmt = con.getStatement();
-		} catch (ClassNotFoundException | SQLException e) {
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
