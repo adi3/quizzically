@@ -2,7 +2,6 @@ package quizzically.models;
 
 import quizzically.config.MyDBInfo;
 import quizzically.lib.*;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -25,54 +24,117 @@ public class Answer {
 		this.answerTexts = answerTexts;
 	}
 	
+	public int id() {
+		return ID;
+	}
+	
 	public boolean isCorrect() {
 		return correct;
 	}
 	
-	/**
-	 * save object to database.
-	 * called by createAnswer
-	 */
-	private void save() {
-		
+	public int questionID() {
+		return questionID;
 	}
 	
-	// TODO
+	public int position() {
+		return position;
+	}
+	
+	public Set<String> answerTexts() {
+		return answerTexts;
+	}
+	
+	/**
+	 * Creates an Answer object with the given values and inserts it into the db.
+	 * Performs the insertion first, retrieves the generated ID and then creates the object.
+	 * Throws a RuntimeException if there is an error or if the insertion fails.
+	 * @param questionID
+	 * @param position
+	 * @param correct
+	 * @param answerTexts
+	 * @return newly created Answer object
+	 */
+	// TODO: change signature of insert
+	// TODO: create transaction
 	public static Answer create(int questionID, int position, boolean correct, Set<String> answerTexts) {
 		MySQL sql = MySQL.getInstance();
 		// tuple to be inserted in ANSWERS_TABLE
 		String[] answerValues = new String[]{Integer.toString(questionID), Integer.toString(position), Boolean.toString(correct)};
 		ResultSet genKeys = sql.insert(MyDBInfo.ANSWERS_TABLE, ANSWERS_COLUMNS, answerValues);
 		try{
-			if(genKeys.first()){
-				int insertionID = genKeys.getInt(1); // ID of inserted answer
-				for(String answerText: answerTexts){
-					// tuple to be inserted in ANSWER_TEXTS_TABLE
-					String[] textValues = new String[]{Integer.toString(insertionID), answerText};
-					ResultSet genTextKeys = sql.insert(MyDBInfo.ANSWER_TEXTS_TABLE, ANSWER_TEXTS_COLUMNS, textValues);
-					if(!genTextKeys.first()){
-						throw new RuntimeException("Insertion failed.");
-					}
-				}
-				return new Answer(insertionID, questionID, position, correct, answerTexts);
-			} else {
+			if(genKeys == null || !genKeys.first()){
 				throw new RuntimeException("Insertion failed.");
 			}
+			int insertionID = genKeys.getInt(1); // ID of inserted answer
+			for(String answerText: answerTexts){
+				// tuple to be inserted in ANSWER_TEXTS_TABLE
+				String[] textValues = new String[]{Integer.toString(insertionID), answerText};
+				ResultSet genTextKeys = sql.insert(MyDBInfo.ANSWER_TEXTS_TABLE, ANSWER_TEXTS_COLUMNS, textValues);
+				if(genTextKeys == null || !genTextKeys.first()){
+					throw new RuntimeException("Insertion failed.");
+				}
+			}
+			return new Answer(insertionID, questionID, position, correct, answerTexts);
 		} catch (SQLException e){
 			e.printStackTrace();
 		}
 		return null;
 	}
 	
-	public static Answer retrieveByID(int ID){
+	/**
+	 * Retrieves the Answer object stored in the db with the given ID.
+	 * Throws a RuntimeException on retrieval error.
+	 * Returns null if no tuple is found in the ANSWERS_TABLE with the given ID.
+	 * @param ID
+	 * @return retrieved Answer object
+	 */
+	public static Answer retrieveByID(int answerID){
 		MySQL sql = MySQL.getInstance();
-		ResultSet answerResult = sql.get(MyDBInfo.ANSWERS_TABLE, "id="+ID);
-		return null;
-		
+		ResultSet answerResult = sql.get(MyDBInfo.ANSWERS_TABLE, "id="+answerID);
+		ResultSet answerTextsResult = sql.get(MyDBInfo.ANSWER_TEXTS_TABLE, "answer_id="+answerID);
+		if(answerResult == null || answerTextsResult == null){
+			throw new RuntimeException("Retrieval failed.");
+		}
+		try{
+			if(answerResult.first()){ // tuple found in ANSWERS_TABLE
+				int qID = answerResult.getInt("question_id");
+				int pos = answerResult.getInt("position");
+				boolean corr = answerResult.getBoolean("correct");
+				Set<String> answerTexts = new HashSet<String>();
+				while(answerTextsResult.next()){
+					answerTexts.add(answerTextsResult.getString("text"));
+				}
+				return new Answer(answerID, qID, pos, corr, answerTexts);
+			}
+		} catch (SQLException e){
+			e.printStackTrace();
+		}
+		return null;		
 	}
 	
+	/**
+	 * Retrieves all answers belonging to the question whose ID is questionID.
+	 * If no answers were found returns an empty set.
+	 * Throws a RuntimeException on retrieval error.
+	 * @param questionID
+	 * @return answerSet
+	 */
 	public static Set<Answer> retrieveByQuestionID(int questionID) {
-		return null;
+		Set<Answer> answerSet = new HashSet<Answer>();
+		MySQL sql = MySQL.getInstance();
+		ResultSet answerResult = sql.get(MyDBInfo.ANSWERS_TABLE, "question_id="+questionID);
+		if(answerResult == null){
+			throw new RuntimeException("Retrieval failed.");
+		}
+		try{
+			while(answerResult.next()){
+				int answerID = answerResult.getInt("id");
+				answerSet.add(Answer.retrieveByID(answerID));
+			}
+		} catch(SQLException e){
+			e.printStackTrace();
+		}
+		return answerSet;
 	}
 	
 	
