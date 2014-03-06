@@ -27,6 +27,7 @@
 	
 	<% ArrayList<User> friends = (ArrayList<User>)request.getAttribute("friends"); %>
 	<% if (request.getAttribute("username").equals(request.getSession().getAttribute("user"))) { %>
+		<a href="Inbox">Check Inbox</a>
 		<% if (friends == null || friends.isEmpty()) { %>
 			<p>You don't have any friends yet :(</p>
 		<% } else { %>

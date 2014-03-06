@@ -21,8 +21,8 @@ public class Account {
 		sql = MySQL.getInstance();
 	}
 	
-	private boolean accountExists(String username) {
-		ResultSet set = sql.get("users", "username = '" + username + "'");
+	public static boolean accountExists(String username) {
+		ResultSet set = MySQL.getInstance().get("users", "username = '" + username + "'");
 		
 		try {
 			set.last();
@@ -60,7 +60,7 @@ public class Account {
 		
 		String admin = isAdmin ? "1" : "0";
 		String[] cols = {"name", "email", "is_admin", "username", "password", "salt"};
-		String[] vals = {name, email, admin, username, salted_pass, salt};
+		String[] vals = {capitalize(name), email, admin, username, salted_pass, salt};
 		int status = sql.insert(MyDBInfo.USERS_TABLE, cols, vals);
 		if (status == 0) errors.add("Trouble saving registration. Please try again.");
 		return errors;
@@ -130,6 +130,17 @@ public class Account {
 		}
 	}
 	
+	private String capitalize(String str) {
+		char[] chars = str.toLowerCase().toCharArray();
+		boolean found = false;
+		for (int i = 0; i < chars.length; i++) {
+			if (!found && Character.isLetter(chars[i])) {
+				chars[i] = Character.toUpperCase(chars[i]);
+				found = true;
+			} else if (Character.isWhitespace(chars[i])) found = false;
+		}
+		return String.valueOf(chars);
+	}
 	
 	/*
 	 Given a byte[] array, produces a hex String,

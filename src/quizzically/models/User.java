@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+import quizzically.config.MyConfigVars;
 import quizzically.config.MyDBInfo;
 import quizzically.lib.MySQL;
 
@@ -20,7 +21,6 @@ public class User {
 	private boolean isAdmin;
 	
 	private MySQL sql;
-
 	
 	public User(String username) {
 		this.username = username;
@@ -35,6 +35,17 @@ public class User {
 			this.isAdmin = user.getString("is_admin").equals("1") ? true : false; 
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public static User getUserById(String id) {
+		ResultSet set = MySQL.getInstance().get(MyDBInfo.USERS_TABLE, "id = " + id);
+		try {
+			set.first();
+			return new User(set.getString("username"));
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 	
@@ -72,10 +83,26 @@ public class User {
 	}
 	
 	public boolean addFriend(User friend) {
-		String[] cols = {"id_1", "id_2"};
-		String[] vals = {this.id, friend.getId()};
+		String[] cols = {"id_1", "id_2", "is_confirmed"};
+		String[] vals = {this.id, friend.getId(), "0"};
 		int status = sql.insert(MyDBInfo.FRIENDS_TABLE, cols, vals);
+		
+		if (status == 1) new Message(MyConfigVars.REQUEST_MSG, "REQUEST", this, friend).save();
 		return status == 1;
+	}
+	
+	public boolean acceptRequest(User friend) {
+		int status = sql.update(MyDBInfo.FRIENDS_TABLE, "is_confirmed=1", 
+							"id_1=" + friend.getId() + " AND id_2=" + this.id);
+
+		String msg = MyConfigVars.ACCEPT_MSG.replace("{Name}", this.name);
+		if (status == 1) new Message(msg, "REQUEST", this, friend).save();
+		return status == 1;
+	}
+	
+	
+	public boolean isFriend(User friend) {
+		return this.getFriends().contains(friend);
 	}
 	
 	public String getName() {

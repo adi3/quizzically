@@ -23,5 +23,12 @@ public class UserTest {
 		
 		System.out.println(friends.contains(user2));
 	}
+	
+	@Test
+	public void test2() {
+		String id = "33";
+		User user = User.getUserById(id);
+		assertEquals(user.getUsername(), "adisin");
+	}
 
 }

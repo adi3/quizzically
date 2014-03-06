@@ -83,7 +83,7 @@ public class MySQL {
 		String sql = "SELECT u2.username from users u1, users u2, friends f "
 						+ "WHERE ((f.id_1 = u1.id AND f.id_2 = u2.id) "
 						+ "OR (f.id_1 = u2.id AND f.id_2 = u1.id)) "
-						+ "AND u1.id = " + id;
+						+ "AND u1.id = " + id + " AND f.is_confirmed = 1";
 		return this.executeQuery(sql);
 	}
 

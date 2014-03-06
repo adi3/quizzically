@@ -28,7 +28,6 @@ public class ContextListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent arg0) {
     	arg0.getServletContext().setAttribute("acc", new Account()); // FIXME this should almost definitely be in SessionContext
     	arg0.getServletContext().setAttribute("mysql", MySQL.getInstance());
-			System.out.println("wtf");
     }
 
 	/**
