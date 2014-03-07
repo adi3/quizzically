@@ -6,7 +6,7 @@ import javax.servlet.annotation.WebListener;
 
 import quizzically.models.Account;
 import quizzically.models.User;
-import quizzically.lib.MySQL;
+import quizzically.lib.MySql;
 
 /**
  * Application Lifecycle Listener implementation class AccountListener
@@ -27,14 +27,14 @@ public class ContextListener implements ServletContextListener {
      */
     public void contextInitialized(ServletContextEvent arg0) {
     	arg0.getServletContext().setAttribute("acc", new Account()); // FIXME this should almost definitely be in SessionContext
-    	arg0.getServletContext().setAttribute("mysql", MySQL.getInstance());
+    	arg0.getServletContext().setAttribute("mysql", MySql.getInstance());
     }
 
 	/**
      * @see ServletContextListener#contextDestroyed(ServletContextEvent)
      */
     public void contextDestroyed(ServletContextEvent arg0) {
-    	MySQL sql = (MySQL) arg0.getServletContext().getAttribute("mysql");
+    	MySql sql = (MySql) arg0.getServletContext().getAttribute("mysql");
     	sql.close();
     }
 	
