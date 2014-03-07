@@ -16,6 +16,9 @@ public class Answer {
 	private boolean correct;
 	private Set<String> answerTexts; // set of Strings which correspond to this answer, e.g. {FloMo, Florence Moore}
 
+	/*
+	 * should only be called by create and retrieve
+	 */
 	private Answer(int ID, int questionID, int position, boolean correct, Set<String> answerTexts) {
 		this.ID = ID;
 		this.correct = correct;
@@ -90,8 +93,8 @@ public class Answer {
 	 */
 	public static Answer retrieveByID(int answerID){
 		MySQL sql = MySQL.getInstance();
-		ResultSet answerResult = sql.get(MyDBInfo.ANSWERS_TABLE, "id="+answerID);
-		ResultSet answerTextsResult = sql.get(MyDBInfo.ANSWER_TEXTS_TABLE, "answer_id="+answerID);
+		ResultSet answerResult = sql.get(MyDBInfo.ANSWERS_TABLE, "\"id=\""+answerID);
+		ResultSet answerTextsResult = sql.get(MyDBInfo.ANSWER_TEXTS_TABLE, "\"answer_id=\""+answerID);
 		if(answerResult == null || answerTextsResult == null){
 			throw new RuntimeException("Retrieval failed.");
 		}
@@ -119,13 +122,13 @@ public class Answer {
 	 * @param questionID
 	 * @return answerSet
 	 */
-	public static Set<Answer> retrieveByQuestionID(int questionID) {
-		Set<Answer> answerSet = new HashSet<Answer>();
+	public static Collection<Answer> retrieveByQuestionID(int questionID) {
 		MySQL sql = MySQL.getInstance();
-		ResultSet answerResult = sql.get(MyDBInfo.ANSWERS_TABLE, "question_id="+questionID);
+		ResultSet answerResult = sql.get(MyDBInfo.ANSWERS_TABLE, "\"question_id=\""+questionID);
 		if(answerResult == null){
 			throw new RuntimeException("Retrieval failed.");
 		}
+		Set<Answer> answerSet = new HashSet<Answer>();
 		try{
 			while(answerResult.next()){
 				int answerID = answerResult.getInt("id");
