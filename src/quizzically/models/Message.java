@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 
+import quizzically.config.MyConfigVars;
 import quizzically.config.MyDBInfo;
 import quizzically.lib.MySQL;
 
@@ -57,8 +58,15 @@ public class Message {
 		String[] cols = {"text", "from_id", "to_id", "type", "is_read", "created_at"};
 		String isRead = this.isRead ? "1" : "0";
 		String[] vals = {this.msg, this.from.getId(), this.to.getId(), this.type, isRead, this.getDate()};
-		int status = sql.insert(MyDBInfo.MESSAGES_TABLE, cols, vals);
-		return status != 0;
+		
+		ResultSet genKeys = sql.insert(MyDBInfo.MESSAGES_TABLE, cols, vals);
+		if(genKeys == null) return false;
+		try{
+			return genKeys.first(); // true when insertion succeeded
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 	public static ArrayList<Message> getMessages(User user) {

@@ -85,10 +85,15 @@ public class User {
 	public boolean addFriend(User friend) {
 		String[] cols = {"id_1", "id_2", "is_confirmed"};
 		String[] vals = {this.id, friend.getId(), "0"};
-		int status = sql.insert(MyDBInfo.FRIENDS_TABLE, cols, vals);
-		
-		if (status == 1) new Message(MyConfigVars.REQUEST_MSG, "REQUEST", this, friend).save();
-		return status == 1;
+		ResultSet genKeys = sql.insert(MyDBInfo.FRIENDS_TABLE, cols, vals);
+		if(genKeys == null) return false;
+		try{
+			if (genKeys.first()) new Message(MyConfigVars.REQUEST_MSG, "REQUEST", this, friend).save();
+			return genKeys.first(); // true when insertion succeeded
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 	public boolean acceptRequest(User friend) {

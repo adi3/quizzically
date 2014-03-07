@@ -61,8 +61,13 @@ public class Account {
 		String admin = isAdmin ? "1" : "0";
 		String[] cols = {"name", "email", "is_admin", "username", "password", "salt"};
 		String[] vals = {capitalize(name), email, admin, username, salted_pass, salt};
-		int status = sql.insert(MyDBInfo.USERS_TABLE, cols, vals);
-		if (status == 0) errors.add("Trouble saving registration. Please try again.");
+		
+		ResultSet genKeys = sql.insert(MyDBInfo.USERS_TABLE, cols, vals);
+		try { // if genKeys is empty insertion failed
+			if (genKeys == null || ! genKeys.first()) errors.add("Trouble saving registration. Please try again.");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return errors;
 	}
 	

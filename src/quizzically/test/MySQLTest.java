@@ -50,8 +50,8 @@ public class MySQLTest {
 	public void testInsert() throws SQLException {
 		String[] cols = {"name", "is_admin"};
 		String[] vals = {"Matt Vitelli", "0"};
-		int status = sql.insert("users", cols, vals);
-		assertTrue(status == 1);
+		ResultSet genKeys = sql.insert("users", cols, vals);
+		assertTrue(genKeys.first());
 	}
 	
 	@Test
