@@ -13,3 +13,7 @@
 *.swp
 *.swo
 Session.vim
+
+# build
+bin
+build
