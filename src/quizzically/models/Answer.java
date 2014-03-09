@@ -47,6 +47,16 @@ public class Answer {
 	public Set<String> answerTexts() {
 		return answerTexts;
 	}
+
+	/**
+	 * Get a single answer text
+	 */
+	public String text() {
+		for (String s : answerTexts()) {
+			return s;
+		}
+		return ""; // shouldn't occur
+	}
 	
 	/**
 	 * Creates an Answer object with the given values and inserts it into the db.
