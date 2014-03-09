@@ -1,13 +1,14 @@
 package quizzically.models;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Picture-as-question question
  */
 public class PictureQuestion extends TextQuestion {
-	public PictureQuestion(int id, String text) {
-		super(id, text);
+	public PictureQuestion(int id, String text, List<Answer> answers) {
+		super(id, text, answers);
 		this.type = Question.TYPE_PICTURE;
 	}
 

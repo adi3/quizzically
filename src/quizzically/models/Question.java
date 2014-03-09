@@ -21,8 +21,7 @@ public abstract class Question {
 	private int id;
 	private String text;
 	int type;
-	// TODO: ArrayList or Collection?
-	private ArrayList<Answer> answers;
+	private List<Answer> answers;
 	
 	// Note: a Question object does not have an a priori position as it is not
 	// associated with a specific Quiz. The QUIZ_QUESTIONS_TABLE associates quizes
@@ -33,8 +32,9 @@ public abstract class Question {
 	/* XXX
 	 * do not call except in subclasses
 	 */
-	protected Question(int id, String text) {
-		this.id = id; // added
+	protected Question(int id, String text, List<Answer> answers) {
+		this.answers = answers;
+		this.id = id; 
 		this.text = text;
 	}
 
@@ -68,7 +68,7 @@ public abstract class Question {
 	 * Get the possible answers to this question
 	 * @return the possible answers (options) for the question
 	 */
-	public ArrayList<Answer> answers() {
+	public List<Answer> answers() {
 		return answers;
 	}
 	
@@ -110,15 +110,16 @@ public abstract class Question {
 		try {
 			String text = row.get("text");
 			int type = Integer.parseInt(row.get("type"));
+			List<Answer> answers = Answer.retrieveByQuestionID(questionID);
 			switch (type) {
 				case TYPE_TEXT:
-					return new TextQuestion(questionID, text);
+					return new TextQuestion(questionID, text, answers);
 				case TYPE_FILL_IN:
-					return new FillInQuestion(questionID, text);
+					return new FillInQuestion(questionID, text, answers);
 				case TYPE_MULTIPLE_CHOICE:
-					return new MultipleChoiceQuestion(questionID, text);
+					return new MultipleChoiceQuestion(questionID, text, answers);
 				case TYPE_PICTURE:
-					return new PictureQuestion(questionID, text);
+					return new PictureQuestion(questionID, text, answers);
 				default:
 					// TODO: I think do nothing i.e. return null since type is invalid
 			}
@@ -152,7 +153,6 @@ public abstract class Question {
 			questions.add(orderedQuestions.get(k));
 		}
 		return questions;
-		// TODO make a list instead
 	}
 
 	/**
