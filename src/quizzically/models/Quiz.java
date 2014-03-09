@@ -29,7 +29,7 @@ public class Quiz {
 	 */
 	public static Quiz retrieve(int id) {
 		MySql sql = MySql.getInstance();
-		SqlResult res = sql.get(MyDBInfo.QUESTIONS_TABLE, "\"id\" = " + id);
+		SqlResult res = sql.get(MyDBInfo.QUIZZES_TABLE, "`id` = " + id);
 		String name;
 		int quizID;
 		int ownerID;
@@ -42,7 +42,7 @@ public class Quiz {
 		try { 
 			name = row.get("name");
 			quizID = Integer.parseInt(row.get("id"));
-			ownerID = Integer.parseInt(row.get("owner_id"));
+			ownerID = Integer.parseInt(row.get("creator_id"));
 			return new Quiz(quizID, name, ownerID);
 		} catch (NumberFormatException e) { /* ignore */ }
 

@@ -21,12 +21,12 @@ public class MultipleChoiceQuestion extends Question {
 		Answer correctAnswer = null;
 
 		if (responses.size() != 1) {
-			throw new InvalidResponseException("Expected one answer but received multiple");
+//			throw new InvalidResponseException("Expected one answer but received multiple");
 		}
 
 		response = responses.get(0);
 		if (!(response instanceof ChoiceResponse)) {
-			throw new InvalidResponseException("Expected a TextResponse");
+//			throw new InvalidResponseException("Expected a TextResponse");
 		}
 		rsp = (ChoiceResponse) response;
 
