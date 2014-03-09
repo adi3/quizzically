@@ -5,7 +5,9 @@ import java.sql.SQLException;
 import java.util.*;
 
 import quizzically.config.MyDBInfo;
-import quizzically.lib.MySQL;
+import quizzically.lib.MySql;
+import quizzically.lib.SqlResult;
+
 import java.util.*;
 
 import quizzically.exceptions.*;
@@ -28,18 +30,15 @@ public abstract class Question {
 	// The static method retrieveByQuizID is aware of those positions and returns
 	// the list of Questions in the correct order.
 
-	// TODO: why public, and why don't you allow id parameter?
-	// I think clients should use the static create instead
-	public Question(String text, int type) {
-		this.text = text;
-		this.type = type;
-	}
-
 	/* XXX
 	 * do not call except in subclasses
 	 */
 	protected Question(int id, String text) {
 		this.id = id; // added
+		this.text = text;
+	}
+
+	protected Question(String text) {
 		this.text = text;
 	}
 
@@ -86,36 +85,32 @@ public abstract class Question {
 	 * @return
 	 */
 	public static Question retrieveByID(int questionID) {
-		MySQL sql = MySQL.getInstance();
-		ResultSet rs = sql.get(MyDBInfo.QUESTIONS_TABLE, "\"id\" = " + questionID);
-		if(rs == null){
-			throw new RuntimeException("Retrieval failed");
-		}
-		try{
-			if(rs.first()){
-				String text = rs.getString("text");
-				int type = rs.getInt("type");
-				switch (type) {
-					case TYPE_TEXT:
-						return new TextQuestion(questionID, text);
-					case TYPE_FILL_IN:
-						return new FillInQuestion(questionID, text);
-					case TYPE_MULTIPLE_CHOICE:
-						return new MultipleChoiceQuestion(questionID, text);
-					case TYPE_PICTURE:
-						return new PictureQuestion(questionID, text);
-					default:
-						// TODO: I think do nothing i.e. return null since type is invalid
-				}
-			}
-		} catch(SQLException e){
-			e.printStackTrace();
-		}
-		return null;
-	}
+		MySql sql = MySql.getInstance();
+		SqlResult res = sql.get(MyDBInfo.QUESTIONS_TABLE, "\"id\" = " + questionID);
 
-	protected Question(String text) {
-		this.text = text;
+		if (res.size() == 0) {
+			return null;
+		}
+
+		HashMap<String, String> row = res.get(0);
+		try {
+			String text = row.get("text");
+			int type = Integer.parseInt(row.get("type"));
+			switch (type) {
+				case TYPE_TEXT:
+					return new TextQuestion(questionID, text);
+				case TYPE_FILL_IN:
+					return new FillInQuestion(questionID, text);
+				case TYPE_MULTIPLE_CHOICE:
+					return new MultipleChoiceQuestion(questionID, text);
+				case TYPE_PICTURE:
+					return new PictureQuestion(questionID, text);
+				default:
+					// TODO: I think do nothing i.e. return null since type is invalid
+			}
+		} catch (NumberFormatException e) { /*ignore*/ }
+
+		return null;
 	}
 
 	/**
@@ -125,29 +120,23 @@ public abstract class Question {
 	 * @return
 	 */
 	public static Collection<Question> retrieveByQuizID(int quizID) {
-		MySQL sql = MySQL.getInstance();
-		ResultSet rs = sql.get(MyDBInfo.QUIZ_QUESTIONS_TABLE, "\"quiz_id\" = " + quizID);
-		if(rs == null){
-			throw new RuntimeException("Retrieval failed");
-		}
-		try {
-			// use SortedMap instead of Array/ArrayList since we don't know
-			// the size in advance (asking rs for the size is equivalent to looping
-			// through all of the ResultSet)
-			SortedMap<Integer, Question> orderedQuestions = new TreeMap<Integer, Question>();
-			while (rs.next()) {
-				int questionID = rs.getInt("question_id");
-				int position = rs.getInt("position");
-				Question q = Question.retrieveByID(questionID);
-				orderedQuestions.put(position, q);
-			}
-			return orderedQuestions.values();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			// TODO is it ok to silently ignore this?
+		MySql sql = MySql.getInstance();
+		SqlResult res = sql.get(MyDBInfo.QUIZ_QUESTIONS_TABLE, "\"quiz_id\" = " + quizID);
+		// use SortedMap instead of Array/ArrayList since we don't know
+		// the size in advance (asking rs for the size is equivalent to looping
+		// through all of the ResultSet)
+		SortedMap<Integer, Question> orderedQuestions = new TreeMap<Integer, Question>();
+		for (HashMap<String, String> row : res) {
+			try { 
+			int questionID = Integer.parseInt(row.get("question_id"));
+			int position = Integer.parseInt(row.get("position"));
+			Question q = Question.retrieveByID(questionID);
+			orderedQuestions.put(position, q);
+			} catch (NumberFormatException e) { /* ignore */ }
 		}
 
-		return new HashSet<Question>(); // TODO is this reasonable style given we want to return an empty Collection?
+		return orderedQuestions.values();
+		// TODO make a list instead
 	}
 
 	/**

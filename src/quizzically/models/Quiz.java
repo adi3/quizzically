@@ -6,7 +6,8 @@ import java.sql.SQLException;
 import java.util.*;
 import quizzically.config.MyDBInfo;
 
-import quizzically.lib.MySQL;
+import quizzically.lib.MySql;
+import quizzically.lib.SqlResult;
 
 public class Quiz {
 	private int id;
@@ -27,24 +28,23 @@ public class Quiz {
 	 * Get the quiz with the given id or null if it doesn't exist
 	 */
 	public static Quiz retrieve(int id) {
-		MySQL sql = MySQL.getInstance();
-		ResultSet rs = sql.get(MyDBInfo.QUESTIONS_TABLE, "\"id\" = " + id);
-		if(rs == null){
-			throw new RuntimeException("Error retrieving quiz.");
-		}
+		MySql sql = MySql.getInstance();
+		SqlResult res = sql.get(MyDBInfo.QUESTIONS_TABLE, "\"id\" = " + id);
 		String name;
 		int quizID;
 		int ownerID;
-		try {
-			if(rs.first()){ // if id not found return null
-				name = rs.getString("name");
-				quizID = rs.getInt("id");
-				ownerID = rs.getInt("owner_id");
-				return new Quiz(quizID, name, ownerID);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+
+		if (res.size() == 0) {
+			return null;
 		}
+
+		HashMap<String, String> row = res.get(0);
+		try { 
+			name = row.get("name");
+			quizID = Integer.parseInt(row.get("id"));
+			ownerID = Integer.parseInt(row.get("owner_id"));
+			return new Quiz(quizID, name, ownerID);
+		} catch (NumberFormatException e) { /* ignore */ }
 
 		return null;
 	}
