@@ -2,8 +2,10 @@ package quizzically.models;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import java.util.*;
 import quizzically.config.MyDBInfo;
+
 import quizzically.lib.MySQL;
 
 public class Quiz {
@@ -46,7 +48,6 @@ public class Quiz {
 
 		return null;
 	}
-
 
 	public Collection<Question> questions() {
 		return questions;

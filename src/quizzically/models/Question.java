@@ -59,8 +59,6 @@ public abstract class Question {
 	
 	// TODO: create methods that modify a Quiz e.g. add an answer
 	
-	
-	
 	/**
 	 * Creates a Question object with the given values and inserts it into the db.
 	 * Performs the insertion first, retrieves the generated ID and then creates the object.
@@ -75,10 +73,6 @@ public abstract class Question {
 		
 		return null;
 	}
-	
-	
-	
-	
 	
 	// TODO: Allow retrieval of owned Answers as well
 	/**
@@ -117,31 +111,17 @@ public abstract class Question {
 		return null;
 	}
 
-/*
-	public static Question fromResultSet(ResultSet rs) throws SQLException {
-		int id = rs.getInt("id");
-		String text = rs.getString("text");
-		int type = rs.getInt("type");
-
-		switch (type) {
-			case TYPE_TEXT:
-				return new TextQuestion(text);
-			case TYPE_FILL_IN:
-				return new FillInQuestion(text);
-			case TYPE_MULTIPLE_CHOICE:
-				return new MultipleChoiceQuestion(text);
-			case TYPE_PICTURE:
-				return new PictureQuestion(text);
-			default:
-				// TODO
-		}
-
-		// TODO set id!
-
-		return null;
+	protected Question(String text) {
+		this.text = text;
 	}
 
-*/
+	public static Question retrieve(int id) {
+		// TODO fetch from db
+	}
+
+	/**
+	 * Return the question or null if failed
+	 */
 	
 	/**
 	 * Retrieves all questions belonging to the quiz with id quizID.
@@ -167,7 +147,6 @@ public abstract class Question {
 				orderedQuestions.put(position, q);
 			}
 			return orderedQuestions.values();
-			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			// TODO is it ok to silently ignore this?
@@ -175,7 +154,6 @@ public abstract class Question {
 
 		return new HashSet<Question>(); // TODO is this reasonable style given we want to return an empty Collection?
 	}
-
 
 	/**
 	 * Grade the given user answer(s)
