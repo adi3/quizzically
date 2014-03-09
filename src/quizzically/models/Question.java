@@ -154,6 +154,13 @@ public abstract class Question {
 		}
 		return questions;
 	}
+	
+	public boolean equals(Object obj){
+		if(obj == this) return true;
+		if(! (obj instanceof Question)) return false;
+		return id == ((Question)obj).id;
+	}
+	
 
 	/**
 	 * Grade the given user answer(s)

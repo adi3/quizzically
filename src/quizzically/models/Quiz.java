@@ -2,14 +2,15 @@ package quizzically.models;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import java.util.*;
-import quizzically.config.MyDBInfo;
 
+import quizzically.config.MyDBInfo;
 import quizzically.lib.MySql;
 import quizzically.lib.SqlResult;
 
 public class Quiz {
+	private static final String[] QUIZ_QUESTIONS_COLUMNS = new String[]{"quiz_id", "question_id", "position"};
+	
 	private int id;
 	private String name;
 	private int owner_id;
@@ -26,6 +27,8 @@ public class Quiz {
 	
 	
 	public static Quiz create(String name, int ownerID){
+		MySql sql = MySql.getInstance();
+		
 		return null;
 	}
 	
@@ -56,9 +59,23 @@ public class Quiz {
 		}
 	}
 	
-	public void addQuestion(Question question){
-		
+	/**
+	 * Adds the question to the questions list,
+	 * and inserts the quiz-question relation
+	 * @param question
+	 */
+	// TODO if question_id is already owned by quiz ignore
+	// Note that when addQuestion is called all questions in the 
+	// DB are also in the List of the Quiz object
+	public void addQuestion(Question question, int position){
+		if(! questions.contains(question)){ // id comparison
+			questions.add(question);
+			MySql sql = MySql.getInstance();
+			String[] values = {Integer.toString(id), Integer.toString(question.id()), Integer.toString(position)};
+			sql.insert(MyDBInfo.QUIZ_QUESTIONS_TABLE, QUIZ_QUESTIONS_COLUMNS, values);
+		}
 	}
+	
 
 	public int id() {
 		return id;
