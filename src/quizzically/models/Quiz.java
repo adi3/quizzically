@@ -14,7 +14,7 @@ public class Quiz {
 	private String name;
 	private int owner_id;
 	private User owner;
-	private Collection<Question> questions;
+	private List<Question> questions;
 	
 	public Quiz(int id, String name, int owner_id) {
 		this.id = id;
@@ -57,7 +57,7 @@ public class Quiz {
 		return name;
 	}
 
-	public Collection<Question> questions() {
+	public List<Question> questions() {
 		return questions;
 	}
 }

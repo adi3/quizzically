@@ -133,13 +133,12 @@ public abstract class Question {
 	 * @param quizID
 	 * @return
 	 */
-	public static Collection<Question> retrieveByQuizID(int quizID) {
+	public static List<Question> retrieveByQuizID(int quizID) {
 		MySql sql = MySql.getInstance();
 		SqlResult res = sql.get(MyDBInfo.QUIZ_QUESTIONS_TABLE, "\"quiz_id\" = " + quizID);
-		// use SortedMap instead of Array/ArrayList since we don't know
-		// the size in advance (asking rs for the size is equivalent to looping
-		// through all of the ResultSet)
+		// use SortedMap to order the questions
 		SortedMap<Integer, Question> orderedQuestions = new TreeMap<Integer, Question>();
+		List<Question> questions = new ArrayList<Question>();
 		for (HashMap<String, String> row : res) {
 			try { 
 			int questionID = Integer.parseInt(row.get("question_id"));
@@ -149,7 +148,10 @@ public abstract class Question {
 			} catch (NumberFormatException e) { /* ignore */ }
 		}
 
-		return orderedQuestions.values();
+		for (Integer k : orderedQuestions.keySet()) {
+			questions.add(orderedQuestions.get(k));
+		}
+		return questions;
 		// TODO make a list instead
 	}
 
