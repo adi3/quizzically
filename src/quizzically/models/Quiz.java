@@ -2,8 +2,8 @@ package quizzically.models;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-
+import java.util.*;
+import quizzically.config.MyDBInfo;
 import quizzically.lib.MySQL;
 
 public class Quiz {
@@ -11,24 +11,35 @@ public class Quiz {
 	private String name;
 	private int owner_id;
 	private User owner;
-
-	private static final String TABLE = "quizzes";
+	private Collection<Question> questions;
+	
+	public Quiz(int id, String name, int owner_id) {
+		this.id = id;
+		this.name = name;
+		this.owner_id = owner_id;
+		// TODO instantiate owner lazily? so lazyyyy ~_~
+		questions = Question.retrieveByQuizID(id);
+	}
 
 	/**
 	 * Get the quiz with the given id or null if it doesn't exist
 	 */
 	public static Quiz retrieve(int id) {
 		MySQL sql = MySQL.getInstance();
-		ResultSet rs = sql.get(TABLE, "\"id\" = " + id);
-
+		ResultSet rs = sql.get(MyDBInfo.QUESTIONS_TABLE, "\"id\" = " + id);
+		if(rs == null){
+			throw new RuntimeException("Error retrieving quiz.");
+		}
 		String name;
-		int owner_id;
-
+		int quizID;
+		int ownerID;
 		try {
-			rs.first();
-			name = rs.getString("name");
-			owner_id = rs.getInt("owner_id");
-			return new Quiz(name, owner_id);
+			if(rs.first()){ // if id not found return null
+				name = rs.getString("name");
+				quizID = rs.getInt("id");
+				ownerID = rs.getInt("owner_id");
+				return new Quiz(quizID, name, ownerID);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -36,13 +47,8 @@ public class Quiz {
 		return null;
 	}
 
-	public Quiz(String name, int owner_id) {
-		this.name = name;
-		this.owner_id = owner_id;
-		// TODO instantiate owner lazily? so lazyyyy ~_~
-	}
 
-	public ArrayList<Question> questions() {
-		return Question.retrieveByQuizID(this.id); // TODO ensure this only happens once?
+	public Collection<Question> questions() {
+		return questions;
 	}
 }

@@ -128,7 +128,7 @@ public class Answer {
 		if(answerResult == null){
 			throw new RuntimeException("Retrieval failed.");
 		}
-		Set<Answer> answerSet = new HashSet<Answer>();
+		Collection<Answer> answerSet = new ArrayList <Answer>();
 		try{
 			while(answerResult.next()){
 				int answerID = answerResult.getInt("id");
