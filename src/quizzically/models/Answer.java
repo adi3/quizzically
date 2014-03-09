@@ -2,6 +2,7 @@ package quizzically.models;
 
 import quizzically.config.MyDBInfo;
 import quizzically.lib.*;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -57,8 +58,6 @@ public class Answer {
 	 * @param answerTexts
 	 * @return newly created Answer object
 	 */
-	// TODO: change signature of insert
-	// TODO: create transaction
 	public static Answer create(int questionID, int position, boolean correct, Set<String> answerTexts) {
 		MySql sql = MySql.getInstance();
 		// tuple to be inserted in ANSWERS_TABLE
@@ -80,27 +79,27 @@ public class Answer {
 	 * @return retrieved Answer object
 	 */
 	public static Answer retrieveByID(int answerID){
-		MySQL sql = MySQL.getInstance();
-		ResultSet answerResult = sql.get(MyDBInfo.ANSWERS_TABLE, "\"id=\""+answerID);
-		ResultSet answerTextsResult = sql.get(MyDBInfo.ANSWER_TEXTS_TABLE, "\"answer_id=\""+answerID);
-		if(answerResult == null || answerTextsResult == null){
-			throw new RuntimeException("Retrieval failed.");
+		MySql sql = MySql.getInstance();
+		SqlResult answerResult = sql.get(MyDBInfo.ANSWERS_TABLE, "\"id=\""+answerID);
+		SqlResult answerTextsResult = sql.get(MyDBInfo.ANSWER_TEXTS_TABLE, "\"answer_id=\""+answerID);
+		if(answerResult.size() == 0){ // answerID not found
+			return null;
 		}
+		int qID;
+		int pos;
+		boolean corr;
 		try{
-			if(answerResult.first()){ // tuple found in ANSWERS_TABLE
-				int qID = answerResult.getInt("question_id");
-				int pos = answerResult.getInt("position");
-				boolean corr = answerResult.getBoolean("correct");
-				Set<String> answerTexts = new HashSet<String>();
-				while(answerTextsResult.next()){
-					answerTexts.add(answerTextsResult.getString("text"));
-				}
-				return new Answer(answerID, qID, pos, corr, answerTexts);
-			}
-		} catch (SQLException e){
-			e.printStackTrace();
+			qID = Integer.parseInt(answerResult.get(0).get("question_id"));
+			pos = Integer.parseInt(answerResult.get(0).get("position"));
+			corr = Boolean.parseBoolean(answerResult.get(0).get("correct"));
+		} catch(NumberFormatException e){
+			return null;
 		}
-		return null;		
+		Set<String> answerTexts = new HashSet<String>();
+		for(int i=0; i<answerTextsResult.size(); i++){
+			answerTexts.add(answerTextsResult.get(i).get("text"));
+		}
+		return new Answer(answerID, qID, pos, corr, answerTexts);		
 	}
 	
 	/**
@@ -110,22 +109,29 @@ public class Answer {
 	 * @param questionID
 	 * @return answerSet
 	 */
-	public static Collection<Answer> retrieveByQuestionID(int questionID) {
-		MySQL sql = MySQL.getInstance();
-		ResultSet answerResult = sql.get(MyDBInfo.ANSWERS_TABLE, "\"question_id=\""+questionID);
-		if(answerResult == null){
-			throw new RuntimeException("Retrieval failed.");
+	public static List<Answer> retrieveByQuestionID(int questionID) {
+		List<Answer> answers = new ArrayList<Answer>();
+		MySql sql = MySql.getInstance();
+		SqlResult answerResult = sql.get(MyDBInfo.ANSWERS_TABLE, "\"question_id=\""+questionID);
+		if(answerResult.size() == 0){
+			return answers;
 		}
-		Collection<Answer> answerSet = new ArrayList <Answer>();
-		try{
-			while(answerResult.next()){
-				int answerID = answerResult.getInt("id");
-				answerSet.add(Answer.retrieveByID(answerID));
+		
+		SortedMap<Integer, Answer> orderedAnswers = new TreeMap<Integer, Answer>();
+		for(int i=0; i<answerResult.size(); i++){
+			try{
+				int answerID = Integer.parseInt(answerResult.get(i).get("id"));
+				int position = Integer.parseInt(answerResult.get(i).get("position"));
+				orderedAnswers.put(position, Answer.retrieveByID(answerID));
+			} catch(NumberFormatException e){
+				// ignore
 			}
-		} catch(SQLException e){
-			e.printStackTrace();
 		}
-		return answerSet;
+		
+		for(Answer a: orderedAnswers.values()){
+			answers.add(a); // put ordered by key
+		}
+		return answers;
 	}
 	
 	
