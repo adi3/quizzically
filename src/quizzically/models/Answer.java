@@ -60,28 +60,16 @@ public class Answer {
 	// TODO: change signature of insert
 	// TODO: create transaction
 	public static Answer create(int questionID, int position, boolean correct, Set<String> answerTexts) {
-		MySQL sql = MySQL.getInstance();
+		MySql sql = MySql.getInstance();
 		// tuple to be inserted in ANSWERS_TABLE
 		String[] answerValues = new String[]{Integer.toString(questionID), Integer.toString(position), Boolean.toString(correct)};
-		ResultSet genKeys = sql.insert(MyDBInfo.ANSWERS_TABLE, ANSWERS_COLUMNS, answerValues);
-		try{
-			if(genKeys == null || !genKeys.first()){
-				throw new RuntimeException("Insertion failed.");
-			}
-			int insertionID = genKeys.getInt(1); // ID of inserted answer
-			for(String answerText: answerTexts){
-				// tuple to be inserted in ANSWER_TEXTS_TABLE
-				String[] textValues = new String[]{Integer.toString(insertionID), answerText};
-				ResultSet genTextKeys = sql.insert(MyDBInfo.ANSWER_TEXTS_TABLE, ANSWER_TEXTS_COLUMNS, textValues);
-				if(genTextKeys == null || !genTextKeys.first()){
-					throw new RuntimeException("Insertion failed.");
-				}
-			}
-			return new Answer(insertionID, questionID, position, correct, answerTexts);
-		} catch (SQLException e){
-			e.printStackTrace();
+		int insertionID = sql.insert(MyDBInfo.ANSWERS_TABLE, ANSWERS_COLUMNS, answerValues);
+		for(String answerText: answerTexts){
+			// tuple to be inserted in ANSWER_TEXTS_TABLE
+			String[] textValues = new String[]{Integer.toString(insertionID), answerText};
+			sql.insert(MyDBInfo.ANSWER_TEXTS_TABLE, ANSWER_TEXTS_COLUMNS, textValues);
 		}
-		return null;
+		return new Answer(insertionID, questionID, position, correct, answerTexts);
 	}
 	
 	/**
