@@ -22,24 +22,19 @@ Quiz quiz = (Quiz) request.getAttribute("quiz");
 			<p>
 				<%= q.text() %>
 			</p>
-			<% for (Answer a : q.answers()) {
+			<%
+			for (Answer a : q.answers()) {
 				switch (q.type()) { 
 					case Question.TYPE_TEXT:
 					case Question.TYPE_FILL_IN:
 					case Question.TYPE_PICTURE:
-			%>
-				<input type="text" name="<%=qs%>" /><br />
-			<%
+						out.println("<input type=\"text\" name=\"" + qs + "\" /><br />");
 						break;
 					case Question.TYPE_MULTIPLE_CHOICE:
-			%>
-				<input type="radio" name="<%=qs%>" /><%= a.text() %><br />
-			<%
+						out.println("<input type=\"radio\" name=\"" + qs + "\" />" + a.text() + "<br />");
 						break;
-				%>
-				<% }
+				}
 			} %>
-
 		</li>
 	<% } %>
 	</ol>

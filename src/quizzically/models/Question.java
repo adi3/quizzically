@@ -100,7 +100,7 @@ public abstract class Question {
 	 */
 	public static Question retrieveByID(int questionID) {
 		MySql sql = MySql.getInstance();
-		SqlResult res = sql.get(MyDBInfo.QUESTIONS_TABLE, "\"id\" = " + questionID);
+		SqlResult res = sql.get(MyDBInfo.QUESTIONS_TABLE, "`id` = " + questionID);
 
 		if (res.size() == 0) {
 			return null;
@@ -136,16 +136,16 @@ public abstract class Question {
 	 */
 	public static List<Question> retrieveByQuizID(int quizID) {
 		MySql sql = MySql.getInstance();
-		SqlResult res = sql.get(MyDBInfo.QUIZ_QUESTIONS_TABLE, "\"quiz_id\" = " + quizID);
+		SqlResult res = sql.get(MyDBInfo.QUIZ_QUESTIONS_TABLE, "`quiz_id` = " + quizID);
 		// use SortedMap to order the questions
 		SortedMap<Integer, Question> orderedQuestions = new TreeMap<Integer, Question>();
 		List<Question> questions = new ArrayList<Question>();
 		for (HashMap<String, String> row : res) {
 			try { 
-			int questionID = Integer.parseInt(row.get("question_id"));
-			int position = Integer.parseInt(row.get("position"));
-			Question q = Question.retrieveByID(questionID);
-			orderedQuestions.put(position, q);
+				int questionID = Integer.parseInt(row.get("question_id"));
+				int position = Integer.parseInt(row.get("position"));
+				Question q = Question.retrieveByID(questionID);
+				orderedQuestions.put(position, q);
 			} catch (NumberFormatException e) { /* ignore */ }
 		}
 

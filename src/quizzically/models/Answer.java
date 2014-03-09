@@ -90,8 +90,8 @@ public class Answer {
 	 */
 	public static Answer retrieveByID(int answerID){
 		MySql sql = MySql.getInstance();
-		SqlResult answerResult = sql.get(MyDBInfo.ANSWERS_TABLE, "\"id=\""+answerID);
-		SqlResult answerTextsResult = sql.get(MyDBInfo.ANSWER_TEXTS_TABLE, "\"answer_id=\""+answerID);
+		SqlResult answerResult = sql.get(MyDBInfo.ANSWERS_TABLE, "`id`="+answerID);
+		SqlResult answerTextsResult = sql.get(MyDBInfo.ANSWER_TEXTS_TABLE, "`answer_id`="+answerID);
 		if(answerResult.size() == 0){ // answerID not found
 			return null;
 		}
@@ -122,7 +122,7 @@ public class Answer {
 	public static List<Answer> retrieveByQuestionID(int questionID) {
 		List<Answer> answers = new ArrayList<Answer>();
 		MySql sql = MySql.getInstance();
-		SqlResult answerResult = sql.get(MyDBInfo.ANSWERS_TABLE, "\"question_id=\""+questionID);
+		SqlResult answerResult = sql.get(MyDBInfo.ANSWERS_TABLE, "`question_id`="+questionID);
 		if(answerResult.size() == 0){
 			return answers;
 		}

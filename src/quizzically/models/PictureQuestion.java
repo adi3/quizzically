@@ -13,8 +13,8 @@ public class PictureQuestion extends TextQuestion {
 	}
 
 	// TODO necessary constructor?
-	public PictureQuestion(String url, ArrayList<Answer> answers) {
-		super("<img src=\"url\" />", answers);
-	}
+//	public PictureQuestion(String url, ArrayList<Answer> answers) {
+//		super("<img src=\"url\" />", answers);
+//	}
 	// TODO no special functionality...?
 }

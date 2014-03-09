@@ -24,21 +24,18 @@ public class Quiz {
 		this.questions = questions;
 	}
 
-	
-	
 	public static Quiz create(String name, int ownerID){
 		MySql sql = MySql.getInstance();
 		
 		return null;
 	}
 	
-	
 	/**
 	 * Get the quiz with the given id or null if it doesn't exist
 	 */
 	public static Quiz retrieve(int id) {
 		MySql sql = MySql.getInstance();
-		SqlResult res = sql.get(MyDBInfo.QUIZZES_TABLE, "\"id\" = " + id);
+		SqlResult res = sql.get(MyDBInfo.QUIZZES_TABLE, "`id` = " + id);
 		String name;
 		int quizID;
 		int ownerID;
@@ -51,7 +48,7 @@ public class Quiz {
 		try { 
 			name = row.get("name");
 			quizID = Integer.parseInt(row.get("id"));
-			ownerID = Integer.parseInt(row.get("owner_id"));
+			ownerID = Integer.parseInt(row.get("creator_id"));
 			List<Question> questions = Question.retrieveByQuizID(id);
 			return new Quiz(quizID, name, ownerID, questions);
 		} catch (NumberFormatException e) {
