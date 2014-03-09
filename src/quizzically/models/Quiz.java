@@ -16,20 +16,26 @@ public class Quiz {
 	private User owner;
 	private List<Question> questions;
 	
-	public Quiz(int id, String name, int owner_id) {
+	private Quiz(int id, String name, int owner_id, List<Question> questions) {
 		this.id = id;
 		this.name = name;
 		this.owner_id = owner_id;
-		// TODO instantiate owner lazily? so lazyyyy ~_~
-		questions = Question.retrieveByQuizID(id);
+		this.questions = questions;
 	}
 
+	
+	
+	public static Quiz create(String name, int ownerID){
+		return null;
+	}
+	
+	
 	/**
 	 * Get the quiz with the given id or null if it doesn't exist
 	 */
 	public static Quiz retrieve(int id) {
 		MySql sql = MySql.getInstance();
-		SqlResult res = sql.get(MyDBInfo.QUESTIONS_TABLE, "\"id\" = " + id);
+		SqlResult res = sql.get(MyDBInfo.QUIZZES_TABLE, "\"id\" = " + id);
 		String name;
 		int quizID;
 		int ownerID;
@@ -43,10 +49,15 @@ public class Quiz {
 			name = row.get("name");
 			quizID = Integer.parseInt(row.get("id"));
 			ownerID = Integer.parseInt(row.get("owner_id"));
-			return new Quiz(quizID, name, ownerID);
-		} catch (NumberFormatException e) { /* ignore */ }
-
-		return null;
+			List<Question> questions = Question.retrieveByQuizID(id);
+			return new Quiz(quizID, name, ownerID, questions);
+		} catch (NumberFormatException e) {
+			return null;
+		}
+	}
+	
+	public void addQuestion(Question question){
+		
 	}
 
 	public int id() {

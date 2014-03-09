@@ -1,6 +1,5 @@
 package quizzically.models;
 
-import java.util.Set;
 import java.util.*;
 
 import quizzically.exceptions.InvalidResponseException;
@@ -10,8 +9,8 @@ import quizzically.exceptions.InvalidResponseException;
  */
 public class MultipleChoiceQuestion extends Question {
 
-	public MultipleChoiceQuestion(int id, String text) {
-		super(id, text);
+	public MultipleChoiceQuestion(int id, String text, List<Answer> answers) {
+		super(id, text, answers);
 		this.type = Question.TYPE_MULTIPLE_CHOICE;
 	}
 
