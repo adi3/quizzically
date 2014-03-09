@@ -13,10 +13,10 @@ import java.util.*;
 import quizzically.exceptions.*;
 
 public abstract class Question {
-	protected static final int TYPE_TEXT = 0;
-	protected static final int TYPE_FILL_IN = 1;
-	protected static final int TYPE_MULTIPLE_CHOICE = 2;
-	protected static final int TYPE_PICTURE = 3;
+	public static final int TYPE_TEXT = 0;
+	public static final int TYPE_FILL_IN = 1;
+	public static final int TYPE_MULTIPLE_CHOICE = 2;
+	public static final int TYPE_PICTURE = 3;
 	
 	private int id;
 	private String text;
@@ -43,11 +43,25 @@ public abstract class Question {
 	}
 
 	/**
+	 * Get the id
+	 */
+	public int id() {
+		return id;
+	}
+
+	/**
 	 * Get the raw question text
 	 * @return the question text
 	 */
 	public String text() {
 		return text;
+	}
+
+	/**
+	 * The question type
+	 */
+	public int type() {
+		return type;
 	}
 
 	/**

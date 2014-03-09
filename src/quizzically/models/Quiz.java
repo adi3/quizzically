@@ -49,6 +49,14 @@ public class Quiz {
 		return null;
 	}
 
+	public int id() {
+		return id;
+	}
+
+	public String name() {
+		return name;
+	}
+
 	public Collection<Question> questions() {
 		return questions;
 	}
