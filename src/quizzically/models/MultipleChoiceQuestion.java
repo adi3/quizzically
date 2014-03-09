@@ -1,6 +1,7 @@
 package quizzically.models;
 
 import java.util.Set;
+import java.util.*;
 
 import quizzically.exceptions.InvalidResponseException;
 
@@ -14,7 +15,7 @@ public class MultipleChoiceQuestion extends Question {
 		this.type = Question.TYPE_MULTIPLE_CHOICE;
 	}
 
-	public int grade(Set<Response> responses) {
+	public int grade(List<Response> responses) {
 		Response response;
 		ChoiceResponse rsp;
 		Answer correctAnswer = null;

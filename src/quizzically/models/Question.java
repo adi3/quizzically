@@ -6,6 +6,9 @@ import java.util.*;
 
 import quizzically.config.MyDBInfo;
 import quizzically.lib.MySQL;
+import java.util.*;
+
+import quizzically.exceptions.*;
 
 public abstract class Question {
 	protected static final int TYPE_TEXT = 0;
@@ -115,14 +118,6 @@ public abstract class Question {
 		this.text = text;
 	}
 
-	public static Question retrieve(int id) {
-		// TODO fetch from db
-	}
-
-	/**
-	 * Return the question or null if failed
-	 */
-	
 	/**
 	 * Retrieves all questions belonging to the quiz with id quizID.
 	 * Returns them ordered by their position in the quiz.
@@ -160,7 +155,8 @@ public abstract class Question {
 	 * @param answers the answers provided by the user
 	 * @return the grade on the question
 	 */
-	public abstract int grade(Set<Response> responses);
+	public abstract int grade(List<Response> responses)
+		throws InvalidResponseException;
 
 	/**
 	 * Get the highest possible grade

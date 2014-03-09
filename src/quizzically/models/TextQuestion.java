@@ -2,6 +2,7 @@ package quizzically.models;
 
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.*;
 
 import quizzically.exceptions.InvalidResponseException;
 
@@ -15,7 +16,7 @@ public class TextQuestion extends Question {
 		this.type = Question.TYPE_TEXT;
 	}
 
-	public int grade(Set<Response> responses) {
+	public int grade(List<Response> responses) throws InvalidResponseException {
 		Response response;
 		TextResponse rsp;
 		Answer correctAnswer;
@@ -33,7 +34,7 @@ public class TextQuestion extends Question {
 		// check the response is correct
 		correctAnswer = answers().get(0);
 		for (String text : correctAnswer.answerTexts()) {
-			if (correctAnswerText.equals(rsp.text())) {
+			if (text.equals(rsp.text())) {
 				return 1;
 			}
 		}

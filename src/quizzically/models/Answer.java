@@ -31,7 +31,7 @@ public class Answer {
 		return ID;
 	}
 	
-	public boolean isCorrect() {
+	public boolean correct() {
 		return correct;
 	}
 	
