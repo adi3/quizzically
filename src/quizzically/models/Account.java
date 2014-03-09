@@ -10,41 +10,30 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import quizzically.config.MyDBInfo;
-import quizzically.lib.MySQL;
+import quizzically.lib.MySql;
+import quizzically.lib.SqlResult;
 
 // TODO this looks like it needs to be static
 public class Account {
 	
-	private MySQL sql;
+	private MySql sql;
 	
 	public Account() {
-		sql = MySQL.getInstance();
+		sql = MySql.getInstance();
 	}
 	
-	private boolean accountExists(String username) {
-		ResultSet set = sql.get("users", "username = '" + username + "'");
-		
-		try {
-			set.last();
-			return set.getRow() > 0;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
+	public static boolean accountExists(String username) {
+		SqlResult rows = MySql.getInstance().get("users", "username = '" + username + "'");
+		return rows.size() > 0;
 	}
 	
 	public boolean checkCredentials(String username, String password) {
 		if (!this.accountExists(username)) return false;
 		String[] cols = {"password, salt"};
-		ResultSet user = sql.get(cols, MyDBInfo.USERS_TABLE, "username = '" + username + "'");
-		try {
-			user.first();
-			String salted_pass = getSaltedPass(password, user.getString(2));
-			return salted_pass.equals(user.getString(1));			
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
+		SqlResult user = sql.get(cols, MyDBInfo.USERS_TABLE, "username = '" + username + "'");
+		
+		String salted_pass = getSaltedPass(password, user.get(0).get("salt"));
+		return salted_pass.equals(user.get(0).get("password"));
 	}
 	
 	public ArrayList<String> createAccount(String name, String email, String username, String password, boolean isAdmin) {
@@ -60,14 +49,10 @@ public class Account {
 		
 		String admin = isAdmin ? "1" : "0";
 		String[] cols = {"name", "email", "is_admin", "username", "password", "salt"};
-		String[] vals = {name, email, admin, username, salted_pass, salt};
-		ResultSet genKeys = sql.insert(MyDBInfo.USERS_TABLE, cols, vals);
-		 // FIXME: precompute ResultSet
-		try { // if genKeys is empty insertion failed
-			if (genKeys == null || ! genKeys.first()) errors.add("Trouble saving registration. Please try again.");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		String[] vals = {capitalize(name), email, admin, username, salted_pass, salt};
+		
+		int id = sql.insert(MyDBInfo.USERS_TABLE, cols, vals);
+		if (id == 0) errors.add("Trouble saving registration. Please try again.");
 		return errors;
 	}
 	
@@ -135,6 +120,17 @@ public class Account {
 		}
 	}
 	
+	private String capitalize(String str) {
+		char[] chars = str.toLowerCase().toCharArray();
+		boolean found = false;
+		for (int i = 0; i < chars.length; i++) {
+			if (!found && Character.isLetter(chars[i])) {
+				chars[i] = Character.toUpperCase(chars[i]);
+				found = true;
+			} else if (Character.isWhitespace(chars[i])) found = false;
+		}
+		return String.valueOf(chars);
+	}
 	
 	/*
 	 Given a byte[] array, produces a hex String,

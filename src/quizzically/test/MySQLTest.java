@@ -4,60 +4,60 @@ import static org.junit.Assert.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.junit.Before;
 import org.junit.Test;
 
-public class MySQLTest {
+public class MySqlTest {
 	
-	private MySQL sql;
+	private MySql sql;
 	
 	@Before
 	public void testConnection() throws ClassNotFoundException, SQLException {
-		sql = MySQL.getInstance();
+		sql = MySql.getInstance();
 	}
 	
 	@Test
 	public void testGetAll() throws SQLException {
-		ResultSet users = sql.get("users");
-		while(users.next()) {
-			System.out.println(users.getString(1) + " " + users.getString(2));
+		SqlResult users = sql.get("users");
+		for (HashMap<String, String> user : users) {
+			System.out.println(user.get("name") + " " + user.get("email"));
 		}
-		users.last();
-		assertTrue(users.getRow() > 0);
+		assertTrue(users.size() > 0);
 	}
 	
 	
 	@Test
 	public void testGetSome() throws SQLException {
 		String[] cols = {"email"};
-		ResultSet user = sql.get(cols, "users", "name = 'Dominic Becker'");
-		while(user.next()) {
-			System.out.println(user.getString(1));
-		}
-		user.last();
-		assertTrue(user.getRow() > 0);
+		SqlResult users = sql.get(cols, "users", "name = 'DominicYO'");
 		
-		user = sql.get(cols, "users", "name LIKE '%Nic%'");
-		while(user.next()) {
-			System.out.println(user.getString(1));
-		}
-		user.last();
-		assertTrue(user.getRow() > 0);
+		for (int i = 0; i < users.size(); i++) 
+			System.out.println(users.get(i).get("email"));
+		
+		assertTrue(users.size() > 0);
+		
+		users = sql.get(cols, "users", "name LIKE '%Nic%'");
+		for (int i = 0; i < users.size(); i++)
+			System.out.println(users.get(i).get("email"));
+		
+		assertTrue(users.size() > 0);
 	}
 	
 	@Test
 	public void testInsert() throws SQLException {
 		String[] cols = {"name", "is_admin"};
 		String[] vals = {"Matt Vitelli", "0"};
-		int status = sql.insert("users", cols, vals);
-		assertTrue(status == 1);
+		int id = sql.insert("users", cols, vals);
+		assertTrue(id != 0);
 	}
 	
 	@Test
 	public void testUpdate() throws SQLException {
 		int status = sql.update("users", "email = 'mvitelli@stanford.edu'", "name = 'Matt Vitelli'");
-		assertTrue(status == 1);
+		assertTrue(status > 0);
 	}
 	
 	@Test

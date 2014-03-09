@@ -1,18 +1,21 @@
 package quizzically.lib;
 
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
-public class MySQL {
+public class MySql {
 
 	// singleton
-	private static MySQL instance = null;
+	private static MySql instance = null;
 
 	private DBConnection con;
 	
-	private MySQL() {
+	private MySql() {
 		try {
 			con = new DBConnection();
 		} catch (ClassNotFoundException e) {
@@ -29,11 +32,11 @@ public class MySQL {
 	/**
 	 * Get a MySQL singleton object
 	 */
-	public static MySQL getInstance() {
+	public static MySql getInstance() {
 		if (instance != null) {
 			return instance;
 		}
-		instance = new MySQL();
+		instance = new MySql();
 		return instance;
 	}
 	
@@ -75,9 +78,9 @@ public class MySQL {
 		}
 	}
 	
-	
-	public ResultSet get(String table) {
-		return this.executeQuery("SELECT * FROM " + table);
+	public SqlResult get(String table) {
+		ResultSet rs = this.executeQuery("SELECT * FROM " + table);
+		return new SqlResult(rs);
 	}
 	
 	/*
@@ -88,43 +91,42 @@ public class MySQL {
 	}
 	*/
 	
-	public ResultSet get(String table, String where) {
-		return this.executeQuery("SELECT * FROM " + table + " WHERE " + where);
+	public SqlResult get(String table, String where) {
+		ResultSet rs = this.executeQuery("SELECT * FROM " + table + " WHERE " + where);
+		return new SqlResult(rs);
 	}
 	
-	public ResultSet get(String[] cols, String table, String where) {
+	public SqlResult get(String[] cols, String table, String where) {
 		String strCols = Arrays.asList(cols).toString();
 		strCols = strCols.substring(1, strCols.length() - 1);
-		return this.executeQuery("SELECT " + strCols + " FROM " + table + " WHERE " + where);
+		String sql = "SELECT " + strCols + " FROM " + table + " WHERE " + where;
+		return new SqlResult(this.executeQuery(sql));
 	}
 	
-	public ResultSet getFriends(String id) {
+	public SqlResult getFriends(String id) {
 		String sql = "SELECT u2.username from users u1, users u2, friends f "
 						+ "WHERE ((f.id_1 = u1.id AND f.id_2 = u2.id) "
 						+ "OR (f.id_1 = u2.id AND f.id_2 = u1.id)) "
-						+ "AND u1.id = " + id;
-		return this.executeQuery(sql);
+						+ "AND u1.id = " + id + " AND f.is_confirmed = 1";
+		return new SqlResult(this.executeQuery(sql));
 	}
-
-	/*
-	public int insert(String table, String[] vals) {
-		String cols = "(name, email, is_admin, username, password, salt)";	// TODO : model should return these
-		String sql = "INSERT INTO " + table + " " + cols + " VALUES (";
-		
-		for (String val : vals) sql += "'" + val + "',";
-		sql = sql.replaceAll(",$", ")");
-		return this.executeUpdate(sql);
-	}
-	*/
 	
-	public ResultSet insert(String table, String[] cols, String[] vals) {
+	public int insert(String table, String[] cols, String[] vals) {
 		String strCols = Arrays.asList(cols).toString();
 		strCols = strCols.substring(1, strCols.length() - 1);
 		String sql = "INSERT INTO " + table + " (" + strCols + ") VALUES (";
 		
 		for (String val : vals) sql += "'" + val + "',";
 		sql = sql.replaceAll(",$", ")");
-		return executeInsertion(sql);
+		ResultSet keys = executeInsertion(sql);
+		
+		try {
+			keys.first();
+			return keys.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return 0;
+		}
 	}
 	
 	public int update(String table, String set, String where) {
