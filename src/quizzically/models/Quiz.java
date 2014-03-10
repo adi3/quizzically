@@ -50,7 +50,7 @@ public class Quiz {
 		try { 
 			name = row.get("name");
 			quizID = Integer.parseInt(row.get("id"));
-			ownerID = Integer.parseInt(row.get("creator_id"));
+			ownerID = Integer.parseInt(row.get("owner_id"));
 			SortedMap<Integer, Question> orderedQuestions = Question.retrieveByQuizID(id);
 			return new Quiz(quizID, name, ownerID, orderedQuestions);
 		} catch (NumberFormatException e) {
