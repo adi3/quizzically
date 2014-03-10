@@ -8,13 +8,15 @@ import quizzically.exceptions.InvalidResponseException;
  * Single answer multiple choice question
  */
 public class MultipleChoiceQuestion extends Question {
+	// possible points
+	private static int POSSIBLE = 1;
 
 	public MultipleChoiceQuestion(int id, String text, SortedMap<Integer, Answer> orderedAnswers) {
 		super(id, text, orderedAnswers);
 		this.type = Question.TYPE_MULTIPLE_CHOICE;
 	}
 
-	public int grade(List<Response> responses) {
+	public Grade grade(List<Response> responses) {
 		Response response;
 		ChoiceResponse rsp;
 		Answer correctAnswer = null;
@@ -38,13 +40,9 @@ public class MultipleChoiceQuestion extends Question {
 		}
 
 		if (correctAnswer == null) {
-			return -1; // TODO just throw an exception here, wtf happened?
+			throw new RuntimeException("MultipleChoiceQuestion has no correct answer");
 		}
 
-		return correctAnswer.id() == rsp.id() ? 1 : 0;
-	}
-
-	public int possiblePoints() {
-		return 1;
+		return new Grade(correctAnswer.id() == rsp.id() ? 1 : 0, POSSIBLE);
 	}
 }

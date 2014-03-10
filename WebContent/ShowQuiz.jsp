@@ -13,31 +13,39 @@ Quiz quiz = (Quiz) request.getAttribute("quiz");
 <title>Take Quiz: <%= quiz.name() %></title>
 </head>
 <body>
-	<h1><%= quiz.name() %></h1>
-	<ol>
-	<% for (Question q : quiz.questions()) {
-	 String qs = "question_" + q.id();
-	 %>
-		<li>
-			<p>
-				<%= q.text() %>
-			</p>
-			<%
-			for (Answer a : q.answers()) {
-				switch (q.type()) { 
-					case Question.TYPE_TEXT:
-					case Question.TYPE_FILL_IN:
-					case Question.TYPE_PICTURE:
-						out.println("<input type=\"text\" name=\"" + qs + "\" /><br />");
-						break;
-					case Question.TYPE_MULTIPLE_CHOICE:
-						out.println("<input type=\"radio\" name=\"" + qs + "\" />" + a.text() + "<br />");
-						break;
-				}
-			} %>
-		</li>
-	<% } %>
-	</ol>
+	<h1>Take Quiz: <%= quiz.name() %></h1>
+	<form action="ShowQuiz" method="POST">
+		<input type="hidden" name="id" value="<%=quiz.id()%>" />
+
+		<ol>
+		<% for (int pos = 0; pos < quiz.questions().size(); pos++ ) {
+			Question q = quiz.questions().get(pos);
+		 %>
+			<li>
+				<p>
+					<%= q.text() %>
+				</p>
+				<%
+				for (Answer a : q.answers()) {
+					 String qs = "question-" + q.id() + "-answer-" + a.id()
+						 + "-pos-" + pos;
+					switch (q.type()) { 
+						case Question.TYPE_TEXT:
+						case Question.TYPE_FILL_IN:
+						case Question.TYPE_PICTURE:
+							out.println("<input type=\"text\" name=\"" + qs + "\" /><br />");
+							break;
+						case Question.TYPE_MULTIPLE_CHOICE:
+							out.println("<input type=\"radio\" name=\"" + qs + "\" />" + a.text() + "<br />");
+							break;
+					}
+				} %>
+			</li>
+		<% } %>
+		</ol>
+
+		<input type="submit" value="Grade" />
+	</form>
 
 </body>
 </html>

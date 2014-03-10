@@ -207,17 +207,37 @@ public abstract class Question {
 	}
 	
 	/**
+	 * Simple id-based hashcode for HashMap usage
+	 */
+	public int hashCode() {
+		return id;
+	}
+
+	/**
 	 * Grade the given user answer(s)
 	 * @param answers the answers provided by the user
 	 * @return the grade on the question
 	 */
-	public abstract int grade(List<Response> responses)
+	protected abstract Grade grade(List<Response> responses)
 		throws InvalidResponseException;
 
 	/**
-	 * Get the highest possible grade
-	 * @return the highest possible grade value 
-	 * for the question
+	 * Grading for the question
 	 */
-	public abstract int possiblePoints();
+	public class Grade {
+		private int points;
+		private int possible;
+		public Grade(int points, int possible) {
+			this.points = points;
+			this.possible = possible;
+		}
+
+		public int points() {
+			return points;
+		}
+
+		public int possible() {
+			return possible;
+		}
+	}
 }
