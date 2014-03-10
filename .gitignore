@@ -14,6 +14,7 @@
 .vimrc
 *.swp
 *.swo
+*.swn
 Session.vim
 
 # build

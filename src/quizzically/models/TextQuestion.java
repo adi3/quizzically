@@ -9,12 +9,15 @@ import quizzically.exceptions.InvalidResponseException;
  * text question, text answer
  */
 public class TextQuestion extends Question {
+	// possible points
+	private static int POSSIBLE = 1;
+
 	public TextQuestion(int id, String text, List<Answer> answers) {
 		super(id, text, answers);
 		this.type = Question.TYPE_TEXT;
 	}
 
-	public int grade(List<Response> responses) throws InvalidResponseException {
+	public Grade grade(List<Response> responses) throws InvalidResponseException {
 		Response response;
 		TextResponse rsp;
 		Answer correctAnswer;
@@ -33,13 +36,9 @@ public class TextQuestion extends Question {
 		correctAnswer = answers().get(0);
 		for (String text : correctAnswer.answerTexts()) {
 			if (text.equals(rsp.text())) {
-				return 1;
+				return new Grade(1, POSSIBLE);
 			}
 		}
-		return 0;
-	}
-
-	public int possiblePoints() {
-		return 1;
+		return new Grade(0, POSSIBLE);
 	}
 }
