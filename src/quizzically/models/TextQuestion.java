@@ -9,8 +9,8 @@ import quizzically.exceptions.InvalidResponseException;
  * text question, text answer
  */
 public class TextQuestion extends Question {
-	public TextQuestion(int id, String text, List<Answer> answers) {
-		super(id, text, answers);
+	public TextQuestion(int id, String text, SortedMap<Integer, Answer> orderedAnswers) {
+		super(id, text, orderedAnswers);
 		this.type = Question.TYPE_TEXT;
 	}
 

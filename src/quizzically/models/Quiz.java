@@ -9,25 +9,27 @@ import quizzically.lib.MySql;
 import quizzically.lib.SqlResult;
 
 public class Quiz {
+	private static final String[] QUIZZES_COLUMNS = new String[]{"name", "owner_id"};
 	private static final String[] QUIZ_QUESTIONS_COLUMNS = new String[]{"quiz_id", "question_id", "position"};
 	
 	private int id;
 	private String name;
 	private int owner_id;
 	private User owner;
-	private List<Question> questions;
+	private SortedMap<Integer, Question> orderedQuestions;
 	
-	private Quiz(int id, String name, int owner_id, List<Question> questions) {
+	private Quiz(int id, String name, int owner_id, SortedMap<Integer, Question> orderedQuestions) {
 		this.id = id;
 		this.name = name;
 		this.owner_id = owner_id;
-		this.questions = questions;
+		this.orderedQuestions = orderedQuestions;
 	}
 
 	public static Quiz create(String name, int ownerID){
 		MySql sql = MySql.getInstance();
-		
-		return null;
+		String[] values = {name, Integer.toString(ownerID)};
+		int insertionID = sql.insert(MyDBInfo.QUIZZES_TABLE, QUIZZES_COLUMNS, values);
+		return new Quiz(insertionID, name, ownerID, new TreeMap<Integer, Question>());
 	}
 	
 	/**
@@ -49,24 +51,30 @@ public class Quiz {
 			name = row.get("name");
 			quizID = Integer.parseInt(row.get("id"));
 			ownerID = Integer.parseInt(row.get("creator_id"));
-			List<Question> questions = Question.retrieveByQuizID(id);
-			return new Quiz(quizID, name, ownerID, questions);
+			SortedMap<Integer, Question> orderedQuestions = Question.retrieveByQuizID(id);
+			return new Quiz(quizID, name, ownerID, orderedQuestions);
 		} catch (NumberFormatException e) {
 			return null;
 		}
 	}
 	
 	/**
-	 * Adds the question to the questions list,
-	 * and inserts the quiz-question relation
+	 * Adds the question to the questions list, and inserts the quiz-question relation
+	 * into the QUIZ_QUESTIONS_TABLE. question can have either been just created or
+	 * it can belong to other Quizzes.
+	 * If question is already contained in the quiz or if position is taken
+	 * the method does nothing.
 	 * @param question
 	 */
-	// TODO if question_id is already owned by quiz ignore
-	// Note that when addQuestion is called all questions in the 
-	// DB are also in the List of the Quiz object
 	public void addQuestion(Question question, int position){
-		if(! questions.contains(question)){ // id comparison
-			questions.add(question);
+		if(orderedQuestions.containsKey(position)){
+			// TODO: Replace existing Question at position with provided question
+			return;
+		}
+		// Note that when addQuestion is called all questions in the 
+		// DB are also in the SortedMap of the Quiz object
+		if(! orderedQuestions.containsValue(question)){ // id comparison
+			orderedQuestions.put(position, question);
 			MySql sql = MySql.getInstance();
 			String[] values = {Integer.toString(id), Integer.toString(question.id()), Integer.toString(position)};
 			sql.insert(MyDBInfo.QUIZ_QUESTIONS_TABLE, QUIZ_QUESTIONS_COLUMNS, values);
@@ -82,7 +90,15 @@ public class Quiz {
 		return name;
 	}
 
+	/**
+	 * Return owned Questions sorted by position
+	 * @return
+	 */
 	public List<Question> questions() {
+		List<Question> questions = new ArrayList<Question>();
+		for(Question q: orderedQuestions.values()){
+			questions.add(q);
+		}
 		return questions;
 	}
 }

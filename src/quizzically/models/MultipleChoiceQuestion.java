@@ -9,8 +9,8 @@ import quizzically.exceptions.InvalidResponseException;
  */
 public class MultipleChoiceQuestion extends Question {
 
-	public MultipleChoiceQuestion(int id, String text, List<Answer> answers) {
-		super(id, text, answers);
+	public MultipleChoiceQuestion(int id, String text, SortedMap<Integer, Answer> orderedAnswers) {
+		super(id, text, orderedAnswers);
 		this.type = Question.TYPE_MULTIPLE_CHOICE;
 	}
 

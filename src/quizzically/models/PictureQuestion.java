@@ -2,13 +2,14 @@ package quizzically.models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedMap;
 
 /**
  * Picture-as-question question
  */
 public class PictureQuestion extends TextQuestion {
-	public PictureQuestion(int id, String text, List<Answer> answers) {
-		super(id, text, answers);
+	public PictureQuestion(int id, String text, SortedMap<Integer, Answer> orderedAnswers) {
+		super(id, text, orderedAnswers);
 		this.type = Question.TYPE_PICTURE;
 	}
 

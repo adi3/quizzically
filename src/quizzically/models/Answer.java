@@ -61,25 +61,48 @@ public class Answer {
 	/**
 	 * Creates an Answer object with the given values and inserts it into the db.
 	 * Performs the insertion first, retrieves the generated ID and then creates the object.
-	 * Throws a RuntimeException if there is an error or if the insertion fails.
-	 * @param questionID
+	 * The Answer object is created *only* if the desired position in the Question is not occupied,
+	 * in which case the newly created Answer is inserted into the Question object's 
+	 * Answer collection. If the condition fails the method returns null.
+	 * Note: The rationale behind this protocol is that an Answer is owned by a unique Question,
+	 * hence adding an Answer to a Question occurs exactly once in its lifetime.
+	 * The protocol is different when creating a Question object, as a Question can be owned
+	 * by multiple Quizzes.
+	 * @param question
 	 * @param position
 	 * @param correct
 	 * @param answerTexts
 	 * @return newly created Answer object
 	 */
-	public static Answer create(int questionID, int position, boolean correct, Set<String> answerTexts) {
+	public static Answer create(Question question, int position, boolean correct) {
+		if(question.occupiedPositions().contains(position)){
+			return null;
+		}
 		MySql sql = MySql.getInstance();
 		// tuple to be inserted in ANSWERS_TABLE
-		String[] answerValues = {Integer.toString(questionID), Integer.toString(position), correct ? "1" : "0"};
+		String[] answerValues = {Integer.toString(question.id()), Integer.toString(position), correct ? "1" : "0"};
 		int insertionID = sql.insert(MyDBInfo.ANSWERS_TABLE, ANSWERS_COLUMNS, answerValues);
-		for(String answerText: answerTexts){
-			// tuple to be inserted in ANSWER_TEXTS_TABLE
-			String[] textValues = new String[]{Integer.toString(insertionID), answerText};
-			sql.insert(MyDBInfo.ANSWER_TEXTS_TABLE, ANSWER_TEXTS_COLUMNS, textValues);
-		}
-		return new Answer(insertionID, questionID, position, correct, answerTexts);
+		Answer newAnswer = new Answer(insertionID, question.id(), position, correct, new HashSet<String>());
+		question.addAnswer(newAnswer, position); // position vacant
+		return newAnswer;
 	}
+	
+	/**
+	 * Add specified String to Set of answerTexts.
+	 * Insert relation into ANSWER_TEXTS_TABLE.
+	 * @param answerText
+	 */
+	public void addAnswerText(String answerText){
+		// all answer texts in DB currently contained
+		// in answerTexts
+		if(! answerTexts.contains(answerText)){
+			answerTexts.add(answerText);
+			MySql sql = MySql.getInstance();
+			String[] values = {Integer.toString(ID), answerText};
+			sql.insert(MyDBInfo.ANSWER_TEXTS_TABLE, ANSWER_TEXTS_COLUMNS, values);
+		}
+	}
+	
 	
 	/**
 	 * Retrieves the Answer object stored in the db with the given ID.
@@ -119,15 +142,14 @@ public class Answer {
 	 * @param questionID
 	 * @return answerSet
 	 */
-	public static List<Answer> retrieveByQuestionID(int questionID) {
-		List<Answer> answers = new ArrayList<Answer>();
+	public static SortedMap<Integer, Answer> retrieveByQuestionID(int questionID) {
+		SortedMap<Integer, Answer> orderedAnswers = new TreeMap<Integer, Answer>();
 		MySql sql = MySql.getInstance();
 		SqlResult answerResult = sql.get(MyDBInfo.ANSWERS_TABLE, "`question_id`="+questionID);
 		if(answerResult.size() == 0){
-			return answers;
+			return orderedAnswers;
 		}
 		
-		SortedMap<Integer, Answer> orderedAnswers = new TreeMap<Integer, Answer>();
 		for(int i=0; i<answerResult.size(); i++){
 			try{
 				int answerID = Integer.parseInt(answerResult.get(i).get("id"));
@@ -138,10 +160,17 @@ public class Answer {
 			}
 		}
 		
-		for(Answer a: orderedAnswers.values()){
-			answers.add(a); // put ordered by key
-		}
-		return answers;
+		return orderedAnswers;
+	}
+	
+	/**
+	 * True if obj is an Answer with the same id.
+	 */
+	@Override
+	public boolean equals(Object obj){
+		if(obj == this) return true;
+		if(! (obj instanceof Answer)) return false;
+		return ID == ((Answer)obj).ID;
 	}
 	
 	
