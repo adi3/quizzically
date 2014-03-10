@@ -1,7 +1,5 @@
 package quizzically.models;
 
-import static org.junit.Assert.assertTrue;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;

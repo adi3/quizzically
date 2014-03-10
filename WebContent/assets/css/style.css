@@ -1,0 +1,118 @@
+@CHARSET "ISO-8859-1";
+
+body {
+  padding-top: 44px;
+}
+
+.navbar-form .form-control {
+	margin-right: 4px;
+	height: 28px;
+	padding: 6px 6px;
+	border-radius: 0;
+	border: none;
+}
+
+.navbar-form .btn {
+	padding: 3px 12px;
+	border-radius: 0;
+}
+
+.navbar-form .btn-success {
+	background-color: #0064E8;
+	border-color: #efefef;
+	margin-right: 8px;
+}
+
+.navbar-form .line {
+	border-right: 1px dashed white;
+	height: 27px;
+}
+
+.sign-up, .sign-out {
+	background-color: #777 !important;
+	margin-left: 8px;
+}
+
+.navbar-form #form-loader {
+	margin-right: 10px;
+	visibility: hidden;
+}
+
+.navbar {
+	min-height: 44px;
+} 
+
+.navbar-brand {
+	height: 44px;
+	padding: 12px 15px;
+	font-size: 24px;
+}
+
+.navbar-inverse .navbar-brand {
+	color: #fff;
+}
+
+.navbar-inverse {
+	border-color: transparent;
+	background-color: #0686F7;
+}
+
+.jumbotron .btn-primary,
+.row .btn-default {
+	background-color: #0064E8;
+	border-radius: 0;
+	border: none;
+	float: right;
+	color: #fff;
+}
+
+footer {
+	text-align: center;
+}
+
+.msg-container {
+	width: 240px;
+	z-index: 9999;
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	display: none;
+}
+
+.msg-close {
+	background: url(../img/close.gif);
+	width: 22px;
+	height: 22px;
+	position: absolute;
+	right: 7px;
+}
+
+.msg-close {
+	cursor: pointer;
+}
+
+.msg-img {
+	width: 22px;
+	height: 22px;
+	float: left;
+
+}
+
+.msg-box {
+	background: #333;
+	opacity: .9;
+	padding: 5px;
+	position: relative;
+	color: white;
+}
+
+.msg {
+	margin: 28px 0 5px;
+	text-align: center;
+	font-size: 13px;
+}
+
+.msg hr {
+	margin: 3px;
+	border-top: 1px solid #111;
+}

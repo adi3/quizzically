@@ -1,23 +1,26 @@
 package quizzically.servlets;
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import quizzically.models.User;
+
 /**
- * Servlet implementation class LogOut
+ * Servlet implementation class Home
  */
-@WebServlet("/Logout")
-public class Logout extends HttpServlet {
+@WebServlet("/Home")
+public class Home extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Logout() {
+    public Home() {
         super();
     }
 
@@ -25,8 +28,21 @@ public class Logout extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getSession().invalidate();
-	    response.sendRedirect("Home");
+		String username = (String) request.getSession().getAttribute("user");
+		
+		if (username != null) {
+			request.setAttribute("username", username);
+			request.setAttribute("name", new User(username).getName());
+		}
+		
+		request.getRequestDispatcher("Home.jsp").forward(request, response); 
+		
+		/*if (username != null) {
+			response.sendRedirect("Profile");
+		} else {
+			request.getRequestDispatcher("Home.jsp").forward(request, response); 
+		}
+		*/
 	}
 
 	/**
