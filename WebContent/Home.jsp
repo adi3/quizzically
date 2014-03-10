@@ -32,6 +32,10 @@
 	</div>
 </div>
 
+<div class="mid-popup">
+<%@include file="Register.jsp" %>
+</div>
+
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 <div class="container">
   <div class="navbar-header">
@@ -57,7 +61,7 @@
 	      </div>
 	      <button type="submit" class="btn btn-success" id="sign-in-btn">Sign in</button>
 	      <div class="form-group line"></div>
-	    	<button class="btn btn-success sign-up">Sign Up</button>
+	    <a class="btn btn-success sign-up" href="Register" id="sign-up-lnk">Sign Up</a>
 	    </form>
 	 <% } else { %>
 	 	<form class="navbar-form navbar-right">

@@ -34,15 +34,7 @@ public class Home extends HttpServlet {
 			request.setAttribute("username", username);
 			request.setAttribute("name", new User(username).getName());
 		}
-		
-		request.getRequestDispatcher("Home.jsp").forward(request, response); 
-		
-		/*if (username != null) {
-			response.sendRedirect("Profile");
-		} else {
-			request.getRequestDispatcher("Home.jsp").forward(request, response); 
-		}
-		*/
+		request.getRequestDispatcher("Home.jsp").forward(request, response);
 	}
 
 	/**

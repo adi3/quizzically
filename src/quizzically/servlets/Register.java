@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import quizzically.models.Account;
+import quizzically.models.User;
 
 /**
  * Servlet implementation class Register
@@ -29,7 +30,7 @@ public class Register extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String username = (String) request.getSession().getAttribute("user");
+	/*	String username = (String) request.getSession().getAttribute("user");
 		if (username != null) {
 			response.sendRedirect("Profile");
 		} else {
@@ -38,6 +39,8 @@ public class Register extends HttpServlet {
 			request.setAttribute("username", "");
 			request.getRequestDispatcher("Register.jsp").forward(request, response);
 		}
+	*/
+		request.getRequestDispatcher("Register.jsp").forward(request, response);
 	}
 
 	/**
@@ -49,23 +52,21 @@ public class Register extends HttpServlet {
 		String email = request.getParameter("email");
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
+		String passConf = request.getParameter("pass-conf");
 		
-		ArrayList<String> errors = acc.createAccount(name, email, username, password, false);
+		ArrayList<String> errors = acc.createAccount(name, email, username, password, passConf, false);
 		if (errors.isEmpty()) {
-			request.getSession().setAttribute("user", username);	//TODO: check if this should be hashed?
-			response.sendRedirect("Profile");
+			request.getSession().setAttribute("user", username);
+			String json = "{\"name\": \"" + new User(username).getName() + "\"}";
+			response.getWriter().write(json);
 		} else {
-			name = name == null ? "" : name;
-			request.setAttribute("name", name);
+			String json = "{\"errors\": [";
+			for (String err : errors) json += "{ \"msg\":\"" + err + "\"},";
+			json = json.substring(0, json.length() - 1) + "]}";
+			response.getWriter().write(json);
 			
-			email = email == null ? "" : email;
-			request.setAttribute("email", email);
-			
-			username = username == null ? "" : username;
-			request.setAttribute("username", username);
-			
-			request.setAttribute("errors", errors);
-			request.getRequestDispatcher("Register.jsp").forward(request, response); 
+		//	request.setAttribute("errors", errors);
+		//	request.getRequestDispatcher("Register.jsp").forward(request, response); 
 		}
 	}
 

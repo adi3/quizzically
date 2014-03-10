@@ -50,7 +50,7 @@ public class Login extends HttpServlet {
 		String password = request.getParameter("password");
 		
 		if (acc.checkCredentials(username, password)) {
-			request.getSession().setAttribute("user", username);	//TODO: check if this should be hashed?
+			request.getSession().setAttribute("user", username);
 			String json = "{\"name\": \"" + new User(username).getName() + "\"}";
 			response.getWriter().write(json);
 		} else {

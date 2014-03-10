@@ -104,6 +104,7 @@ footer {
 	padding: 5px;
 	position: relative;
 	color: white;
+	box-shadow: 0 0 5px #333;
 }
 
 .msg {
@@ -115,4 +116,61 @@ footer {
 .msg hr {
 	margin: 3px;
 	border-top: 1px solid #111;
+}
+
+.mid-popup {
+	position: fixed;
+	width:500px;
+    height:350px;
+    background-color:white;
+    z-index:10000;
+    left: 50%;
+    top: 50%;
+    margin: -175px auto auto -250px;
+    box-shadow: 0px 0px 10px #333;
+    display: none;
+}
+
+.mid-popup h3 {
+	margin: 0;
+	background-color: #0686F7;
+	padding: 8px 10px;
+	color: white;
+	margin-bottom: 35px;
+}
+
+#sign-up {
+	text-align:center;
+}
+
+#sign-up .form-group {
+	display:block;
+	margin: 10px;
+}
+
+#sign-up .form-group input {
+	width: 180px;
+	height: 28px;
+	padding: 6px;
+}
+
+#sign-up .form-group a {
+	width: 180px;
+	margin-right: 0;
+	height: 35px;
+	margin-top: 15px;
+	padding: 6px;
+}
+
+.mid-popup #form-loader, .mid-popup .close {
+	float: right;
+	margin-top: -68px;
+	margin-right: 16px;
+	cursor: pointer;
+	opacity: 1;
+}
+
+.mid-popup #form-loader {
+	display: none;
+	cursor: default;
 }
