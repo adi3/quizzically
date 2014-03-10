@@ -29,8 +29,14 @@ QuestionResponse[] qrs = (QuestionResponse[]) request.getAttribute("gradedRespon
 			<p>
 				<%= g.points() %> / <%= g.possible() %>
 			</p>
+			<p>
+			Answers:<br />
+			<ul>
 			<%
 			for (Answer a : q.answers()) {
+			%>
+				<li>
+				<%
 				 String qs = "question-" + q.id() + "-answer-" + a.id()
 					 + "-pos-" + pos;
 				switch (q.type()) { 
@@ -50,9 +56,14 @@ QuestionResponse[] qrs = (QuestionResponse[]) request.getAttribute("gradedRespon
 						}
 						out.println(output + "<br />");
 						break;
-				}
-			} %>
-	 		Your answer: <%= qr.responseString() %>
+				} %>
+				</li>
+			<% } %>
+		</ul>
+		</p>
+		<p>
+	 		Your answer: <%= qrs[pos].responseString() %>
+		</p>
 		</li>
 	<% } %>
 	</ol>

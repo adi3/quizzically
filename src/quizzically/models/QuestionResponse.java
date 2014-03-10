@@ -31,4 +31,8 @@ public class QuestionResponse {
 	public int position() {
 		return p;
 	}
+
+	public String responseString() {
+		return ""; // TODO
+	}
 }
