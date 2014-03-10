@@ -71,7 +71,7 @@ public class Answer {
 	public static Answer create(int questionID, int position, boolean correct, Set<String> answerTexts) {
 		MySql sql = MySql.getInstance();
 		// tuple to be inserted in ANSWERS_TABLE
-		String[] answerValues = new String[]{Integer.toString(questionID), Integer.toString(position), Boolean.toString(correct)};
+		String[] answerValues = {Integer.toString(questionID), Integer.toString(position), correct ? "1" : "0"};
 		int insertionID = sql.insert(MyDBInfo.ANSWERS_TABLE, ANSWERS_COLUMNS, answerValues);
 		for(String answerText: answerTexts){
 			// tuple to be inserted in ANSWER_TEXTS_TABLE
@@ -101,7 +101,7 @@ public class Answer {
 		try{
 			qID = Integer.parseInt(answerResult.get(0).get("question_id"));
 			pos = Integer.parseInt(answerResult.get(0).get("position"));
-			corr = Boolean.parseBoolean(answerResult.get(0).get("correct"));
+			corr = Integer.parseInt(answerResult.get(0).get("correct")) == 1;
 		} catch(NumberFormatException e){
 			return null;
 		}

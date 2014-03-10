@@ -154,6 +154,13 @@ public abstract class Question {
 		}
 		return questions;
 	}
+	
+	public boolean equals(Object obj){
+		if(obj == this) return true;
+		if(! (obj instanceof Question)) return false;
+		return id == ((Question)obj).id;
+	}
+	
 
 	/**
 	 * Simple id-based hashcode for HashMap usage
