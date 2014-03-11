@@ -65,6 +65,15 @@ public class Message {
 		return id != 0;
 	}
 	
+	public static boolean hasUnread(String username) {
+		ArrayList<Message> msgs = getMessages(new User(username));
+		
+		for (Message msg : msgs) {
+			if (!msg.isRead()) return true;
+		}
+		return false;
+	}
+	
 	public static ArrayList<Message> getMessages(User user) {
 		ArrayList<Message> msgs = new ArrayList<Message>();
 		SqlResult rows = MySql.getInstance().get(MyDBInfo.MESSAGES_TABLE, "to_id = '" + user.getId() + "' ORDER BY created_at DESC");
@@ -109,7 +118,7 @@ public class Message {
 	}
 	
 	public String getPreviewMsg() {
-		if (this.msg.length() > 25) return this.msg.substring(0, 25) + "...";
+		if (this.msg.length() > 30) return this.msg.substring(0, 30) + "...";
 		return this.msg;
 	}
 	

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import quizzically.models.Account;
+import quizzically.models.Message;
 import quizzically.models.User;
 
 /**
@@ -51,7 +52,12 @@ public class Login extends HttpServlet {
 		
 		if (acc.checkCredentials(username, password)) {
 			request.getSession().setAttribute("user", username);
-			String json = "{\"name\": \"" + new User(username).getName() + "\"}";
+			request.getSession().setAttribute("name", new User(username).getName());
+			
+			boolean hasUnread = Message.hasUnread(username);
+			String msgIcon = hasUnread ? "msg-new.png" : "msg-def.png";
+			String json = "{\"name\": \"" + new User(username).getName() + "\", \"img\": \"" + msgIcon + "\"}";
+			
 			response.getWriter().write(json);
 		} else {
 		/*	ArrayList<String> errors = new ArrayList<String>();

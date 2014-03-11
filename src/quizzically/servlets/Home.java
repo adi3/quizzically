@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import quizzically.models.Message;
 import quizzically.models.User;
 
 /**
@@ -33,6 +34,13 @@ public class Home extends HttpServlet {
 		if (username != null) {
 			request.setAttribute("username", username);
 			request.setAttribute("name", new User(username).getName());
+			
+			String sessionName = (String) request.getSession().getAttribute("name");
+			if (sessionName == null) request.getSession().setAttribute("name", new User(username).getName());
+			
+			boolean hasUnread = Message.hasUnread(username);
+			String msgIcon = hasUnread ? "msg-new.png" : "msg-def.png";
+			request.setAttribute("msgIcon", msgIcon);
 		}
 		request.getRequestDispatcher("Home.jsp").forward(request, response);
 	}

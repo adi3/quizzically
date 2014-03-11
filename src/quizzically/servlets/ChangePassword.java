@@ -30,7 +30,7 @@ public class ChangePassword extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String username = (String) request.getSession().getAttribute("user");
+	/*	String username = (String) request.getSession().getAttribute("user");
 		User user = new User(username);
 		
 		String name = user.getName();
@@ -38,6 +38,7 @@ public class ChangePassword extends HttpServlet {
 		request.setAttribute("name", name);
 		
 		request.getRequestDispatcher("ChangePassword.jsp").forward(request, response);
+	*/
 	}
 
 	/**
@@ -50,20 +51,13 @@ public class ChangePassword extends HttpServlet {
 		
 		String username = (String) request.getSession().getAttribute("user");
 		ArrayList<String> errors = acc.updatePassword(username, pass, passConf);
-		if (errors.isEmpty()) {
-			request.getSession().setAttribute("user", username);	//TODO: check if this should be hashed?
-
-			// add confirmation notice that password has been updated!
-			response.sendRedirect("Profile");
-		} else {			
-			User user = new User(username);
-			
-			String name = user.getName();
-			name = name == null ? "" : name;
-			request.setAttribute("name", name);
-			
-			request.setAttribute("errors", errors);
-			request.getRequestDispatcher("ChangePassword.jsp").forward(request, response); 
+		if (!errors.isEmpty()) {
+			String json = "{\"errors\": [";
+			for (String err : errors) json += "{ \"msg\":\"" + err + "\"},";
+			json = json.substring(0, json.length() - 1) + "]}";
+			response.getWriter().write(json);
+		} else {
+			response.getWriter().write("{}");
 		}
 	}
 

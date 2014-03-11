@@ -47,21 +47,23 @@ public class Account {
 		if (errors.size() != 0) return errors;
 		
 		String admin = isAdmin ? "1" : "0";
-		String[] cols = {"name", "email", "is_admin", "username", "password", "salt"};
-		String[] vals = {capitalize(name), email, admin, username, salted_pass, salt};
+		String img = "m" + Integer.toString(new Random().nextInt(24)) + ".png";
+		String[] cols = {"name", "email", "img", "location", "is_admin", "username", "password", "salt"};
+		String[] vals = {capitalize(name), email, img, "", admin, username, salted_pass, salt};
 		
 		int id = sql.insert(MyDBInfo.USERS_TABLE, cols, vals);
 		if (id == 0) errors.add("Trouble saving registration. Please try again.");
 		return errors;
 	}
 	
-	public ArrayList<String> updateAccount(String usernameOld, String name, String email, String username) {
+	public ArrayList<String> updateAccount(String usernameOld, String name, String email, String username, String loc) {
 		ArrayList<String> errors = validateInput(name, email, username);
 		if (errors.size() != 0) return errors;
 		
 		int status = sql.update("users", "name = '" + name + "', "
 										+ "email = '" + email + "', "
-										+ "username = '" + username + "' ",
+										+ "username = '" + username + "', "
+										+ "location = '" + loc + "'",
 										"username = '" + usernameOld + "'");
 		if (status == 0) errors.add("Trouble updating profile. Please try again.");
 		return errors;
