@@ -1,4 +1,3 @@
-.classpath
 *.class
 .classpath
 
@@ -20,3 +19,7 @@ Session.vim
 # build
 bin
 build
+
+# eclipse
+.settings/
+.classpath
