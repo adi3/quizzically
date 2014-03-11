@@ -475,7 +475,88 @@ $(document).ready(function() {
 	
 	$("#add-frnd").submit(function(e) {
 		e.preventDefault();
-		console.log("Sd");
+		if (request) request.abort();
+	    
+	    var $form = $(this);
+	    var serializedData = $form.serialize();
+	    
+	    request = $.ajax({
+	        url: "Friends",
+	        type: "post",
+	        data: serializedData
+	    });
+	    
+	    // on success
+	    request.done(function (response, textStatus, jqXHR){
+	    	var json = $.parseJSON(response);
+	    	
+	        if (json["errors"] == null) {
+	        	var html = '<div class="frnd-req" style="margin-left:6%;cursor: not-allowed;">'
+							+ '<button class="btn btn-default" disabled="disabled">Request Pending</button>'
+							+ '</div>';
+	        	$form.replaceWith(html);
+	        	
+	        	$(".msg-container .msg-img").css("background", "url(assets/img/success.png)");
+	        	$(".msg-container .msg").text("Friend request sent to " + json["name"]);
+	        } else {
+	        	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+	        	var errors = "";
+	        	for (var i = 0; i < json["errors"].length; i++) {
+	        		errors += json["errors"][i]["msg"];
+	        		if (i != json["errors"].length - 1) errors += "<hr />";
+	        	}
+	        	$(".msg-container .msg").html(errors);
+	        }
+	        $(".msg-container").hide().slideToggle();
+	    });
+
+	    // on failure
+	    request.fail(function (jqXHR, textStatus, errorThrown){
+	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+	    	$(".msg-container .msg").text("Weird network error. Please try again!");
+	    	$(".msg-container").hide().slideToggle();
+	    });
+	});
+	
+	
+	$(document).on('submit', "#accept-frnd", function(e) {
+		e.preventDefault();
+		if (request) request.abort();
+	    
+	    var $form = $(this);
+	    var serializedData = $form.serialize();
+	    
+	    request = $.ajax({
+	        url: "Friends",
+	        type: "post",
+	        data: serializedData
+	    });
+	    
+	    // on success
+	    request.done(function (response, textStatus, jqXHR){
+	    	var json = $.parseJSON(response);
+	    	
+	        if (json["errors"] == null) {
+	        	$(".msg-container .msg-img").css("background", "url(assets/img/success.png)");
+	        	$(".msg-container .msg").text(json["name"] + " added to your friends list!");
+	        } else {
+	        	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+	        	var errors = "";
+	        	for (var i = 0; i < json["errors"].length; i++) {
+	        		errors += json["errors"][i]["msg"];
+	        		if (i != json["errors"].length - 1) errors += "<hr />";
+	        	}
+	        	$(".msg-container .msg").html(errors);
+	        }
+	        $(".msg-container").hide().slideToggle();
+	    });
+
+	    // on failure
+	    request.fail(function (jqXHR, textStatus, errorThrown){
+	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+	    	$(".msg-container .msg").text("Weird network error. Please try again!");
+	    	$(".msg-container").hide().slideToggle();
+	    });
 	});
 	
 });

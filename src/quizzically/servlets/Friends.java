@@ -45,23 +45,22 @@ public class Friends extends HttpServlet {
 		
 		if (mode.equals("add")) {
 			if (self.addFriend(friend)) {
-				response.sendRedirect("Profile");
+				String json = "{\"name\": \"" + friend.getName() + "\"}";
+				response.getWriter().write(json);
 			} else {
-				ArrayList<String> errors = new ArrayList<String>();
-				errors.add("Trouble adding friend. Please try again.");
-				request.setAttribute("errors", errors);
-				
-				request.getRequestDispatcher("Profile.jsp?user=" + friend.getId()).forward(request, response); 
+				String json = "{\"errors\": [{ \"msg\":\"Trouble adding friend. Please try again.\"}]}";
+				response.getWriter().write(json);
 			}
 		} else if (mode.equals("accept")) {
-			if (self.isFriend(friend) || self.acceptRequest(friend)) {
-				response.sendRedirect("Profile");
+			if (self.isFriend(friend)) {
+				String json = "{\"errors\": [{ \"msg\":\"You are already friends with " + friend.getName() + "\"}]}";
+				response.getWriter().write(json);
+			} else if (self.acceptRequest(friend)) {
+				String json = "{\"name\": \"" + friend.getName() + "\"}";
+				response.getWriter().write(json);
 			} else {
-				ArrayList<String> errors = new ArrayList<String>();
-				errors.add("Trouble accepting friend request. Please try again.");
-				request.setAttribute("errors", errors);
-				
-				request.getRequestDispatcher("Friends.jsp").forward(request, response); 
+				String json = "{\"errors\": [{ \"msg\":\"Trouble accepting friend request. Please try again.\"}]}";
+				response.getWriter().write(json);
 			}
 		}
 	}

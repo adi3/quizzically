@@ -63,6 +63,17 @@ public class User {
 		return results;
 	}
 	
+	
+	public boolean isPendingFriend(String username) {
+		User friend = new User(username);
+		SqlResult row = sql.get(MyDBInfo.FRIENDS_TABLE, "(id_1=" + this.getId() + " AND id_2=" + friend.getId() + ") "
+							+ "OR (id_2=" + this.getId() + " AND id_1=" + friend.getId() + ")");
+		
+		if (row.isEmpty()) return false; 
+		String confirmed = row.get(0).get("is_confirmed");
+		return confirmed.equals("0") ? true : false;
+	}
+	
 	public boolean addFriend(User friend) {
 		String[] cols = {"id_1", "id_2", "is_confirmed"};
 		String[] vals = {this.id, friend.getId(), "0"};

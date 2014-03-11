@@ -11,7 +11,7 @@ import quizzically.models.User;
 
 public class UserTest {
 
-	@Test
+//	@Test
 	public void test() {
 		User user1 = new User("adisin");
 		User user2 = new User("foobar");
@@ -24,11 +24,20 @@ public class UserTest {
 		System.out.println(friends.contains(user2));
 	}
 	
-	@Test
+//	@Test
 	public void test2() {
 		String id = "33";
 		User user = User.getUserById(id);
 		assertEquals(user.getUsername(), "adisin");
+	}
+	
+	@Test
+	public void test3() {
+		User user1 = new User("drb");
+		User user2 = new User("pukar");
+		
+		System.out.println(user1.isPendingFriend("pukar"));
+		System.out.println(user2.isPendingFriend("drb"));
 	}
 
 }

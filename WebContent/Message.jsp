@@ -24,11 +24,11 @@
 		
 		<div class="col-md-5" style="margin-top: 2%">
 		<% if(msg.getType().equals("Request") && msg.getMsg().equals(MyConfigVars.REQUEST_MSG)) { %>
-			<form action="Friends" method="post">
+			<form action="Friends" method="post" id="accept-frnd">
 				<div>
 					<input type="hidden" name="mode" value="accept" />
 					<input type="hidden" name="user" value="<%= msg.getFromUser().getUsername() %>" />
-					<input type="submit" value="Accept" />
+					<input type="submit" class="btn btn-default" value="Accept" />
 				</div>
 			</form>
 		<% } else { %>
