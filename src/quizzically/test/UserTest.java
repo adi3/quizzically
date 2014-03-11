@@ -33,11 +33,11 @@ public class UserTest {
 	
 	@Test
 	public void test3() {
-		User user1 = new User("drb");
-		User user2 = new User("pukar");
+		User user1 = new User("adisin");
+		User user2 = new User("drb");
 		
-		System.out.println(user1.isPendingFriend("pukar"));
-		System.out.println(user2.isPendingFriend("drb"));
+		assertTrue(user1.isFriend(user2));
+		assertTrue(user1.deleteFriend(user2));
 	}
 
 }

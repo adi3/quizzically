@@ -59,8 +59,7 @@ public class Message {
 	public boolean save() {
 		String[] cols = {"text", "from_id", "to_id", "type", "is_read", "created_at"};
 		String isRead = this.isRead ? "1" : "0";
-		String[] vals = {this.msg, Integer.toString(this.from.getId()), 
-			Integer.toString(this.to.getId()), this.type, isRead, this.getDate()};
+		String[] vals = {this.msg, this.from.getId(), this.to.getId(), this.type, isRead, this.getDate()};
 		
 		int id = sql.insert(MyDBInfo.MESSAGES_TABLE, cols, vals);
 		return id != 0;

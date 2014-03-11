@@ -7,53 +7,54 @@
 		<br />
 		
 		<form method="post" action="UpdateProfile" id="profile-form">
-		<div class="col-md-1"></div>
-		<div class="col-md-3">	
-			<h1><%= request.getAttribute("name") %></h1>
-			<br />
-			<img src="assets/img/<%= request.getAttribute("img") %>" />
-		</div>
-		
-		<% if (sessionUser != null) { %>
-			<% User self = new User(sessionUser); %>
-		<% } %>
-		<div class="col-md-4">
-			<% if ((sessionUser == null || !friends.contains(new User(sessionUser))) && !request.getAttribute("username").equals(sessionUser)) { %>					
-				<div class="profile-info">
-					<table>
-						<tr>
-							<td>Username</td>
-							<td class="blur">Hidden</td>
-						</tr>
-						<tr>
-							<td>Email</td>
-							<td class="blur">Hidden</td>
-						</tr>
-						<tr>
-							<td>Location</td>
-							<td class="blur">Hidden</td>
-						</tr>
-					</table>
-				</div>
-			<% } else { %>
-				<div class="profile-info">
-					<table>
-						<tr>
-							<td>Username</td>
-							<td name="username"><%= request.getAttribute("username") %></td>
-						</tr>
-						<tr>
-							<td>Email</td>
-							<td name="email"><%= request.getAttribute("email") %></td>
-						</tr>
-						<tr>
-							<td>Location</td>
-							<td name="loc"><%= request.getAttribute("loc") %></td>
-						</tr>
-					</table>
-				</div>
+			<div class="col-md-1"></div>
+			<div class="col-md-3">	
+				<h1><%= request.getAttribute("name") %></h1>
+				<br />
+				<img src="assets/img/<%= request.getAttribute("img") %>" />
+			</div>
+			
+			<% if (sessionUser != null) { %>
+				<% User self = new User(sessionUser); %>
 			<% } %>
-		</div>
+			<div class="col-md-4">
+				<% if ((sessionUser == null || !friends.contains(new User(sessionUser))) && !request.getAttribute("username").equals(sessionUser)) { %>					
+					<div class="profile-info">
+						<table>
+							<tr>
+								<td>Username</td>
+								<td class="blur">Hidden</td>
+							</tr>
+							<tr>
+								<td>Email</td>
+								<td class="blur">Hidden</td>
+							</tr>
+							<tr>
+								<td>Location</td>
+								<td class="blur">Hidden</td>
+							</tr>
+						</table>
+					</div>
+				<% } else { %>
+					<div class="profile-info">
+						<table>
+							<tr>
+								<td>Username</td>
+								<td name="username"><%= request.getAttribute("username") %></td>
+							</tr>
+							<tr>
+								<td>Email</td>
+								<td name="email"><%= request.getAttribute("email") %></td>
+							</tr>
+							<tr>
+								<td>Location</td>
+								<td name="loc"><%= request.getAttribute("loc") %></td>
+							</tr>
+						</table>
+					</div>
+				<% } %>
+			</div>
+		</form>
 		
 		<div class="col-md-3">
 			<div class="friends-info">
@@ -66,13 +67,13 @@
 						<tr>
 							<td><img src="assets/img/<%= friend.getImg() %>" /></td>
 							<td><a href="Profile?id=<%= friend.getId() %>" ><%= friend.getName() %></a></td>
+							<td><img src="assets/img/close.gif" id="del-<%= friend.getId() %>" /></td>
 						</tr>
 					<% } %>
 				</table>
 			<% } %>
 			</div>
 		</div>
-		</form>
 	</div>
 	
 	<div class="row">
@@ -86,7 +87,7 @@
 			<% User self = new User(sessionUser); %>
 			<% if (!friends.contains(self) && !request.getAttribute("username").equals(sessionUser)) { %>
 				<% if (self.isPendingFriend((String)request.getAttribute("username"))) { %>
-					<div class="frnd-req" style="margin-left:6%;cursor: not-allowed;">
+					<div class="frnd-req" style="margin-left:6%;cursor: not-allowed;font-style:italic;">
 						<button class="btn btn-default" disabled="disabled">Request Pending</button>
 					</div>
 				<% } else { %>

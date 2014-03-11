@@ -11,7 +11,7 @@ import quizzically.lib.SqlResult;
 
 public class User {
 
-	private int id;
+	private String id;
 	private String name;
 	private String email;
 	private String loc;
@@ -26,7 +26,7 @@ public class User {
 		sql = MySql.getInstance();
 		
 		SqlResult user = sql.get(MyDBInfo.USERS_TABLE, "username = '" + username + "'");
-		this.id = Integer.parseInt(user.get(0).get("id"));
+		this.id = user.get(0).get("id");
 		this.name = user.get(0).get("name");
 		this.email = user.get(0).get("email");
 		this.loc = user.get(0).get("location");
@@ -76,11 +76,12 @@ public class User {
 	
 	public boolean addFriend(User friend) {
 		String[] cols = {"id_1", "id_2", "is_confirmed"};
-		String[] vals = {Integer.toString(getId()), Integer.toString(friend.getId()), "0"};
+		String[] vals = {this.id, friend.getId(), "0"};
 		int id = sql.insert(MyDBInfo.FRIENDS_TABLE, cols, vals);
 		if(id != 0) new Message(MyConfigVars.REQUEST_MSG, "REQUEST", this, friend).save();
 		return id != 0;
 	}
+	
 	
 	public boolean acceptRequest(User friend) {
 		int status = sql.update(MyDBInfo.FRIENDS_TABLE, "is_confirmed=1", 
@@ -88,6 +89,12 @@ public class User {
 
 		String msg = MyConfigVars.ACCEPT_MSG.replace("{Name}", this.name);
 		if (status == 1) new Message(msg, "REQUEST", this, friend).save();
+		return status == 1;
+	}
+	
+	public boolean deleteFriend(User friend) {
+		int status = sql.delete(MyDBInfo.FRIENDS_TABLE, "(id_1=" + this.id + " AND id_2=" + friend.getId() + ") "
+							+ "OR (id_2=" + this.id + " AND id_1=" + friend.getId() + ")");
 		return status == 1;
 	}
 	
@@ -116,7 +123,7 @@ public class User {
 		return img;
 	}
 	
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 	

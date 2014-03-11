@@ -246,19 +246,28 @@ footer {
 	margin-left: 5%;
 }
 
-.friends-info img {
+.friends-info td:first-child img {
 	width: 40px;
 }
 
 .friends-info td {
 	padding: 4px;
 	text-align: left;
-	width: 60px;
 	font-weight: bold;
 }
 
-.friends-info td:last-child {
-	width: 150px;
+.friends-info td:first-child {
+	width: 60px;
+}
+
+.friends-info td:nth-child(2) {
+	width: 130px;
+}
+
+.friends-info td:last-child img {
+	width: 16px;
+	border-radius: 10px;
+	cursor: pointer;
 }
 
 td a {

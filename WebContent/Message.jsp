@@ -22,7 +22,7 @@
 			<div class="msg-info"><b>Type: </b><%= msg.getType() %></div>
 		</div>
 		
-		<div class="col-md-5" style="margin-top: 2%">
+		<div class="col-md-5">
 		<% if(msg.getType().equals("Request") && msg.getMsg().equals(MyConfigVars.REQUEST_MSG)) { %>
 			<form action="Friends" method="post" id="accept-frnd">
 				<div>
@@ -31,6 +31,8 @@
 					<input type="submit" class="btn btn-default" value="Accept" />
 				</div>
 			</form>
+			<br /><br />
+			<button class="btn btn-default" style="width:67px" id="del-<%= msg.getFromUser().getId() %>">Reject</button>
 		<% } else { %>
 			<a id="msg-lnk" class="btn btn-default" href="Messages?mode=reply&id=<%= msg.getId() %>">Reply</a>
 		<% } %>

@@ -461,7 +461,6 @@ $(document).ready(function() {
 	
 	$(document).on('click', "#add-receiver-btn", function(e){
 		var name = $("#create-msg select").val();
-		console.log(name);
 		var field = $("#create-msg input[name='to']");
 		var list = field.val();
 		if (list == "") list = name;
@@ -469,7 +468,6 @@ $(document).ready(function() {
 			list = field.val() + ", " + name;
 		}
 		field.val(list);
-		console.log(field.val());
 	});
 	
 	
@@ -491,7 +489,7 @@ $(document).ready(function() {
 	    	var json = $.parseJSON(response);
 	    	
 	        if (json["errors"] == null) {
-	        	var html = '<div class="frnd-req" style="margin-left:6%;cursor: not-allowed;">'
+	        	var html = '<div class="frnd-req" style="margin-left:6%;cursor: not-allowed;font-style:italic;">'
 							+ '<button class="btn btn-default" disabled="disabled">Request Pending</button>'
 							+ '</div>';
 	        	$form.replaceWith(html);
@@ -537,8 +535,49 @@ $(document).ready(function() {
 	    	var json = $.parseJSON(response);
 	    	
 	        if (json["errors"] == null) {
+	        	$(".mid-popup .close").click();
 	        	$(".msg-container .msg-img").css("background", "url(assets/img/success.png)");
 	        	$(".msg-container .msg").text(json["name"] + " added to your friends list!");
+	        } else {
+	        	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+	        	var errors = "";
+	        	for (var i = 0; i < json["errors"].length; i++) {
+	        		errors += json["errors"][i]["msg"];
+	        		if (i != json["errors"].length - 1) errors += "<hr />";
+	        	}
+	        	$(".msg-container .msg").html(errors);
+	        }
+	        $(".msg-container").hide().slideToggle();
+	    });
+
+	    // on failure
+	    request.fail(function (jqXHR, textStatus, errorThrown){
+	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+	    	$(".msg-container .msg").text("Weird network error. Please try again!");
+	    	$(".msg-container").hide().slideToggle();
+	    });
+	});
+	
+	
+	$(document).on('click', "[id^=del]", function(e) {
+		if (request) request.abort();
+		var id = $(this).attr("id").split("-")[1];
+    	var row = $(this).parent().parent();
+
+	    request = $.ajax({
+	        url: "Friends?id=" + id,
+	        type: "delete"
+	    });
+	    
+	    // on success
+	    request.done(function (response, textStatus, jqXHR){
+	    	var json = $.parseJSON(response);
+	    	
+	        if (json["errors"] == null) {
+	        	if ($(row).attr("class") != "row") $(row).replaceWith("");
+	        	else $(".mid-popup .close").click();
+	        	$(".msg-container .msg-img").css("background", "url(assets/img/success.png)");
+	        	$(".msg-container .msg").text(json["msg"]);
 	        } else {
 	        	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
 	        	var errors = "";

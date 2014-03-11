@@ -38,7 +38,6 @@ public class Friends extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Account acc = (Account) this.getServletContext().getAttribute("acc");
 		User self = new User((String)request.getSession().getAttribute("user"));
 		User friend = new User(request.getParameter("user"));
 		String mode = request.getParameter("mode");
@@ -60,6 +59,33 @@ public class Friends extends HttpServlet {
 				response.getWriter().write(json);
 			} else {
 				String json = "{\"errors\": [{ \"msg\":\"Trouble accepting friend request. Please try again.\"}]}";
+				response.getWriter().write(json);
+			}
+		}
+	}
+	
+	/**
+	 * @see HttpServlet#doDelete(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		User self = new User((String)request.getSession().getAttribute("user"));
+		User friend = User.getUserById(request.getParameter("id"));
+		boolean wasFriend = self.isFriend(friend);
+		
+		if (self.deleteFriend(friend)) {
+			if (wasFriend) {
+				String json = "{\"msg\": \"" + friend.getName() + " removed from your friends list\"}";
+				response.getWriter().write(json);
+			} else {
+				String json = "{\"msg\": \"" + friend.getName() + "'s friend request rejected\"}";
+				response.getWriter().write(json);
+			}
+		} else {
+			if (wasFriend) {
+				String json = "{\"errors\": [{ \"msg\":\"Trouble removing friend. Please try again.\"}]}";
+				response.getWriter().write(json);
+			} else {
+				String json = "{\"msg\": \"Trouble rejecting " + friend.getName() + "'s friend request. Please try again.\"}";
 				response.getWriter().write(json);
 			}
 		}
