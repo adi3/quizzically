@@ -82,7 +82,7 @@ public class ShowQuiz extends HttpServlet {
 						qr = responses.get(questionId);
 						question = qr.question();
 					} else {
-						question = Question.retrieveByID(questionId);
+						question = Question.retrieve(questionId);
 						if (question != null) {
 							qr = new QuestionResponse(question, pos);
 							responses.put(question.id(), qr);

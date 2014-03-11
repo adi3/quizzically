@@ -11,7 +11,7 @@ import quizzically.lib.SqlResult;
 
 public class User {
 
-	private String id;
+	private int id;
 	private String name;
 	private String email;
 	private String username;
@@ -24,7 +24,7 @@ public class User {
 		sql = MySql.getInstance();
 		
 		SqlResult user = sql.get(MyDBInfo.USERS_TABLE, "username = '" + username + "'");
-		this.id = user.get(0).get("id");
+		this.id = Integer.parseInt(user.get(0).get("id"));
 		this.name = user.get(0).get("name");
 		this.email = user.get(0).get("email");
 		this.isAdmin = user.get(0).get("is_admin").equals("1") ? true : false;
@@ -61,7 +61,7 @@ public class User {
 	
 	public boolean addFriend(User friend) {
 		String[] cols = {"id_1", "id_2", "is_confirmed"};
-		String[] vals = {this.id, friend.getId(), "0"};
+		String[] vals = {Integer.toString(getId()), Integer.toString(friend.getId()), "0"};
 		int id = sql.insert(MyDBInfo.FRIENDS_TABLE, cols, vals);
 		if(id != 0) new Message(MyConfigVars.REQUEST_MSG, "REQUEST", this, friend).save();
 		return id != 0;
@@ -93,7 +93,7 @@ public class User {
 		return username;
 	}
 	
-	public String getId() {
+	public int getId() {
 		return id;
 	}
 	

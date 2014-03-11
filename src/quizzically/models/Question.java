@@ -14,11 +14,29 @@ import quizzically.exceptions.*;
 
 public abstract class Question {
 	private static final String[] QUESTIONS_COLUMNS = {"text", "type"};
-	
+
 	public static final int TYPE_TEXT = 0;
 	public static final int TYPE_FILL_IN = 1;
 	public static final int TYPE_MULTIPLE_CHOICE = 2;
 	public static final int TYPE_PICTURE = 3;
+	
+	public static final int[] TYPES = {
+		TYPE_TEXT, 
+		TYPE_FILL_IN,
+		TYPE_MULTIPLE_CHOICE,
+		TYPE_PICTURE
+	};
+
+	public static final String[] TYPE_STRINGS = {
+		"Question-Response",
+		"Fill-in-the-Blank",
+		"Multiple Choice",
+		"Picture-Response"
+	};
+
+	public static String typeString(int type) {
+		return TYPE_STRINGS[type];
+	}
 	
 	private int id;
 	private String text;
@@ -142,7 +160,7 @@ public abstract class Question {
 	 * @param questionID
 	 * @return
 	 */
-	public static Question retrieveByID(int questionID) {
+	public static Question retrieve(int questionID) {
 		MySql sql = MySql.getInstance();
 		SqlResult res = sql.get(MyDBInfo.QUESTIONS_TABLE, "`id` = " + questionID);
 
@@ -187,7 +205,7 @@ public abstract class Question {
 			try { 
 				int questionID = Integer.parseInt(row.get("question_id"));
 				int position = Integer.parseInt(row.get("position"));
-				Question q = Question.retrieveByID(questionID);
+				Question q = Question.retrieve(questionID);
 				orderedQuestions.put(position, q);
 			} catch (NumberFormatException e) { /* ignore */ }
 		}

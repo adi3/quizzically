@@ -59,6 +59,16 @@ public class Quiz {
 	}
 	
 	/**
+	 * Appends the question to the quiz as in
+	 * addQuestion(Question, position)
+	 */
+	public void addQuestion(Question question) {
+		Integer key =  orderedQuestions.size() != 0 ? 
+			orderedQuestions.lastKey() + 1 : 1;
+		addQuestion(question, key);
+	}
+
+	/**
 	 * Adds the question to the questions list, and inserts the quiz-question relation
 	 * into the QUIZ_QUESTIONS_TABLE. question can have either been just created or
 	 * it can belong to other Quizzes.
@@ -67,15 +77,21 @@ public class Quiz {
 	 * @param question
 	 */
 	public void addQuestion(Question question, int position){
-		if(orderedQuestions.containsKey(position)){
-			// TODO: Replace existing Question at position with provided question
+		MySql sql = MySql.getInstance();
+		if(orderedQuestions.containsKey(position) && 
+				!orderedQuestions.containsValue(question)) {
+			orderedQuestions.put(position, question);
+			sql.update(MyDBInfo.QUIZ_QUESTIONS_TABLE, 
+					"`question_id`=" + question.id(),
+					"`position`=" + position + " AND " +
+					"`quiz_id`=" + this.id()
+				);
 			return;
 		}
 		// Note that when addQuestion is called all questions in the 
 		// DB are also in the SortedMap of the Quiz object
 		if(! orderedQuestions.containsValue(question)){ // id comparison
 			orderedQuestions.put(position, question);
-			MySql sql = MySql.getInstance();
 			String[] values = {Integer.toString(id), Integer.toString(question.id()), Integer.toString(position)};
 			sql.insert(MyDBInfo.QUIZ_QUESTIONS_TABLE, QUIZ_QUESTIONS_COLUMNS, values);
 		}
