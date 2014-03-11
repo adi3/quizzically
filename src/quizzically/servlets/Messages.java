@@ -65,6 +65,7 @@ public class Messages extends HttpServlet {
 			if (msg.getToUser().equals(user)) {
 				request.setAttribute("msgId", id);
 				request.setAttribute("msg", msg);
+				
 				request.getRequestDispatcher("Message.jsp").forward(request, response);
 			} else {
 				response.sendRedirect("Inbox");

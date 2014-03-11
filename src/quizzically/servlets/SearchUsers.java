@@ -42,7 +42,7 @@ public class SearchUsers extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String username = (String) request.getSession().getAttribute("user");
-		User user = new User(username);
+	//	User user = new User(username);
 		
 		String param = request.getParameter("param");
 		ArrayList<String> errors = new ArrayList<String>();
@@ -51,7 +51,7 @@ public class SearchUsers extends HttpServlet {
 			errors.add("Search parameter cannot be empty.");
 			request.setAttribute("errors", errors);
 		} else {
-			ArrayList<User> users = user.search(param, username);
+			ArrayList<User> users = User.search(param, username);
 			request.setAttribute("param", param);
 			request.setAttribute("users", users);
 		}

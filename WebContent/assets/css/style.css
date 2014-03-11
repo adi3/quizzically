@@ -1,0 +1,333 @@
+@CHARSET "ISO-8859-1";
+
+body {
+  padding-top: 44px;
+}
+
+body > .container {
+	min-height: 500px;
+}
+
+hr {
+	margin: 10px;
+}
+
+.navbar-form .form-control {
+	margin-right: 4px;
+	height: 28px;
+	padding: 6px 6px;
+	border-radius: 0;
+	border: none;
+}
+
+.navbar-form .btn {
+	padding: 3px 12px;
+	border-radius: 0;
+}
+
+.navbar-form .btn-success {
+	background-color: #777; /*#0064E8;*/
+	border-color: #efefef;
+	margin-right: 8px;
+}
+
+.navbar-form .line {
+	border-right: 1px dashed white;
+	height: 27px;
+}
+
+.sign-up, .sign-out {
+	background-color: #777 !important;
+	margin-left: 8px;
+}
+
+.navbar-form #form-loader {
+	margin-right: 10px;
+	visibility: hidden;
+}
+
+.navbar {
+	min-height: 44px;
+} 
+
+.navbar-brand {
+	height: 44px;
+	padding: 12px 15px;
+	font-size: 24px;
+}
+
+.navbar-inverse .navbar-brand {
+	color: #fff;
+}
+
+.navbar-inverse {
+	border-color: transparent;
+	background-color: #0686F7;
+}
+
+.jumbotron .btn-primary,
+.row .btn-default,
+.row .btn-edit {
+	background-color: #0064E8;
+	border-radius: 0;
+	border: none;
+	float: right;
+	color: #fff;
+}
+
+.row .btn-edit {
+	float: left;
+	margin: 5% 5px;
+}
+
+footer {
+	text-align: center;
+}
+
+.msg-container {
+	width: 240px;
+	z-index: 9999;
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	display: none;
+}
+
+.msg-close {
+	background: url(../img/close.gif);
+	width: 22px;
+	height: 22px;
+	position: absolute;
+	right: 7px;
+}
+
+.msg-close {
+	cursor: pointer;
+}
+
+.msg-img {
+	width: 22px;
+	height: 22px;
+	float: left;
+
+}
+
+.msg-box {
+	background: #333;
+	opacity: .9;
+	padding: 5px;
+	position: relative;
+	color: white;
+	box-shadow: 0 0 5px #333;
+}
+
+.msg {
+	margin: 28px 0 15px;
+	text-align: center;
+	font-size: 13px;
+}
+
+.msg hr {
+	margin: 3px;
+	border-top: 1px solid #111;
+}
+
+.mid-popup {
+	position: fixed;
+	width:500px;
+    height:350px;
+    background-color:white;
+    z-index:10000;
+    left: 50%;
+    top: 50%;
+    margin: -175px auto auto -250px;
+    box-shadow: 0px 0px 10px #333;
+    display: none;
+}
+
+.mid-popup h3 {
+	margin: 0;
+	background-color: #0686F7;
+	padding: 8px 10px;
+	color: white;
+	margin-bottom: 35px;
+}
+
+#sign-up, #change-pass {
+	text-align:center;
+}
+
+#sign-up .form-group,
+#change-pass .form-group {
+	display:block;
+	margin: 10px;
+}
+
+#sign-up .form-group input,
+#change-pass .form-group input  {
+	width: 180px;
+	height: 28px;
+	padding: 6px;
+}
+
+#sign-up .form-group a,
+#change-pass .form-group a {
+	width: 180px;
+	margin-right: 0;
+	height: 35px;
+	margin-top: 15px;
+	padding: 6px;
+}
+
+#sign-up .btn-success,
+#change-pass .btn-success {
+	background-color: #0064E8;
+}
+
+#change-pass {
+	margin-top: 15%;
+}
+
+.mid-popup #form-loader, .mid-popup .close {
+	float: right;
+	margin-top: -68px;
+	margin-right: 16px;
+	cursor: pointer;
+	opacity: 1;
+}
+
+.mid-popup #form-loader {
+	display: none;
+	cursor: default;
+}
+
+#searchbox .form-control {
+	width: 280px;
+}
+
+.no-float {
+	float: none;
+	margin: auto;
+}
+
+.profile-info {
+	margin-top: 23%;
+	margin-left: 5%;
+}
+
+.profile-info table td,
+.inbox table td {
+	padding: 6px;
+	width: 120px;
+}
+
+.profile-info table td:first-child {
+	font-weight: bold;
+}
+
+.profile .col-md-3 {
+	padding-left: 0;
+	text-align: center;
+}
+
+.profile .col-md-4 {
+	padding-left: 0;
+}
+
+.profile-info .blur {
+	color: #777;
+	font-style: italic;
+	font-size: 12px;
+}
+
+.frnd-req {
+	float: left;
+	margin-top: 6%;
+	margin-left: 6%;
+}
+
+.friends-info img {
+	width: 40px;
+}
+
+.friends-info td {
+	padding: 4px;
+	text-align: left;
+	width: 60px;
+	font-weight: bold;
+}
+
+.friends-info td:last-child {
+	width: 150px;
+}
+
+td a {
+	color: #0686F7;
+}
+
+td a:hover {
+	text-decoration: none;
+	color: #0064E8;
+}
+
+.sidebar-title {
+	text-align: left;
+	font-weight: bold;
+	margin: 20px 0 15px;
+}
+
+.msg-icon {
+	margin-right: 12px;
+}
+
+.profile-info table td input {
+	height: 28px;
+	padding: 6px;
+	background-color: white;
+}
+
+#save-profile-btn {
+	display: none;
+}
+
+#profile-form h1 input {
+	width: 100%;
+	height: 42px;
+	padding: 0px 6px;
+}
+
+.inbox table th {
+	padding: 6px;
+}
+
+.inbox table th {
+	text-align: center;
+	border-bottom: 1px solid #aaa;
+}
+
+.inbox table td {
+	border-bottom: 1px solid #ddd;
+}
+
+.inbox table td:first-child {
+	text-align: center;
+	font-style: italic;
+}
+
+.inbox table td:nth-child(2) {
+	width: 400px;
+}
+
+.inbox table td:nth-child(3) {
+	text-align: center;
+}
+
+.inbox table td:nth-child(4) {
+	font-size: 12px;
+	width: 200px;
+	text-align: center;
+}
+
+#new-msg-lnk {
+	margin-top: 2%;
+}

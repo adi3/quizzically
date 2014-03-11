@@ -34,7 +34,7 @@ public class AccountTest {
 	
 	@Test
 	public void testCreate() {
-		ArrayList<String> errors = acc.createAccount("foo bar", "foo@bar.com", "foobar1", "foo11!", false);
+		ArrayList<String> errors = acc.createAccount("foo bar", "foo@bar.com", "foobar1", "foo11!", "foo11!", false);
 		System.out.println(errors);
 		assertEquals(errors.size(), 2);
 		

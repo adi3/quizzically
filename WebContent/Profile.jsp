@@ -1,78 +1,120 @@
-<%@page import="java.util.ArrayList"%>
-<%@page import="quizzically.models.*"%>
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Profile: <%= request.getAttribute("name") %></title>
-</head>
-<body>
-	<h1>Hello <%= request.getAttribute("name") %>!</h1>
-	
-	<form action="SearchUsers" method="post">
-		<div>
-			<input type="text" name="param" />
-			<input type="submit" value="Search" />
+<%@include file="frags/Header.jsp" %>
+
+<% ArrayList<User> friends = (ArrayList<User>)request.getAttribute("friends"); %>
+<% String sessionUser = (String)request.getSession().getAttribute("user"); %>
+<div class="container profile">
+ 	<div class="row">
+		<br />
+		
+		<form method="post" action="UpdateProfile" id="profile-form">
+		<div class="col-md-1"></div>
+		<div class="col-md-3">	
+			<h1><%= request.getAttribute("name") %></h1>
+			<br />
+			<img src="assets/img/<%= request.getAttribute("img") %>" />
 		</div>
-	</form>
-	
-	<p>Here's your info. Better pretty this up!</p>
-	<ul>
-		<li>Name: <%= request.getAttribute("name") %>
-		<li>Username: <%= request.getAttribute("username") %>
-		<li>Email: <%= request.getAttribute("email") %>
-	</ul>
-	
-	<% ArrayList<User> friends = (ArrayList<User>)request.getAttribute("friends"); %>
-	<% if (request.getAttribute("username").equals(request.getSession().getAttribute("user"))) { %>
-		<a href="Inbox">Check Inbox</a>
-		<% if (friends == null || friends.isEmpty()) { %>
-			<p>You don't have any friends yet :(</p>
-		<% } else { %>
-			<p>Your Friends:</p>
-			<ul>
-				<% for (User friend : friends) { %>
-					<li>
-						<a href="Profile?user=<%= friend.getUsername() %>" ><%= friend.getName() %></a>
-					</li>	
-				<% } %>
-			</ul>
-		<% } %>
-		<br />
-		<a href="UpdateProfile">Update Profile</a> | <a href="ChangePassword">Change Password</a>
-		<br />
-		<a href="Logout">Log Out</a>
 		
-	<% } else { %>
-		<% if (friends == null || friends.isEmpty()) { %>
-			<p><%= request.getAttribute("name") %> doesn't have any friends yet :(</p>
-		<% } else { %>
-			<p>Friends of <%= request.getAttribute("name") %>:</p>
-			<ul>
-				<% for (User friend : friends) { %>
-					<li>
-						<a href="Profile?user=<%= friend.getUsername() %>" ><%= friend.getName() %></a>
-					</li>	
+		<div class="col-md-4">
+			<% if (sessionUser != null) { %>
+				<% User self = new User(sessionUser); %>
+				<% if (!friends.contains(self) && !request.getAttribute("username").equals(sessionUser)) { %>
+					<div class="frnd-req">
+						<form action="Friends" method="post">
+							<div>
+								<input type="hidden" name="mode" value="add" />
+								<input type="hidden" name="user" value="<%= request.getAttribute("username") %>" />
+								<input type="submit" class="btn btn-default" value="Send Friend Request" />
+							</div>
+						</form>
+					</div>
+					
+					<div class="profile-info">
+						<table>
+							<tr>
+								<td>Username</td>
+								<td class="blur">Hidden</td>
+							</tr>
+							<tr>
+								<td>Email</td>
+								<td class="blur">Hidden</td>
+							</tr>
+							<tr>
+								<td>Location</td>
+								<td class="blur">Hidden</td>
+							</tr>
+						</table>
+					</div>
+				<% } else { %>
+					<div class="profile-info">
+						<table>
+							<tr>
+								<td>Username</td>
+								<td name="username"><%= request.getAttribute("username") %></td>
+							</tr>
+							<tr>
+								<td>Email</td>
+								<td name="email"><%= request.getAttribute("email") %></td>
+							</tr>
+							<tr>
+								<td>Location</td>
+								<td name="loc"><%= request.getAttribute("loc") %></td>
+							</tr>
+						</table>
+					</div>
 				<% } %>
-			</ul>
-		<% } %>
-		
-		<% User self = new User((String)request.getSession().getAttribute("user")); %>
-		<% if (friends.contains(self)) { %>
-			<p>You and <%= request.getAttribute("name") %> are friends!</p>
-		<% } else { %>
-			<form action="Friends" method="post">
-				<div>
-					<input type="hidden" name="mode" value="add" />
-					<input type="hidden" name="user" value="<%= request.getAttribute("username") %>" />
-					<input type="submit" value="Send Friend Request" />
+			<% } else { %>
+				<div class="profile-info">
+					<table>
+						<tr>
+							<td>Username</td>
+							<td class="blur">Hidden</td>
+						</tr>
+						<tr>
+							<td>Email</td>
+							<td class="blur">Hidden</td>
+						</tr>
+						<tr>
+							<td>Location</td>
+							<td class="blur">Hidden</td>
+						</tr>
+					</table>
 				</div>
-			</form>
+			<% } %>
+		</div>
+		
+		<div class="col-md-3">
+			<div class="friends-info">
+				<div class="sidebar-title"><h3>Friends</h3></div>
+			<% if (friends == null || friends.isEmpty()) { %>
+				<p><i>Nothing to see here. Move along.</i></p>
+			<% } else { %>
+				<table>
+					<% for (User friend : friends) { %>
+						<tr>
+							<td><img src="assets/img/<%= friend.getImg() %>" /></td>
+							<td><a href="Profile?id=<%= friend.getId() %>" ><%= friend.getName() %></a></td>
+						</tr>
+					<% } %>
+				</table>
+			<% } %>
+			</div>
+		</div>
+		</form>
+	</div>
+	
+	<div class="row">
+		<div class="col-md-1"></div>
+		<% if (sessionUser != null && request.getAttribute("username").equals(sessionUser)) { %>
+			<!-- <a href="UpdateProfile" class="btn btn-edit">Update Profile</a>  -->	
+				<button class="btn btn-edit" id="update-profile-btn">Update Profile</button>
+				<button class="btn btn-edit" id="save-profile-btn">Save Profile</button>
+				<button class="btn btn-edit" id="change-pass-lnk">Change Password</button>
 		<% } %>
-		<br />
-		<a href="Profile">My Profile</a>
-	<% } %>
-</body>
-</html>
+	</div>
+</div>
+
+<div class="mid-popup">
+<%@include file="ChangePassword.jsp" %>
+</div>
+
+<%@include file="frags/Footer.jsp" %>

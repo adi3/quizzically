@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import quizzically.models.Account;
+import quizzically.models.Message;
+import quizzically.models.User;
 
 /**
  * Servlet implementation class Login
@@ -30,13 +32,14 @@ public class Login extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String username = (String) request.getSession().getAttribute("user");
+	/*	String username = (String) request.getSession().getAttribute("user");
 		if (username != null) {
 			response.sendRedirect("Profile");
 		} else {
 			request.setAttribute("username", "");
 			request.getRequestDispatcher("LogIn.jsp").forward(request, response); 
 		}
+	*/
 	}
 
 	/**
@@ -48,16 +51,25 @@ public class Login extends HttpServlet {
 		String password = request.getParameter("password");
 		
 		if (acc.checkCredentials(username, password)) {
-			request.getSession().setAttribute("user", username);	//TODO: check if this should be hashed?
-			response.sendRedirect("Profile");
+			request.getSession().setAttribute("user", username);
+			request.getSession().setAttribute("name", new User(username).getName());
+			
+			boolean hasUnread = Message.hasUnread(username);
+			String msgIcon = hasUnread ? "msg-new.png" : "msg-def.png";
+			String json = "{\"name\": \"" + new User(username).getName() + "\", \"img\": \"" + msgIcon + "\"}";
+			
+			response.getWriter().write(json);
 		} else {
-			ArrayList<String> errors = new ArrayList<String>();
+		/*	ArrayList<String> errors = new ArrayList<String>();
 			errors.add("Your credentials could not be verified. Please try again.");
 			request.setAttribute("errors", errors);
 			
 			username = username == null ? "" : username;
 			request.setAttribute("username", username);
-			request.getRequestDispatcher("LogIn.jsp").forward(request, response); 
+			request.getRequestDispatcher("LogIn.jsp").forward(request, response);
+		*/
+			String json = "{\"errors\": [{ \"msg\":\"Your credentials could not be verified. Please try again.\"}]}";
+			response.getWriter().write(json);
 		}
 	}
 

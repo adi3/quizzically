@@ -39,7 +39,7 @@
 		<ul>
 			<% for (User user : users) { %>
 				<li>
-					<a href="Profile?user=<%= user.getUsername() %>" ><%= user.getName() %></a>
+					<a href="Profile?id=<%= user.getId() %>" ><%= user.getName() %></a>
 				</li>	
 			<% } %>
 		</ul>

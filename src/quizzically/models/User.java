@@ -14,6 +14,8 @@ public class User {
 	private int id;
 	private String name;
 	private String email;
+	private String loc;
+	private String img;
 	private String username;
 	private boolean isAdmin;
 	
@@ -27,6 +29,8 @@ public class User {
 		this.id = Integer.parseInt(user.get(0).get("id"));
 		this.name = user.get(0).get("name");
 		this.email = user.get(0).get("email");
+		this.loc = user.get(0).get("location");
+		this.img = user.get(0).get("img");
 		this.isAdmin = user.get(0).get("is_admin").equals("1") ? true : false;
 	}
 	
@@ -35,14 +39,14 @@ public class User {
 		return new User(row.get(0).get("username"));
 	}
 	
-	public ArrayList<User> search(String param, String username) {
+	public static ArrayList<User> search(String param, String username) {
 		String[] cols = {"username"};
-		SqlResult users = sql.get(cols, MyDBInfo.USERS_TABLE, "name LIKE '" + param + "%'");
+		SqlResult users = MySql.getInstance().get(cols, MyDBInfo.USERS_TABLE, "name LIKE '" + param + "%'");
 		
 		ArrayList<User> results = new ArrayList<User>();
 		for (int i = 0; i < users.size(); i++) {
 			String un = users.get(i).get("username");
-			if (un.equals(username)) continue;
+			if (username != null && un.equals(username)) continue;
 			results.add(new User(un));
 		}
 		return results;
@@ -91,6 +95,14 @@ public class User {
 	
 	public String getUsername() {
 		return username;
+	}
+	
+	public String getLoc() {
+		return loc;
+	}
+	
+	public String getImg() {
+		return img;
 	}
 	
 	public int getId() {

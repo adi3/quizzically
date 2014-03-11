@@ -30,7 +30,7 @@ public class UpdateProfile extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String username = (String) request.getSession().getAttribute("user");
+	/*	String username = (String) request.getSession().getAttribute("user");
 		User user = new User(username);
 		
 		String name = user.getName();
@@ -43,6 +43,7 @@ public class UpdateProfile extends HttpServlet {
 		
 		request.setAttribute("username", username);
 		request.getRequestDispatcher("UpdateProfile.jsp").forward(request, response);
+	*/
 	}
 
 	/**
@@ -53,22 +54,15 @@ public class UpdateProfile extends HttpServlet {
 		String name = request.getParameter("name");
 		String email = request.getParameter("email");
 		String username = request.getParameter("username");
+		String loc = request.getParameter("loc");
 		
 		String usernameOld = (String) request.getSession().getAttribute("user");
-		ArrayList<String> errors = acc.updateAccount(usernameOld, name, email, username);
+		ArrayList<String> errors = acc.updateAccount(usernameOld, name, email, username, loc);
 		if (errors.isEmpty()) {
-			request.getSession().setAttribute("user", username);	//TODO: check if this should be hashed?
+			request.getSession().setAttribute("user", username);
+			request.getSession().setAttribute("name", name);
 			response.sendRedirect("Profile");
 		} else {
-			name = name == null ? "" : name;
-			request.setAttribute("name", name);
-			
-			email = email == null ? "" : email;
-			request.setAttribute("email", email);
-			
-			username = username == null ? "" : username;
-			request.setAttribute("username", username);
-			
 			request.setAttribute("errors", errors);
 			request.getRequestDispatcher("UpdateProfile.jsp").forward(request, response); 
 		}

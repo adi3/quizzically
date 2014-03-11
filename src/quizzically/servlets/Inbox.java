@@ -34,13 +34,16 @@ public class Inbox extends HttpServlet {
 		String username = (String) request.getSession().getAttribute("user");
 		
 		if (username == null) {
-			response.sendRedirect("Login");
+			// popup error here
+			response.sendRedirect("Home");
 		} else {
 			User user = new User(username);
 			
-			String name = user.getName();
-			name = name == null ? "" : name;
-			request.setAttribute("name", name);
+			boolean hasUnread = Message.hasUnread(username);
+			String msgIcon = hasUnread ? "msg-new.png" : "msg-def.png";
+			request.setAttribute("msgIcon", msgIcon);
+			
+			request.setAttribute("name", user.getName());
 			
 			request.setAttribute("msgs", Message.getMessages(user));
 			request.getRequestDispatcher("Inbox.jsp").forward(request, response);
