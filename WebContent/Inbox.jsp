@@ -11,7 +11,7 @@
 		
 		<div class="col-md-2"></div>
 		<div class="col-md-2" id="new-msg-lnk">
-			<a href="Messages?mode=new" class="btn btn-default">New Message</a>
+			<a id="msg-lnk" href="Messages?mode=new" class="btn btn-default">New Message</a>
 		</div>
 	</div>
  	<div class="row">	
@@ -39,7 +39,7 @@
 							</td>
 							<td>
 								<% if (!msg.isRead()) %><b>
-								<a href="Profile?user=<%= msg.getFromUser().getUsername() %>">
+								<a href="Profile?id=<%= msg.getFromUser().getId() %>">
 									<%= msg.getFromUser().getName() %>
 								</a>
 								<% if (!msg.isRead()) %></b>
@@ -57,8 +57,7 @@
 	</div>
 </div>
 
-<div class="mid-popup">
-<%@include file="Register.jsp" %>
+<div class="mid-popup" style="height:auto;margin:-185px auto auto -298px">
 </div>
 
 <%@include file="frags/Footer.jsp" %>

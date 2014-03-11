@@ -54,10 +54,7 @@ public class Messages extends HttpServlet {
 			}
 		} else if (id != null) {
 			User user = new User(username);
-			
-			String name = user.getName();
-			name = name == null ? "" : name;
-			request.setAttribute("name", name);
+			request.setAttribute("name", user.getName());
 			
 			Message msg = Message.getMessageById(id);
 			msg.markRead();
@@ -66,8 +63,9 @@ public class Messages extends HttpServlet {
 				request.setAttribute("msgId", id);
 				request.setAttribute("msg", msg);
 				
-				request.getRequestDispatcher("Message.jsp").forward(request, response);
+				request.getRequestDispatcher("Message.jsp").include(request, response);
 			} else {
+				// growl error here
 				response.sendRedirect("Inbox");
 			}
 		} else {
@@ -97,11 +95,16 @@ public class Messages extends HttpServlet {
 				}
 			}
 		}
-		request.setAttribute("name", fromUser.getName());
-		request.setAttribute("msgs", Message.getMessages(fromUser));
 		
-		request.setAttribute("errors", errors);
-		request.getRequestDispatcher("Inbox.jsp").forward(request, response);
+		if (errors.size() == 0) {
+			String json = "{\"name\": \"" + fromUser.getName() + "\"}";
+			response.getWriter().write(json);
+		} else {
+			String json = "{\"errors\": [";
+			for (String err : errors) json += "{ \"msg\":\"" + err + "\"},";
+			json = json.substring(0, json.length() - 1) + "]}";
+			response.getWriter().write(json);
+		}
 	}
 	
 }

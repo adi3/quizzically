@@ -72,7 +72,8 @@ $(document).ready(function() {
 		$(".msg-container").slideUp();
 	});
 	
-	$(".mid-popup .close").click(function() {
+	
+	$(document).on('click', ".mid-popup .close", function(e){
 		$(".mid-popup").fadeOut();
 	});
 	
@@ -168,6 +169,8 @@ $(document).ready(function() {
 	    var $inputs = $form.find("input");
 	    var serializedData = $form.serialize();
 	    
+	    $inputs.prop("disabled", true);
+	    
 	    request = $.ajax({
 	        url: "ChangePassword",
 	        type: "post",
@@ -218,7 +221,6 @@ $(document).ready(function() {
 	});
 	
 	
-	
 	$("#searchbox").submit(function(e) {
 		if ($("#searchbox input").val() == "") {
 			$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
@@ -247,8 +249,168 @@ $(document).ready(function() {
 		$("#save-profile-btn").show();
 	});
 	
+	
 	$("#save-profile-btn").click(function(e) {
 		$("#profile-form").submit();
+	});
+	
+	
+	$(".inbox table td:nth-child(2) a").click(function(e) {
+		e.preventDefault();
+		var data = $(this).attr("href").split("?")[1];
+		
+		request = $.ajax({
+	        url: "Messages",
+	        type: "get",
+	        data: data
+	    });
+	    
+	    // on success
+	    request.done(function (response, textStatus, jqXHR){
+	    	var json = null;
+	    	
+	    	try {
+	    	    json = $.parseJSON(data);
+	    	    $(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+	        	var errors = "";
+	        	for (var i = 0; i < json["errors"].length; i++) {
+	        		errors += json["errors"][i]["msg"];
+	        		if (i != json["errors"].length - 1) errors += "<hr />";
+	        	}
+	        	$(".msg-container .msg").html(errors);
+		        $(".msg-container").hide().slideToggle();
+	    	} catch (e) {
+	    	    $(".mid-popup").html(response);
+		        $(".mid-popup").fadeIn();	
+	    	}
+	    });
+
+	    // on failure
+	    request.fail(function (jqXHR, textStatus, errorThrown){
+	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+	    	$(".msg-container .msg").text("Weird network error. Please try again!");
+	    	$(".msg-container").hide().slideToggle();
+	    });
+	});
+	
+	
+	$(document).on('click', "#msg-lnk", function(e){
+		e.preventDefault();
+		
+		$(".mid-popup .close").hide();
+	    $(".mid-popup #form-loader").show();
+	    
+		var data = $(this).attr("href").split("?")[1];
+		
+		request = $.ajax({
+	        url: "Messages",
+	        type: "get",
+	        data: data
+	    });
+		
+		// on success
+	    request.done(function (response, textStatus, jqXHR){
+    		var json = null;
+	    	
+	    	try {
+	    	    json = $.parseJSON(data);
+	    	    $(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+	        	var errors = "";
+	        	for (var i = 0; i < json["errors"].length; i++) {
+	        		errors += json["errors"][i]["msg"];
+	        		if (i != json["errors"].length - 1) errors += "<hr />";
+	        	}
+	        	$(".msg-container .msg").html(errors);
+		        $(".msg-container").hide().slideToggle();
+	    	} catch (e) {
+		        $(".mid-popup").fadeOut('fast', function() {
+		    	    $(".mid-popup").html(response).fadeIn();
+		        });
+	    	}
+	    });
+
+	    // on failure
+	    request.fail(function (jqXHR, textStatus, errorThrown){
+	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+	    	$(".msg-container .msg").text("Weird network error. Please try again!");
+	    	$(".msg-container").hide().slideToggle();
+	    });
+
+	    // akin to Java's finally clause
+	    request.always(function () {
+	        $(".mid-popup #form-loader").hide();
+	        $(".mid-popup .close").show();
+	    });
+	});
+	
+	
+	$(document).on('submit', "#create-msg", function(e){
+		e.preventDefault();
+		if (request) request.abort();
+
+	    $(".mid-popup .close").hide();
+	    $(".mid-popup #form-loader").show();
+	    
+	    var $form = $(this);
+	    var $inputs = $form.find("input");
+	    var serializedData = $form.serialize();
+	    
+	    $inputs.prop("disabled", true);
+	    
+	    request = $.ajax({
+	        url: "Messages",
+	        type: "post",
+	        data: serializedData
+	    });
+	    
+	    // on success
+	    request.done(function (response, textStatus, jqXHR){
+	    	var json = $.parseJSON(response);
+	    	
+	        if (json["errors"] == null) {
+		    	$inputs.val("");
+	        	$(".msg-container .msg-img").css("background", "url(assets/img/success.png)");
+	        	$(".msg-container .msg").text("Message(s) delivered!");
+		        $(".mid-popup").fadeOut();
+	        } else {
+	        	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+	        	var errors = "";
+	        	for (var i = 0; i < json["errors"].length; i++) {
+	        		errors += json["errors"][i]["msg"];
+	        		if (i != json["errors"].length - 1) errors += "<hr />";
+	        	}
+	        	$(".msg-container .msg").html(errors);
+	        }
+	        $(".msg-container").hide().slideToggle();
+	    });
+
+	    // on failure
+	    request.fail(function (jqXHR, textStatus, errorThrown){
+	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+	    	$(".msg-container .msg").text("Weird network error. Please try again!");
+	    	$(".msg-container").hide().slideToggle();
+	    });
+
+	    // akin to Java's finally clause
+	    request.always(function () {
+	        $inputs.prop("disabled", false);
+	        $(".mid-popup #form-loader").hide();
+	        $(".mid-popup .close").show();
+	    });
+	});
+	
+	
+	$(document).on('click', "#add-receiver-btn", function(e){
+		var name = $("#create-msg select").val();
+		console.log(name);
+		var field = $("#create-msg input[name='to']");
+		var list = field.val();
+		if (list == "") list = name;
+		else if (list.indexOf(name) == -1) {
+			list = field.val() + ", " + name;
+		}
+		field.val(list);
+		console.log(field.val());
 	});
 	
 });

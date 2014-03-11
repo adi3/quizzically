@@ -307,6 +307,8 @@ td a:hover {
 
 .inbox table td {
 	border-bottom: 1px solid #ddd;
+	font-size: 13px;
+	padding: 8px;
 }
 
 .inbox table td:first-child {
@@ -320,6 +322,7 @@ td a:hover {
 
 .inbox table td:nth-child(3) {
 	text-align: center;
+	width: 200px;
 }
 
 .inbox table td:nth-child(4) {
@@ -330,4 +333,30 @@ td a:hover {
 
 #new-msg-lnk {
 	margin-top: 2%;
+}
+
+.mid-popup #msg {
+	padding: 0 35px;
+	margin-bottom: 20px;
+	font-size: 13px;
+}
+
+.mid-popup .msg-info {
+	margin-bottom: 3px;
+	font-size: 13px;
+}
+
+.mid-popup #msg textarea {
+	resize: none;
+	width: 100%;
+	margin-top: 8px;
+	height: 100px;
+	padding: 6px;
+}
+
+.mid-popup select {
+	padding: 3px;
+	margin-top: 3px;
+	margin-left: 20px;
+	width: 150px;
 }
