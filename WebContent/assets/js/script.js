@@ -258,6 +258,13 @@ $(document).ready(function() {
 	$(".inbox table td:nth-child(2) a").click(function(e) {
 		e.preventDefault();
 		var data = $(this).attr("href").split("?")[1];
+
+		var row = $(this).parent().parent().parent();
+		var str = "";
+		$(row).find("td").each(function() {
+			str += "<td>" + $(this).html().replace("<b>", "").replace("</b>", "") + "</td>";
+		});
+		$(row).html(str);
 		
 		request = $.ajax({
 	        url: "Messages",
