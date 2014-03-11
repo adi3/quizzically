@@ -41,7 +41,7 @@ public class User {
 	
 	public static ArrayList<User> search(String param, String username) {
 		String[] cols = {"username"};
-		SqlResult users = MySql.getInstance().get(cols, MyDBInfo.USERS_TABLE, "name LIKE '" + param + "%'");
+		SqlResult users = MySql.getInstance().get(cols, MyDBInfo.USERS_TABLE, "name LIKE '" + param + "%' OR username LIKE '" + param + "%'");
 		
 		ArrayList<User> results = new ArrayList<User>();
 		for (int i = 0; i < users.size(); i++) {

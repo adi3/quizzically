@@ -25,29 +25,21 @@
 					<tr><th>Type</th><th>Message</th><th>From</th><th>Date</th></tr>
 					<% for (Message msg : msgs) { %>
 						<tr>
-							<td>
-								<% if (!msg.isRead()) %><b>
+							<td <% if (!msg.isRead()) out.print("style='font-weight:bold'"); %>>
 								<%= msg.getType() %>
-								<% if (!msg.isRead()) %></b>
 							</td>
-							<td>
-								<% if (!msg.isRead()) %><b>
+							<td <% if (!msg.isRead()) out.print("style='font-weight:bold'"); %>>
 								<a href="Messages?id=<%= msg.getId() %>">
 									<%= msg.getPreviewMsg() %>
 								</a>
-								<% if (!msg.isRead()) %></b>
 							</td>
-							<td>
-								<% if (!msg.isRead()) %><b>
+							<td <% if (!msg.isRead()) out.print("style='font-weight:bold'"); %>>
 								<a href="Profile?id=<%= msg.getFromUser().getId() %>">
 									<%= msg.getFromUser().getName() %>
 								</a>
-								<% if (!msg.isRead()) %></b>
 							</td>
-							<td>
-								<% if (!msg.isRead()) %><b>
+							<td <% if (!msg.isRead()) out.print("style='font-weight:bold'"); %>>
 								<%= msg.getDate() %>
-								<% if (!msg.isRead()) %></b>
 							</td>
 						</tr>
 					<% } %>

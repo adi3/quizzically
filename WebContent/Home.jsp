@@ -33,7 +33,6 @@
 </div> <!-- /container -->
 
 <div class="mid-popup">
-<%@include file="Register.jsp" %>
 </div>
 
 <%@include file="frags/Footer.jsp" %>

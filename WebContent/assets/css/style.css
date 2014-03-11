@@ -360,3 +360,35 @@ td a:hover {
 	margin-left: 20px;
 	width: 150px;
 }
+
+#show-msg {
+	max-height: 150px;
+	overflow-y: auto;
+	margin: 0;
+}
+
+#msg hr {
+	margin: 10px 0;
+	border-color: #ddd;
+}
+
+#search-results table td {
+	padding: 5px 30px;
+	font-weight: bold;
+	font-size: 16px;
+	border-bottom: 1px solid #ccc;
+}
+
+#search-results table td img {
+	width: 40px;
+}
+
+#search-results table td:last-child {
+	width: 100%;
+	text-align: center;
+}
+
+#search-results div:nth-child(2) {
+	overflow-y: auto;
+	max-height: 250px;
+}

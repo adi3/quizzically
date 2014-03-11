@@ -36,9 +36,8 @@ public class ChangePassword extends HttpServlet {
 		String name = user.getName();
 		name = name == null ? "" : name;
 		request.setAttribute("name", name);
-		
-		request.getRequestDispatcher("ChangePassword.jsp").forward(request, response);
 	*/
+		request.getRequestDispatcher("ChangePassword.jsp").forward(request, response);
 	}
 
 	/**

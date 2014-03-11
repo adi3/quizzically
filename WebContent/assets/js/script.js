@@ -78,13 +78,21 @@ $(document).ready(function() {
 	});
 	
 	
-	$("#sign-up-lnk").click(function(event){		
-	    $(".mid-popup").fadeIn();
+	$("#sign-up-lnk").click(function(event){
+	    request = $.ajax({
+	        url: "Register",
+	        type: "get"
+	    });
+	    
+	    request.done(function (response, textStatus, jqXHR){
+        	$(".mid-popup").html(response).fadeIn();
+	    });
+	    
 	    event.preventDefault();
 	});
 	
 	
-	$("#sign-up-btn").click(function(event){
+	$(document).on('click', "#sign-up-btn", function(event){
 	    if (request) request.abort();
 
 	    $(".mid-popup .close").hide();
@@ -148,18 +156,26 @@ $(document).ready(function() {
 	});
 	
 	
-	$("#sign-up").keypress(function(e) {
+	$(document).on('keypress', "#sign-up", function(e){
 		if (e.which == 13) $("#sign-up-btn").click();
 	});
 	
 	
 	$("#change-pass-lnk").click(function(event){		
-	    $(".mid-popup").fadeIn();
+		request = $.ajax({
+	        url: "ChangePassword",
+	        type: "get"
+	    });
+	    
+	    request.done(function (response, textStatus, jqXHR){
+        	$(".mid-popup").html(response).fadeIn();
+	    });
+	    
 	    event.preventDefault();
 	});
 	
 	
-	$("#change-pass-btn").click(function(event){		
+	$(document).on('click', "#change-pass-btn", function(event){		
 		if (request) request.abort();
 
 	    $(".mid-popup .close").hide();
@@ -216,18 +232,56 @@ $(document).ready(function() {
 	});
 	
 	
-	$("#change-pass").keypress(function(e) {
+	$(document).on('keypress', "#change-pass", function(e){
 		if (e.which == 13) $("#change-pass-btn").click();
 	});
 	
 	
 	$("#searchbox").submit(function(e) {
+		e.preventDefault();
+		
 		if ($("#searchbox input").val() == "") {
 			$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
 			$(".msg-container .msg").text("Search field cannot be empty!");
 	    	$(".msg-container").hide().slideToggle();
-			e.preventDefault();
+	    	return;
 		}
+		
+		if (request) request.abort();
+		
+	    var $form = $(this);
+	    var $inputs = $form.find("input");
+	    var serializedData = $form.serialize();
+	    
+	    $inputs.prop("disabled", true);
+	    
+
+		$(".mid-popup").fadeOut(function() {
+		    request = $.ajax({
+		        url: "SearchUsers",
+		        type: "post",
+		        data: serializedData
+		    });
+		    
+		    // on success
+		    request.done(function (response, textStatus, jqXHR){
+		    	$(".mid-popup").html(response).fadeIn();
+		    });
+	
+		    // on failure
+		    request.fail(function (jqXHR, textStatus, errorThrown){
+		    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+		    	$(".msg-container .msg").text("Weird network error. Please try again!");
+		    	$(".msg-container").hide().slideToggle();
+		    });
+	
+		    // akin to Java's finally clause
+		    request.always(function () {
+		        $inputs.prop("disabled", false);
+		        $(".mid-popup #form-loader").hide();
+		        $(".mid-popup .close").show();
+		    });
+		});
 	});
 	
 	
@@ -259,12 +313,10 @@ $(document).ready(function() {
 		e.preventDefault();
 		var data = $(this).attr("href").split("?")[1];
 
-		var row = $(this).parent().parent().parent();
-		var str = "";
+		var row = $(this).parent().parent();
 		$(row).find("td").each(function() {
-			str += "<td>" + $(this).html().replace("<b>", "").replace("</b>", "") + "</td>";
+			$(this).css("font-weight", "normal");
 		});
-		$(row).html(str);
 		
 		request = $.ajax({
 	        url: "Messages",
@@ -418,6 +470,12 @@ $(document).ready(function() {
 		}
 		field.val(list);
 		console.log(field.val());
+	});
+	
+	
+	$("#add-frnd").submit(function(e) {
+		e.preventDefault();
+		console.log("Sd");
 	});
 	
 });

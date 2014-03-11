@@ -37,8 +37,8 @@
 		</div>
 	</div>
 	
-	<br />
-	<div class="row">
+	<hr />
+	<div class="row" id="show-msg">	
 		<%= msg.getMsg() %>
 	</div>
 </div>

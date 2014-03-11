@@ -19,7 +19,7 @@
 				<% User self = new User(sessionUser); %>
 				<% if (!friends.contains(self) && !request.getAttribute("username").equals(sessionUser)) { %>
 					<div class="frnd-req">
-						<form action="Friends" method="post">
+						<form action="Friends" method="post" id="add-frnd">
 							<div>
 								<input type="hidden" name="mode" value="add" />
 								<input type="hidden" name="user" value="<%= request.getAttribute("username") %>" />
@@ -114,7 +114,6 @@
 </div>
 
 <div class="mid-popup">
-<%@include file="ChangePassword.jsp" %>
 </div>
 
 <%@include file="frags/Footer.jsp" %>
