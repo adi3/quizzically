@@ -111,7 +111,7 @@ public class Answer {
 	 * @param ID
 	 * @return retrieved Answer object
 	 */
-	public static Answer retrieveByID(int answerID){
+	public static Answer retrieve(int answerID){
 		MySql sql = MySql.getInstance();
 		SqlResult answerResult = sql.get(MyDBInfo.ANSWERS_TABLE, "`id`="+answerID);
 		SqlResult answerTextsResult = sql.get(MyDBInfo.ANSWER_TEXTS_TABLE, "`answer_id`="+answerID);
@@ -154,7 +154,7 @@ public class Answer {
 			try{
 				int answerID = Integer.parseInt(answerResult.get(i).get("id"));
 				int position = Integer.parseInt(answerResult.get(i).get("position"));
-				orderedAnswers.put(position, Answer.retrieveByID(answerID));
+				orderedAnswers.put(position, Answer.retrieve(answerID));
 			} catch(NumberFormatException e){
 				// ignore
 			}

@@ -68,6 +68,16 @@ public abstract class ApiServlet extends BaseServlet {
 		return str;
 	}
 
+	protected String[] getArray(HttpServletRequest request, String field) 
+			throws ServletException {
+		String[] strs = request.getParameterValues(field);
+		if (strs == null) {
+			throw new ServletException("Required field '" + field + 
+					"' is missing");
+		}
+		return strs;
+	}
+
 	/**
 	 * Require given fields in the request
 	 * @param request the request to require the parameters for

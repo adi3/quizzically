@@ -151,6 +151,22 @@ public abstract class Question {
 		// since Answer belongs to unique Question.
 		orderedAnswers.put(position, answer);
 	}
+
+	/**
+	 * create an Answer associated with this Question
+	 * @param correct whether or not the answer is correct
+	 * @param texts the valid texts recognized for this answer
+	 * @return the created Answer
+	 */
+	public Answer createAnswer(boolean correct, ArrayList<String> texts) 
+			throws ModelException {
+		Integer pos = orderedAnswers.size() != 0 ? orderedAnswers.lastKey() + 1 : 1;
+		Answer ans = Answer.create(this, pos, correct);
+		for (String text : texts) {
+			ans.addAnswerText(text);
+		}
+		return ans;
+	}
 	
 	
 	/**
