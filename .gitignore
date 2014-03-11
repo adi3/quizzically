@@ -1,0 +1,25 @@
+*.class
+.classpath
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# os x
+.DS_Store
+
+# vim
+.vimrc
+*.swp
+*.swo
+*.swn
+Session.vim
+
+# build
+bin
+build
+
+# eclipse
+.settings/
+.classpath

@@ -46,7 +46,7 @@ public class MySql {
 			return stmt.executeQuery(sql);
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return null;
+			throw new RuntimeException("DB Error: Execute query failed");
 		}
 	}
 	
@@ -56,7 +56,7 @@ public class MySql {
 			return stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return 0;
+			throw new RuntimeException("DB Error: Execute update failed");
 		}
 	}
 	
@@ -74,7 +74,7 @@ public class MySql {
 			return stmt.getGeneratedKeys();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return null;
+			throw new RuntimeException("DB Error: Execute insertion failed");
 		}
 	}
 	
@@ -125,7 +125,7 @@ public class MySql {
 			return keys.getInt(1);
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return 0;
+			throw new RuntimeException("DB insert failed");
 		}
 	}
 	

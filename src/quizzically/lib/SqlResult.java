@@ -22,6 +22,7 @@ public class SqlResult extends ArrayList<HashMap<String, String>> {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new RuntimeException("DB error in ResultSet parse");
 		}
 	}
 
