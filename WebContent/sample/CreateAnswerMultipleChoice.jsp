@@ -11,13 +11,28 @@
 	question_id: <input type="text" name="question_id" /><br />
 	texts: 
 	<input type="text" name="texts" /><br />
+	correct: 
+	<input type="checkbox" name="correct" value="1" /><br />
+	<input type="submit" />
+</form>
++ add button to show more forms..
+<form action="/Quizzically/api/Answer" method="POST">
+	question_id: <input type="text" name="question_id" /><br />
+	texts: 
 	<input type="text" name="texts" /><br />
-	<input type="text" name="texts" /><br />
-	(arbitrary number of texts allowed)<br />
-	<input type="hidden" name="correct" value="1" /><br />
+	correct: 
+	<input type="checkbox" name="correct" value="1" /><br />
 	<input type="submit" />
 </form>
 
+<form action="/Quizzically/api/Answer" method="POST">
+	question_id: <input type="text" name="question_id" /><br />
+	texts: 
+	<input type="text" name="texts" /><br />
+	correct: 
+	<input type="checkbox" name="correct" value="1" /><br />
+	<input type="submit" />
+</form>
 
 </body>
 </html>
