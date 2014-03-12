@@ -176,37 +176,14 @@ public abstract class Question extends Model {
 	 * Retrieve Question object from db.
 	 * Throws exception on error and returns null 
 	 * if no Question with the desired ID was found.
-	 * @param questionID
+	 * TODO ^^ does it return null? i don't think so anymore
+	 * 				update comment based on Model behavior...
+	 * @param id
 	 * @return
 	 */
-	public static Question retrieve(int questionID) {
-		MySql sql = MySql.getInstance();
-		SqlResult res = sql.get(MyDBInfo.QUESTIONS_TABLE, "`id` = " + questionID);
-
-		if (res.size() == 0) {
-			return null;
-		}
-
-		HashMap<String, String> row = res.get(0);
-		try {
-			String text = row.get("text");
-			int type = Integer.parseInt(row.get("type"));
-			SortedMap<Integer, Answer> orderedAnswers = Answer.retrieveByQuestionID(questionID);
-			switch (type) {
-				case TYPE_TEXT:
-					return new TextQuestion(questionID, text, orderedAnswers);
-				case TYPE_FILL_IN:
-					return new FillInQuestion(questionID, text, orderedAnswers);
-				case TYPE_MULTIPLE_CHOICE:
-					return new MultipleChoiceQuestion(questionID, text, orderedAnswers);
-				case TYPE_PICTURE:
-					return new PictureQuestion(questionID, text, orderedAnswers);
-				default:
-					// TODO: I think do nothing i.e. return null since type is invalid
-			}
-		} catch (NumberFormatException e) { /*ignore*/ }
-
-		return null;
+	public static Question retrieve(int id) {
+		return (Question) 
+			Model.retrieve(TABLE, id, new QuestionHydrator());
 	}
 
 	/**
