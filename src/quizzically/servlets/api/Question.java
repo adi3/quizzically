@@ -44,6 +44,9 @@ public class Question extends ApiServlet {
 
 		if (id != -1) {
 			question = quizzically.models.Question.retrieve(id);
+			question.setType(type);
+			question.setText(text);
+			question.save();
 //			TODO support update
 		} else {
 			question = quizzically.models.Question.create(text, type);

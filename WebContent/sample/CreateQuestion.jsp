@@ -9,6 +9,7 @@
 </head>
 <body>
 <form action="/Quizzically/api/Question" method="POST">
+<!--<input type="hidden" name="id" value="15" />-->
 	quiz_id: <input type="text" name="quiz_id" /><br />
 	text: <input type="text" name="text" /><br />
 	type: 

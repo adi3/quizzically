@@ -67,11 +67,19 @@ public abstract class Question extends Model {
 		return text;
 	}
 
+	public void setText(String text) {
+		this.text = text;
+	}
+
 	/**
 	 * The question type
 	 */
 	public int type() {
 		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
 	}
 
 	/**
