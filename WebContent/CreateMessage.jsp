@@ -1,54 +1,67 @@
 <%@page import="java.util.ArrayList"%>
 <%@page import="quizzically.models.*"%>
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+
 <% String mode = (String) request.getParameter("mode");  %>
 <% Message msg = (Message) request.getAttribute("msg");  %>
-<title>
+
+<h3>
 <% if (mode.equals("new")) { %>
 	New Message
 <% } else if (mode.equals("reply")) { %>
 	Reply to <%= msg.getFromUser().getName() %>
 <% } %>
-</title>
-</head>
-<body>
-	<h1><% if (mode.equals("new")) { %>New Message<% } %></h1>
-	
-	<form action="Messages" method="post">
-		<div>
+</h3>
+
+<div class="loader" id="form-loader">
+	<img src="assets/img/ajax-loader.gif" />
+</div>
+<div class="close">
+	<img src="assets/img/close.gif" />
+</div>
+
+<div id="msg">
+	<form action="Messages" method="post" id="create-msg">
+		<div class="row">
 			<% if (mode.equals("new")) { %>
-				<p><b>To: </b><input type="text" name="to" placeholder="Enter comma-separated usernames..." /></p>
+				<div class="col-md-12 msg-info">
+					<b>To: </b><input type="text" name="to" placeholder="Enter comma-separated usernames..." style="width: 90%;padding: 3px" /></p>
+				</div>
 				
+				<div class="col-md-5"></div>
+				<div class="col-md-5">
 				<% ArrayList<User> friends = (ArrayList<User>)request.getAttribute("friends"); %>
 				<% if (friends != null && !friends.isEmpty()) { %>
-					<p><select>
+					<select>
 					<% for (User friend : friends) { %>
-					 	<option value="<%= friend.getUsername() %>">
-					 		<%= friend.getName() + " [" + friend.getUsername() + "]" %>
-					 	</option>
+					 	<option value="<%= friend.getUsername() %>"><%= friend.getName() %></option>
 					<% } %>
-					</select></p>
+					</select>
+				</div>
+				<div class="col-md-2">
+					<a class="btn btn-default" href="#" id="add-receiver-btn">Add</a>
+				</div>
 				<% } %>
-				<p>... add select button working with jquery...</p>
 					
-				<p><b>Message:</b>
+				<div><b>Message:</b>
 			<% } else if (mode.equals("reply")) {%>
-				<p><b>To: </b><%= msg.getFromUser().getName() %></p>
+				<div class="col-md-12 msg-info">
+					<b>To: </b><a href="Profile?id=<%= msg.getFromUser().getId() %>">
+						<%= msg.getFromUser().getName() %>
+					</a>
+				</div>
 				<input type="hidden" name="to" value="<%= msg.getFromUser().getUsername() %>" />
-				<p><b>Message: </b><%= msg.getMsg() %></b></p>
-				<p><b>Your Reply:</b>
+				<div class="col-md-12 msg-info">
+					<b>Original Message: </b><%= msg.getMsg() %></b>
+				</div>
+				<div class="col-md-12" style="margin-top: 10px"><b>Your Reply:</b>
 			<% } %>
 				<br />
 				<textarea name="msg" placeholder="Enter message here..."></textarea>
-			</p>
-			<p><input type="submit" value="Send" /></p>	
+			</div>
+			
+			<div class="col-md-12" style="margin-top: 2%">
+				<input type="submit" class="btn btn-default" value="Send" />
+			</div>	
 		</div>
 	</form>
-	
-</body>
-</html>
+</div>

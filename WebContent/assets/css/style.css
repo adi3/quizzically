@@ -242,23 +242,32 @@ footer {
 
 .frnd-req {
 	float: left;
-	margin-top: 6%;
-	margin-left: 6%;
+	margin-top: 4%;
+	margin-left: 5%;
 }
 
-.friends-info img {
+.friends-info td:first-child img {
 	width: 40px;
 }
 
 .friends-info td {
 	padding: 4px;
 	text-align: left;
-	width: 60px;
 	font-weight: bold;
 }
 
-.friends-info td:last-child {
-	width: 150px;
+.friends-info td:first-child {
+	width: 60px;
+}
+
+.friends-info td:nth-child(2) {
+	width: 130px;
+}
+
+.friends-info td:last-child img {
+	width: 16px;
+	border-radius: 10px;
+	cursor: pointer;
 }
 
 td a {
@@ -307,6 +316,8 @@ td a:hover {
 
 .inbox table td {
 	border-bottom: 1px solid #ddd;
+	font-size: 13px;
+	padding: 8px;
 }
 
 .inbox table td:first-child {
@@ -320,6 +331,7 @@ td a:hover {
 
 .inbox table td:nth-child(3) {
 	text-align: center;
+	width: 200px;
 }
 
 .inbox table td:nth-child(4) {
@@ -330,4 +342,62 @@ td a:hover {
 
 #new-msg-lnk {
 	margin-top: 2%;
+}
+
+.mid-popup #msg {
+	padding: 0 35px;
+	margin-bottom: 20px;
+	font-size: 13px;
+}
+
+.mid-popup .msg-info {
+	margin-bottom: 3px;
+	font-size: 13px;
+}
+
+.mid-popup #msg textarea {
+	resize: none;
+	width: 100%;
+	margin-top: 8px;
+	height: 100px;
+	padding: 6px;
+}
+
+.mid-popup select {
+	padding: 3px;
+	margin-top: 3px;
+	margin-left: 20px;
+	width: 150px;
+}
+
+#show-msg {
+	max-height: 150px;
+	overflow-y: auto;
+	margin: 0;
+}
+
+#msg hr {
+	margin: 10px 0;
+	border-color: #ddd;
+}
+
+#search-results table td {
+	padding: 5px 30px;
+	font-weight: bold;
+	font-size: 16px;
+	border-bottom: 1px solid #ccc;
+}
+
+#search-results table td img {
+	width: 40px;
+}
+
+#search-results table td:last-child {
+	width: 100%;
+	text-align: center;
+}
+
+#search-results div:nth-child(2) {
+	overflow-y: auto;
+	max-height: 250px;
 }

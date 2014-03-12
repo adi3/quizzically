@@ -41,7 +41,7 @@ public class User {
 	
 	public static ArrayList<User> search(String param, String username) {
 		String[] cols = {"username"};
-		SqlResult users = MySql.getInstance().get(cols, MyDBInfo.USERS_TABLE, "name LIKE '" + param + "%'");
+		SqlResult users = MySql.getInstance().get(cols, MyDBInfo.USERS_TABLE, "name LIKE '" + param + "%' OR username LIKE '" + param + "%'");
 		
 		ArrayList<User> results = new ArrayList<User>();
 		for (int i = 0; i < users.size(); i++) {
@@ -63,6 +63,17 @@ public class User {
 		return results;
 	}
 	
+	
+	public boolean isPendingFriend(String username) {
+		User friend = new User(username);
+		SqlResult row = sql.get(MyDBInfo.FRIENDS_TABLE, "(id_1=" + this.getId() + " AND id_2=" + friend.getId() + ") "
+							+ "OR (id_2=" + this.getId() + " AND id_1=" + friend.getId() + ")");
+		
+		if (row.isEmpty()) return false; 
+		String confirmed = row.get(0).get("is_confirmed");
+		return confirmed.equals("0") ? true : false;
+	}
+	
 	public boolean addFriend(User friend) {
 		String[] cols = {"id_1", "id_2", "is_confirmed"};
 		String[] vals = {Integer.toString(getId()), Integer.toString(friend.getId()), "0"};
@@ -71,12 +82,19 @@ public class User {
 		return id != 0;
 	}
 	
+	
 	public boolean acceptRequest(User friend) {
 		int status = sql.update(MyDBInfo.FRIENDS_TABLE, "is_confirmed=1", 
 							"id_1=" + friend.getId() + " AND id_2=" + this.id);
 
 		String msg = MyConfigVars.ACCEPT_MSG.replace("{Name}", this.name);
 		if (status == 1) new Message(msg, "REQUEST", this, friend).save();
+		return status == 1;
+	}
+	
+	public boolean deleteFriend(User friend) {
+		int status = sql.delete(MyDBInfo.FRIENDS_TABLE, "(id_1=" + this.id + " AND id_2=" + friend.getId() + ") "
+							+ "OR (id_2=" + this.id + " AND id_1=" + friend.getId() + ")");
 		return status == 1;
 	}
 	

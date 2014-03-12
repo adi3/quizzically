@@ -7,27 +7,18 @@
 		<br />
 		
 		<form method="post" action="UpdateProfile" id="profile-form">
-		<div class="col-md-1"></div>
-		<div class="col-md-3">	
-			<h1><%= request.getAttribute("name") %></h1>
-			<br />
-			<img src="assets/img/<%= request.getAttribute("img") %>" />
-		</div>
-		
-		<div class="col-md-4">
+			<div class="col-md-1"></div>
+			<div class="col-md-3">	
+				<h1><%= request.getAttribute("name") %></h1>
+				<br />
+				<img src="assets/img/<%= request.getAttribute("img") %>" />
+			</div>
+			
 			<% if (sessionUser != null) { %>
 				<% User self = new User(sessionUser); %>
-				<% if (!friends.contains(self) && !request.getAttribute("username").equals(sessionUser)) { %>
-					<div class="frnd-req">
-						<form action="Friends" method="post">
-							<div>
-								<input type="hidden" name="mode" value="add" />
-								<input type="hidden" name="user" value="<%= request.getAttribute("username") %>" />
-								<input type="submit" class="btn btn-default" value="Send Friend Request" />
-							</div>
-						</form>
-					</div>
-					
+			<% } %>
+			<div class="col-md-4">
+				<% if ((sessionUser == null || !friends.contains(new User(sessionUser))) && !request.getAttribute("username").equals(sessionUser)) { %>					
 					<div class="profile-info">
 						<table>
 							<tr>
@@ -62,25 +53,8 @@
 						</table>
 					</div>
 				<% } %>
-			<% } else { %>
-				<div class="profile-info">
-					<table>
-						<tr>
-							<td>Username</td>
-							<td class="blur">Hidden</td>
-						</tr>
-						<tr>
-							<td>Email</td>
-							<td class="blur">Hidden</td>
-						</tr>
-						<tr>
-							<td>Location</td>
-							<td class="blur">Hidden</td>
-						</tr>
-					</table>
-				</div>
-			<% } %>
-		</div>
+			</div>
+		</form>
 		
 		<div class="col-md-3">
 			<div class="friends-info">
@@ -93,13 +67,13 @@
 						<tr>
 							<td><img src="assets/img/<%= friend.getImg() %>" /></td>
 							<td><a href="Profile?id=<%= friend.getId() %>" ><%= friend.getName() %></a></td>
+							<td><img src="assets/img/close.gif" id="del-<%= friend.getId() %>" /></td>
 						</tr>
 					<% } %>
 				</table>
 			<% } %>
 			</div>
 		</div>
-		</form>
 	</div>
 	
 	<div class="row">
@@ -109,12 +83,28 @@
 				<button class="btn btn-edit" id="update-profile-btn">Update Profile</button>
 				<button class="btn btn-edit" id="save-profile-btn">Save Profile</button>
 				<button class="btn btn-edit" id="change-pass-lnk">Change Password</button>
+		<% } else if (sessionUser != null) { %>
+			<% User self = new User(sessionUser); %>
+			<% if (!friends.contains(self) && !request.getAttribute("username").equals(sessionUser)) { %>
+				<% if (self.isPendingFriend((String)request.getAttribute("username"))) { %>
+					<div class="frnd-req" style="margin-left:6%;cursor: not-allowed;font-style:italic;">
+						<button class="btn btn-default" disabled="disabled">Request Pending</button>
+					</div>
+				<% } else { %>
+					<form method="post" action="Friends" id="add-frnd">
+						<div class="frnd-req">
+							<input type="hidden" name="mode" value="add" />
+							<input type="hidden" name="user" value="<%= request.getAttribute("username") %>" />
+							<input type="submit" class="btn btn-default" value="Send Friend Request" />
+						</div>
+					</form>
+				<% } %>
+			<% } %>
 		<% } %>
 	</div>
 </div>
 
 <div class="mid-popup">
-<%@include file="ChangePassword.jsp" %>
 </div>
 
 <%@include file="frags/Footer.jsp" %>
