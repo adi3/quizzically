@@ -40,9 +40,6 @@ public class Quiz extends Model {
 		"Random Order"
 	};
 
-
-	
-	
 	private String name;
 	private String description;
 	private int owner_id;
@@ -87,12 +84,10 @@ public class Quiz extends Model {
 	public static Quiz retrieve(int id) {
 		Model m = Model.retrieve(TABLE, id, new QuizHydrator());
 		Quiz quiz = (Quiz) m;
-		SortedMap<Integer, Question> orderedQuestions = Question.retrieveByQuizID(id);
-		quiz.setQuestions(orderedQuestions);
 		return quiz;
 	}
 	
-	private void setQuestions(SortedMap<Integer, Question> orderedQuestions) {
+	protected void setQuestions(SortedMap<Integer, Question> orderedQuestions) {
 		this.orderedQuestions = orderedQuestions;
 	}
 

@@ -12,7 +12,8 @@ import java.util.*;
 
 import quizzically.exceptions.*;
 
-public abstract class Question {
+public abstract class Question extends Model {
+	private static final String TABLE = MyDBInfo.QUESTIONS_TABLE;
 	private static final String[] QUESTIONS_COLUMNS = {"text", "type"};
 
 	public static final int TYPE_TEXT = 0;
@@ -38,7 +39,6 @@ public abstract class Question {
 		return TYPE_STRINGS[type];
 	}
 	
-	private int id;
 	private String text;
 	int type;
 	private SortedMap<Integer, Answer> orderedAnswers;
@@ -53,21 +53,11 @@ public abstract class Question {
 	 * do not call except in subclasses
 	 */
 	protected Question(int id, String text, SortedMap<Integer, Answer> orderedAnswers) {
+		super(id, TABLE, new QuestionHydrator());
 		this.orderedAnswers = orderedAnswers;
-		this.id = id; 
 		this.text = text;
 	}
 
-	protected Question(String text) {
-		this.text = text;
-	}
-
-	/**
-	 * Get the id
-	 */
-	public int id() {
-		return id;
-	}
 
 	/**
 	 * Get the raw question text
@@ -120,19 +110,24 @@ public abstract class Question {
 	 * @return
 	 */
 	public static Question create(String text, int type){
-		MySql sql = MySql.getInstance();
-		String[] values = {text, Integer.toString(type)};
-		int questionID = sql.insert(MyDBInfo.QUESTIONS_TABLE, QUESTIONS_COLUMNS, values);
 		SortedMap<Integer, Answer> orderedAnswers = new TreeMap<Integer, Answer>();
+		Question question = Question.instance(-1, text, type, 
+				orderedAnswers);
+		question.save(true);
+		return question;
+	}
+
+	protected static Question instance(int id, String text, 
+			int type, SortedMap<Integer, Answer> orderedAnswers) {
 		switch (type) {
 			case TYPE_TEXT:
-				return new TextQuestion(questionID, text, orderedAnswers);
+				return new TextQuestion(id, text, orderedAnswers);
 			case TYPE_FILL_IN:
-				return new FillInQuestion(questionID, text, orderedAnswers);
+				return new FillInQuestion(id, text, orderedAnswers);
 			case TYPE_MULTIPLE_CHOICE:
-				return new MultipleChoiceQuestion(questionID, text, orderedAnswers);
+				return new MultipleChoiceQuestion(id, text, orderedAnswers);
 			case TYPE_PICTURE:
-				return new PictureQuestion(questionID, text, orderedAnswers);
+				return new PictureQuestion(id, text, orderedAnswers);
 			default:
 				throw new RuntimeException("Requested question type does not exist.");
 		}
@@ -237,16 +232,9 @@ public abstract class Question {
 	public boolean equals(Object obj){
 		if(obj == this) return true;
 		if(! (obj instanceof Question)) return false;
-		return id == ((Question)obj).id;
+		return id() == ((Question)obj).id();
 	}
 	
-	/**
-	 * Simple id-based hashcode for HashMap usage
-	 */
-	public int hashCode() {
-		return id;
-	}
-
 	/**
 	 * Grade the given user answer(s)
 	 * @param answers the answers provided by the user
@@ -273,5 +261,9 @@ public abstract class Question {
 		public int possible() {
 			return possible;
 		}
+	}
+
+	public String[] cols() {
+		return QUESTIONS_COLUMNS;
 	}
 }
