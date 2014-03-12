@@ -34,7 +34,7 @@ public class Profile extends HttpServlet {
 
 		if (userId == null) {
 			String username = (String) request.getSession().getAttribute("user");
-			userId = new User(username).getId();
+			userId = Integer.toString(new User(username).getId());
 			
 			if (username != null) {
 				sessionName = (String) request.getSession().getAttribute("name");

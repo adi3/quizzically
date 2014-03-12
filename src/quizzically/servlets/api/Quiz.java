@@ -42,11 +42,11 @@ public class Quiz extends ApiServlet {
 //			quiz.setDescription(description);
 //			quiz.save();
 		} else {
-//			quiz = quizzically.models.Quiz.create(name, user.getId());
+			quiz = quizzically.models.Quiz.create(name, user.getId());
 		}
 
 		// respond with id
 		PrintWriter out = response.getWriter();
-//		out.println(quiz.id());
+		out.println(quiz.id());
 	}
 }
