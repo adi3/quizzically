@@ -1,5 +1,6 @@
 package quizzically.models;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -8,56 +9,93 @@ import quizzically.config.MyDBInfo;
 import quizzically.lib.MySql;
 import quizzically.lib.SqlResult;
 
-public class Quiz {
-	private static final String[] QUIZZES_COLUMNS = new String[]{"name", "owner_id"};
+public class Quiz extends Model {
+	private static final String TABLE = MyDBInfo.QUIZZES_TABLE;
+	private static final String[] QUIZZES_COLUMNS = new String[]{"name", "owner_id", "description", "created_at", "page_format", "order"};
 	private static final String[] QUIZ_QUESTIONS_COLUMNS = new String[]{"quiz_id", "question_id", "position"};
+
+	public static final int PAGE_FORMAT_ALL_IN_ONE = 0;
+	public static final int PAGE_FORMAT_ONE_PER_PAGE = 1;
+
+	public static final int[] PAGE_FORMATS = {
+		PAGE_FORMAT_ALL_IN_ONE,
+		PAGE_FORMAT_ONE_PER_PAGE
+	};
+
+	public static final String[] PAGE_FORMAT_STRINGS = {
+		"On One Page",
+		"One Per Page"
+	};
+
+	public static final int ORDER_STANDARD = 0;
+	public static final int ORDER_RANDOM = 1;
+
+	public static final int[] ORDERS = {
+		ORDER_STANDARD,
+		ORDER_RANDOM
+	};
+
+	public static final String[] ORDER_STRINGS = {
+		"In Order",
+		"Random Order"
+	};
+
+
 	
-	private int id;
+	
 	private String name;
+	private String description;
 	private int owner_id;
+	private Date createdAt;
+	private int pageFormat, order;
 	private User owner;
 	private SortedMap<Integer, Question> orderedQuestions;
 	
-	private Quiz(int id, String name, int owner_id, SortedMap<Integer, Question> orderedQuestions) {
-		this.id = id;
-		this.name = name;
-		this.owner_id = owner_id;
-		this.orderedQuestions = orderedQuestions;
+	protected Quiz(int id, String name, int owner_id, 
+			String description, Date createdAt, int pageFormat, 
+			int order) {
+		this(id, name, owner_id, description, createdAt, 
+				pageFormat, order, new TreeMap<Integer, Question>());
 	}
 
-	public static Quiz create(String name, int ownerID){
-		MySql sql = MySql.getInstance();
-		String[] values = {name, Integer.toString(ownerID)};
-		int insertionID = sql.insert(MyDBInfo.QUIZZES_TABLE, QUIZZES_COLUMNS, values);
-		return new Quiz(insertionID, name, ownerID, new TreeMap<Integer, Question>());
+	private Quiz(int id, String name, int owner_id, 
+			String description, Date createdAt, int pageFormat, 
+			int order, SortedMap<Integer, Question> questions) {
+		super(id, TABLE, new QuizHydrator());
+		this.name = name;
+		this.owner_id = owner_id;
+		this.description = description;
+		this.createdAt = createdAt;
+		this.pageFormat = pageFormat;
+		this.order = order;
+		this.orderedQuestions = questions;
+	}
+
+	public static Quiz create(String name, int ownerId, 
+			String description, int pageFormat, 
+			int order) {
+		Date createdAt = new Date(); // now
+		Quiz quiz = new Quiz(-1, name, ownerId, description, 
+				createdAt, pageFormat, order);
+		quiz.save(true);
+		return quiz;
 	}
 	
 	/**
 	 * Get the quiz with the given id or null if it doesn't exist
 	 */
 	public static Quiz retrieve(int id) {
-		MySql sql = MySql.getInstance();
-		SqlResult res = sql.get(MyDBInfo.QUIZZES_TABLE, "`id` = " + id);
-		String name;
-		int quizID;
-		int ownerID;
-
-		if (res.size() == 0) {
-			return null;
-		}
-
-		HashMap<String, String> row = res.get(0);
-		try { 
-			name = row.get("name");
-			quizID = Integer.parseInt(row.get("id"));
-			ownerID = Integer.parseInt(row.get("owner_id"));
-			SortedMap<Integer, Question> orderedQuestions = Question.retrieveByQuizID(id);
-			return new Quiz(quizID, name, ownerID, orderedQuestions);
-		} catch (NumberFormatException e) {
-			return null;
-		}
+		Model m = Model.retrieve(TABLE, id, new QuizHydrator());
+		Quiz quiz = (Quiz) m;
+		SortedMap<Integer, Question> orderedQuestions = Question.retrieveByQuizID(id);
+		quiz.setQuestions(orderedQuestions);
+		return quiz;
 	}
 	
+	private void setQuestions(SortedMap<Integer, Question> orderedQuestions) {
+		this.orderedQuestions = orderedQuestions;
+	}
+
 	/**
 	 * Appends the question to the quiz as in
 	 * addQuestion(Question, position)
@@ -92,18 +130,53 @@ public class Quiz {
 		// DB are also in the SortedMap of the Quiz object
 		if(! orderedQuestions.containsValue(question)){ // id comparison
 			orderedQuestions.put(position, question);
-			String[] values = {Integer.toString(id), Integer.toString(question.id()), Integer.toString(position)};
+			String[] values = {Integer.toString(id()), Integer.toString(question.id()), Integer.toString(position)};
 			sql.insert(MyDBInfo.QUIZ_QUESTIONS_TABLE, QUIZ_QUESTIONS_COLUMNS, values);
 		}
 	}
 	
-
-	public int id() {
-		return id;
-	}
-
 	public String name() {
 		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public int ownerId() {
+		return owner_id;
+	}
+
+	public void setOwnerId(int ownerId) {
+		this.owner_id = ownerId;
+	}
+
+	public String description() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Date createdAt() {
+		return createdAt;
+	}
+
+	public int pageFormat() {
+		return pageFormat;
+	}
+
+	public void setPageFormat(int pageFormat) {
+		this.pageFormat = pageFormat;
+	}
+
+	public int order() {
+		return order;
+	}
+
+	public void setOrder(int order) {
+		this.order = order;
 	}
 
 	/**
@@ -116,5 +189,9 @@ public class Quiz {
 			questions.add(q);
 		}
 		return questions;
+	}
+
+	public String[] cols() {
+		return QUIZZES_COLUMNS;
 	}
 }

@@ -25,24 +25,26 @@ public class Quiz extends ApiServlet {
 		User user;
 		String name, description;
 		quizzically.models.Quiz quiz;
-		int id;
+		int id, pageFormat, order;
 
 		umbli(request);
 		user = getUser(request);
 		id = getInt(request, "id", -1);
-		requireFields(request, new String[]{"name", "description"});
 
 		name = getString(request, "name");
 		description = getString(request, "description");
+		pageFormat = getInt(request, "page_format");
+		order = getInt(request, "order");
 
 		if (id != -1) {
 			quiz = quizzically.models.Quiz.retrieve(id);
 //			TODO support update
-//			quiz.setName(name);
-//			quiz.setDescription(description);
-//			quiz.save();
+			quiz.setName(name);
+			quiz.setDescription(description);
+			quiz.save();
 		} else {
-			quiz = quizzically.models.Quiz.create(name, user.getId());
+			quiz = quizzically.models.Quiz.create(name, 
+					user.getId(), description, pageFormat, order);
 		}
 
 		// respond with id
