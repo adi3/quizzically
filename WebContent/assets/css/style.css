@@ -435,9 +435,40 @@ td a:hover {
 	font-weight: bold;
 	display: inline-block;
 	margin-right: 20px;
-	width: 25%;
 }
 
 .quiz .meta select {
 	width: 120px;
+}
+
+#add_btn {
+	float: right;
+	cursor: pointer;
+}
+
+#add_btn img {
+	width: 16px;
+	margin-top: -3px;
+	margin-right: 9px;
+}
+
+form[id*=ques-] textarea {
+	margin-top:3px;
+	margin-left:-3px;
+	width: 300px;
+	resize: none;
+}
+
+.quiz .index {
+	float: right;
+	margin-right: 0;
+	margin-top: 11px;
+}
+
+.quiz .index:after{ 
+	content:".";
+}
+
+.quiz p[name=ques_text] {
+	margin-top: 6px;
 }

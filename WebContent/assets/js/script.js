@@ -618,7 +618,7 @@ $(document).ready(function() {
 	});
 	
 	
-	$(document).on('click', ".quiz #description", function(e) {
+	$(document).on('click', ".quiz .meta #description", function(e) {
 		if ($(this).html().indexOf('textarea') == -1) {
 			var val = $(this).text();
 			$(this).html('<textarea name="description" style="margin-top:-3px;margin-left:-3px">' + val + '</textarea>');
@@ -627,19 +627,19 @@ $(document).ready(function() {
 	});
 	
 
-	$(document).on('focusout', ".quiz #description", function(e) {
+	$(document).on('focusout', ".quiz .meta #description", function(e) {
 		var val = $(this.children[0]).val();
 		$(this).html(val);
 		sendQuizData();
 	});
 	
 	
-	$(document).on('change', ".quiz #page_format", function(e) {
+	$(document).on('change', ".quiz .meta #page_format", function(e) {
 		sendQuizData();
 	});
 	
 	
-	$(document).on('change', ".quiz #order", function(e) {
+	$(document).on('change', ".quiz .meta #order", function(e) {
 		sendQuizData();
 	});
 	
@@ -647,19 +647,104 @@ $(document).ready(function() {
 	function sendQuizData() {
 		$("#navbar-form-loader").css("visibility", "visible");
 	    var $inputs = $("#quiz-form").find("input, textarea");
-	    var $id = $("#quiz-form #id");
 	    $inputs.prop("disabled", true);
 	    
-	    var name = $(".quiz #name").text();
-	    var desc = $(".quiz #description").text();
-	    var format = $(".quiz #page_format").val();
-	    var order = $(".quiz #order").val();
+	    var name = $(".quiz .meta #name").text();
+	    var desc = $(".quiz .meta #description").text();
+	    var format = $(".quiz .meta #page_format").val();
+	    var order = $(".quiz .meta #order").val();
 	    
+	    var $id = $("#quiz-form #quiz_id");
 	    var data = "name=" + name + "&description=" + desc + "&page_format=" + format + "&order=" + order;
 	    if ($id.val() != "") data += "&id=" + $id.val();
 	    
 	    request = $.ajax({
 	        url: "Quiz",
+	        type: "post",
+	        data: data
+	    });
+	    
+	 // on success
+	    request.done(function (response, textStatus, jqXHR){
+	    	var json = $.parseJSON(response);	    	
+	        if (json["errors"] == null) $id.val(json["id"]);
+	    });
+
+	    // on failure
+	    request.fail(function (jqXHR, textStatus, errorThrown){
+	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+	    	$(".msg-container .msg").text("Weird network error. Please refresh page and try again!");
+	    	$(".msg-container").hide().slideToggle();
+	    });
+	    
+	    // akin to Java's finally clause
+	    request.always(function () {
+	        $inputs.prop("disabled", false);
+	        $("#navbar-form-loader").css("visibility", "hidden");
+	    });
+	}
+	
+	
+	$("#add_btn").click(function(e){
+		if ($("#ques-1:hidden").length == 1) {
+			sendQuizData();
+			$("#ques-1").show();
+			$("#ques-1").parent().show();
+		} else {
+			var $last = $(".question").last();
+			var $next = $last.clone();
+			
+			var $index = $next.find(".index");
+			var curr_index = parseInt($index.text());
+			$index.text(curr_index + 1);
+			$next.html($next.html().replace('id="ques-' + curr_index + '"' , 'id="ques-' + (curr_index + 1) + '"'));
+
+			$last.after($next);
+		}
+	});
+	
+	
+	$(document).on('click', ".quiz form[id*=ques-] p[name=ques_text]", function(e) {
+		if ($(this).html().indexOf('textarea') == -1) {
+			var val = $(this).text();
+			var parent = $(this).parent();
+			$(parent).html('<textarea name="ques_text">' + val + '</textarea>');
+			$(parent).children().focus();
+		}
+	});
+	
+
+	$(document).on('focusout', ".quiz form[id*=ques-] textarea[name=ques_text]", function(e) {
+		var val = $(this).val();
+		var parent = $(this).parent();
+		$(parent).html('<p name="ques_text">' + val + '</p>');
+		sendQuestionData(parent.parent('form'));
+	});
+	
+	
+	$(document).on('change', ".quiz form[id*=ques-] select", function(e) {
+		console.log($(this).parent().parent());
+		sendQuestionData($(this).parent().parent());
+	});
+	
+	
+	function sendQuestionData(form) {
+		$("#navbar-form-loader").css("visibility", "visible");
+
+		$form = $(form);
+	    var $inputs = $form.find("input, textarea");
+	    $inputs.prop("disabled", true);
+	    
+	    var type = $form.find("select[name=ques_type]").val();
+	    var text = $form.find("p[name=ques_text]").text();
+	    var quiz_id = $("#quiz-form #quiz_id").val();
+	    
+	    var $id = $form.find("input[name=id]");
+	    var data = "quiz_id=" + quiz_id + "&type=" + type + "&text=" + text;;
+	    if ($id.val() != "") data += "&id=" + $id.val();
+	  
+	    request = $.ajax({
+	        url: "Question",
 	        type: "post",
 	        data: data
 	    });
