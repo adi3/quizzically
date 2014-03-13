@@ -161,7 +161,7 @@ public abstract class Question extends Model {
 	 * @param texts the valid texts recognized for this answer
 	 * @return the created Answer
 	 */
-	public Answer createAnswer(boolean correct, ArrayList<String> texts) 
+	public Answer createAnswer(boolean correct, Set<String> texts) 
 			throws ModelException {
 		Integer pos = orderedAnswers.size() != 0 ? orderedAnswers.lastKey() + 1 : 1;
 		Answer ans = Answer.create(this, pos, correct);
@@ -207,8 +207,6 @@ public abstract class Question extends Model {
 		}
 		return orderedQuestions;
 	}
-	
-	
 	
 	/**
 	 * True if obj is a Question with the same id.

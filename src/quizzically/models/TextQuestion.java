@@ -18,7 +18,7 @@ public class TextQuestion extends Question {
 		this.type = Question.TYPE_TEXT;
 	}
 
-	public Answer createAnswer(boolean correct, ArrayList<String> texts) 
+	public Answer createAnswer(boolean correct, Set<String> texts) 
 			throws ModelException {
 		if (answers().size() != 0) {
 			throw new ModelException("There can only be one answer for this type of question");

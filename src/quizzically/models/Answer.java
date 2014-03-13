@@ -3,49 +3,53 @@ package quizzically.models;
 import quizzically.config.MyDBInfo;
 import quizzically.lib.*;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 
-public class Answer {
+public class Answer extends Model {
+	private static final String TABLE = MyDBInfo.ANSWERS_TABLE;
 	private static final String[] ANSWERS_COLUMNS = new String[]{"question_id", "position", "correct"};
 	private static final String[] ANSWER_TEXTS_COLUMNS = new String[]{"answer_id", "text"};
 	
-	private int ID;
 	private int questionID; // ID of question to which this answer belongs
 	private int position; // position of answer in question, -1 if not applicable
 	private boolean correct;
 	private Set<String> answerTexts; // set of Strings which correspond to this answer, e.g. {FloMo, Florence Moore}
 
-	/*
-	 * should only be called by create and retrieve
-	 */
-	private Answer(int ID, int questionID, int position, boolean correct, Set<String> answerTexts) {
-		this.ID = ID;
+	protected Answer(int ID, int questionID, int position, boolean correct, Set<String> answerTexts) {
+		super(ID, TABLE, new AnswerHydrator());
 		this.correct = correct;
 		this.questionID = questionID;
 		this.position = position;
 		this.answerTexts = answerTexts;
 	}
 	
-	public int id() {
-		return ID;
-	}
-	
 	public boolean correct() {
 		return correct;
 	}
+
+	public void setCorrect(boolean correct) {
+		this.correct = correct;
+	}
 	
-	public int questionID() {
+	public int questionId() {
 		return questionID;
 	}
 	
 	public int position() {
 		return position;
 	}
+
+	public void setPosition(int position) {
+		this.position = position;
+	}
 	
 	public Set<String> answerTexts() {
 		return answerTexts;
+	}
+
+	public void setAnswerTexts(Set<String> texts) {
+		answerTexts = texts;
+		// TODO update db..?
 	}
 
 	/**
@@ -78,13 +82,9 @@ public class Answer {
 		if(question.occupiedPositions().contains(position)){
 			return null;
 		}
-		MySql sql = MySql.getInstance();
-		// tuple to be inserted in ANSWERS_TABLE
-		String[] answerValues = {Integer.toString(question.id()), Integer.toString(position), correct ? "1" : "0"};
-		int insertionID = sql.insert(MyDBInfo.ANSWERS_TABLE, ANSWERS_COLUMNS, answerValues);
-		Answer newAnswer = new Answer(insertionID, question.id(), position, correct, new HashSet<String>());
-		question.addAnswer(newAnswer, position); // position vacant
-		return newAnswer;
+		Answer answer = new Answer(-1, question.id(), position, correct, new HashSet<String>());
+		question.addAnswer(answer, position); // position vacant
+		return answer;
 	}
 	
 	/**
@@ -98,7 +98,7 @@ public class Answer {
 		if(! answerTexts.contains(answerText)){
 			answerTexts.add(answerText);
 			MySql sql = MySql.getInstance();
-			String[] values = {Integer.toString(ID), answerText};
+			String[] values = {Integer.toString(id()), answerText};
 			sql.insert(MyDBInfo.ANSWER_TEXTS_TABLE, ANSWER_TEXTS_COLUMNS, values);
 		}
 	}
@@ -111,28 +111,9 @@ public class Answer {
 	 * @param ID
 	 * @return retrieved Answer object
 	 */
-	public static Answer retrieve(int answerID){
-		MySql sql = MySql.getInstance();
-		SqlResult answerResult = sql.get(MyDBInfo.ANSWERS_TABLE, "`id`="+answerID);
-		SqlResult answerTextsResult = sql.get(MyDBInfo.ANSWER_TEXTS_TABLE, "`answer_id`="+answerID);
-		if(answerResult.size() == 0){ // answerID not found
-			return null;
-		}
-		int qID;
-		int pos;
-		boolean corr;
-		try{
-			qID = Integer.parseInt(answerResult.get(0).get("question_id"));
-			pos = Integer.parseInt(answerResult.get(0).get("position"));
-			corr = Integer.parseInt(answerResult.get(0).get("correct")) == 1;
-		} catch(NumberFormatException e){
-			return null;
-		}
-		Set<String> answerTexts = new HashSet<String>();
-		for(int i=0; i<answerTextsResult.size(); i++){
-			answerTexts.add(answerTextsResult.get(i).get("text"));
-		}
-		return new Answer(answerID, qID, pos, corr, answerTexts);		
+	public static Answer retrieve(int id){
+		return (Answer) 
+			Model.retrieve(TABLE, id, new AnswerHydrator());
 	}
 	
 	/**
@@ -170,9 +151,10 @@ public class Answer {
 	public boolean equals(Object obj){
 		if(obj == this) return true;
 		if(! (obj instanceof Answer)) return false;
-		return ID == ((Answer)obj).ID;
+		return id() == ((Answer)obj).id();
 	}
 	
-	
-
+	public String[] cols() {
+		return ANSWERS_COLUMNS;
+	}
 }
