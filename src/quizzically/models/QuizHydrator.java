@@ -28,7 +28,8 @@ public class QuizHydrator extends Hydrator {
 
 		SortedMap<Integer, Question> orderedQuestions = Question.retrieveByQuizID(id);
 		quiz.setQuestions(orderedQuestions);
-
+		User owner = User.getUserById(Integer.toString(ownerId));
+		quiz.setOwner(owner);
 		return quiz;
 	}
 

@@ -130,6 +130,14 @@ public class Quiz extends Model {
 		}
 	}
 	
+	public String takeLink() {
+		return "TakeQuiz?id="+id();
+	}
+	
+	public String editLink() {
+		return "EditQuiz?id="+id();
+	}
+	
 	public String name() {
 		return name;
 	}
@@ -144,6 +152,14 @@ public class Quiz extends Model {
 
 	public void setOwnerId(int ownerId) {
 		this.owner_id = ownerId;
+	}
+	
+	public User owner(){
+		return owner;
+	}
+	
+	protected void setOwner(User owner) {
+		this.owner = owner;
 	}
 
 	public String description() {
