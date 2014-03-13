@@ -11,13 +11,12 @@ $(document).ready(function() {
 	    // abort any pending request
 	    if (request) request.abort();
 	    
-	    $(".navbar-form #form-loader").css("visibility", "visible");
+	    $("#navbar-form-loader").css("visibility", "visible");
 	    
 	    var $form = $(this);
 	    var $inputs = $form.find("input");	//.find("input, select, button, textarea");
 	    var serializedData = $form.serialize();
 	    
-	    // disable inputs for the duration of the ajax request TODO: maybe disable a processing circle
 	    $inputs.prop("disabled", true);
 
 	    request = $.ajax({
@@ -33,7 +32,9 @@ $(document).ready(function() {
 	        	$(".msg-container .msg-img").css("background", "url(assets/img/success.png)");
 	        	$(".msg-container .msg").text("You have been logged in as " + json["name"]);
 	        	
-	        	var html = '<a href="Inbox"><img src="assets/img/' + json["img"] + '" class="msg-icon" /></a>' +
+	        	var html =  '<div class="form-group loader" id="navbar-form-loader">' +
+		    				'<img src="assets/img/ajax-loader.gif"></div>' +
+		    				'<a href="Inbox"><img src="assets/img/' + json["img"] + '" class="msg-icon" /></a>' +
 	        				'<a href="Profile" class="btn btn-success">' + json["name"] + 
 	        				'</a><div class="form-group line"></div><a class="btn btn-success' +
 	        				' sign-out" href="Logout">Sign Out</a>';
@@ -61,7 +62,7 @@ $(document).ready(function() {
 	    request.always(function () {
 	    	$(".navbar-form input[name='password']").val("");
 	        $inputs.prop("disabled", false);
-	        $(".container .navbar-form #form-loader").css("visibility", "hidden");
+	        $("#navbar-form-loader").css("visibility", "hidden");
 	    });
 
 	    event.preventDefault();
@@ -598,4 +599,88 @@ $(document).ready(function() {
 	    });
 	});
 	
+	
+	$(document).on('click', ".quiz #name", function(e) {
+		if ($(this).html().indexOf('type="text"') == -1) {
+			var val = $(this).text();
+			$(this).html('<input type="text" name="name" value="' + val + '" />');
+			$(this).css("padding", "0px");
+			$(this.children[0]).focus();
+		}
+	});
+	
+
+	$(document).on('focusout', ".quiz #name", function(e) {
+		var val = $(this.children[0]).val();
+		$(this).html(val);
+		$(this).css("padding", "5px 0px");
+		sendQuizData();
+	});
+	
+	
+	$(document).on('click', ".quiz #description", function(e) {
+		if ($(this).html().indexOf('textarea') == -1) {
+			var val = $(this).text();
+			$(this).html('<textarea name="description" style="margin-top:-3px;margin-left:-3px">' + val + '</textarea>');
+			$(this.children[0]).focus();
+		}
+	});
+	
+
+	$(document).on('focusout', ".quiz #description", function(e) {
+		var val = $(this.children[0]).val();
+		$(this).html(val);
+		sendQuizData();
+	});
+	
+	
+	$(document).on('change', ".quiz #page_format", function(e) {
+		sendQuizData();
+	});
+	
+	
+	$(document).on('change', ".quiz #order", function(e) {
+		sendQuizData();
+	});
+	
+	
+	function sendQuizData() {
+		$("#navbar-form-loader").css("visibility", "visible");
+	    var $inputs = $("#quiz-form").find("input, textarea");
+	    var $id = $("#quiz-form #id");
+	    $inputs.prop("disabled", true);
+	    
+	    var name = $(".quiz #name").text();
+	    var desc = $(".quiz #description").text();
+	    var format = $(".quiz #page_format").val();
+	    var order = $(".quiz #order").val();
+	    
+	    var data = "name=" + name + "&description=" + desc + "&page_format=" + format + "&order=" + order;
+	    if ($id.val() != "") data += "&id=" + $id.val();
+	    
+	    request = $.ajax({
+	        url: "Quiz",
+	        type: "post",
+	        data: data
+	    });
+	    
+	 // on success
+	    request.done(function (response, textStatus, jqXHR){
+	    	var json = $.parseJSON(response);	    	
+	        if (json["errors"] == null) $id.val(json["id"]);
+	    });
+
+	    // on failure
+	    request.fail(function (jqXHR, textStatus, errorThrown){
+	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+	    	$(".msg-container .msg").text("Weird network error. Please refresh page and try again!");
+	    	$(".msg-container").hide().slideToggle();
+	    });
+	    
+	    // akin to Java's finally clause
+	    request.always(function () {
+	        $inputs.prop("disabled", false);
+	        $("#navbar-form-loader").css("visibility", "hidden");
+	    });
+	}
 });

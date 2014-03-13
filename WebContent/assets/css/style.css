@@ -10,6 +10,7 @@ body > .container {
 
 hr {
 	margin: 10px;
+	border-top: 1px solid #cdcdcd;
 }
 
 .navbar-form .form-control {
@@ -41,7 +42,7 @@ hr {
 	margin-left: 8px;
 }
 
-.navbar-form #form-loader {
+#navbar-form-loader {
 	margin-right: 10px;
 	visibility: hidden;
 }
@@ -77,7 +78,7 @@ hr {
 
 .row .btn-edit {
 	float: left;
-	margin: 5% 5px;
+	margin: 20% 5px;
 }
 
 footer {
@@ -242,25 +243,33 @@ footer {
 
 .frnd-req {
 	float: left;
-	margin-top: 4%;
-	margin-left: 5%;
+	margin-top: 19%;
+	margin-left: 19%;
 }
 
 .friends-info td:first-child img {
 	width: 40px;
 }
 
-.friends-info td {
+.quiz-info td:first-child img {
+	width: 16px;
+	margin-left: 20px;
+}
+
+.friends-info td,
+.quiz-info td {
 	padding: 4px;
 	text-align: left;
 	font-weight: bold;
 }
 
-.friends-info td:first-child {
+.friends-info td:first-child,
+.quiz-info td:first-child {
 	width: 60px;
 }
 
-.friends-info td:nth-child(2) {
+.friends-info td:nth-child(2),
+.quiz-info td:nth-child(2) {
 	width: 130px;
 }
 
@@ -400,4 +409,35 @@ td a:hover {
 #search-results div:nth-child(2) {
 	overflow-y: auto;
 	max-height: 250px;
+}
+
+.quiz .caption h1 {
+	text-align: center;
+	margin-top: 3%;
+}
+
+.quiz .caption p {
+	text-align: center;
+	font-style: italic;
+}
+
+.quiz h3 {
+	font-size: 26px;
+	padding: 5px 0px;
+}
+
+.quiz #description textarea {
+	resize: none;
+	width: 360px;
+}
+
+.quiz h5 {
+	font-weight: bold;
+	display: inline-block;
+	margin-right: 20px;
+	width: 25%;
+}
+
+.quiz .meta select {
+	width: 120px;
 }

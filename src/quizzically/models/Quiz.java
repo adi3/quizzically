@@ -23,8 +23,8 @@ public class Quiz extends Model {
 	};
 
 	public static final String[] PAGE_FORMAT_STRINGS = {
-		"On One Page",
-		"One Per Page"
+		"Single Page",
+		"Multiple Pages"
 	};
 
 	public static final int ORDER_STANDARD = 0;
@@ -36,7 +36,7 @@ public class Quiz extends Model {
 	};
 
 	public static final String[] ORDER_STRINGS = {
-		"In Order",
+		"Given Order",
 		"Random Order"
 	};
 

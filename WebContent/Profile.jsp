@@ -78,8 +78,8 @@
 	
 	<div class="row">
 		<div class="col-md-1"></div>
+		<div class="col-md-3">
 		<% if (sessionUser != null && request.getAttribute("username").equals(sessionUser)) { %>
-			<!-- <a href="UpdateProfile" class="btn btn-edit">Update Profile</a>  -->	
 				<button class="btn btn-edit" id="update-profile-btn">Update Profile</button>
 				<button class="btn btn-edit" id="save-profile-btn">Save Profile</button>
 				<button class="btn btn-edit" id="change-pass-lnk">Change Password</button>
@@ -101,6 +101,19 @@
 				<% } %>
 			<% } %>
 		<% } %>
+		</div>
+		<div class="col-md-4"></div>
+		<div class="col-md-3">
+			<div class="quiz-info">
+				<div class="sidebar-title"><h3>Quiz</h3></div>
+				<table>
+					<tr>
+						<td><a href="Quiz" ><img src="assets/img/add.png" /></a></td>
+						<td><a href="Quiz" >Create A Quiz!</a></td>
+					</tr>
+				</table>
+			</div>
+		</div>
 	</div>
 </div>
 

@@ -1,4 +1,4 @@
-package quizzically.servlets.api;
+package quizzically.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -9,15 +9,30 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import quizzically.models.Message;
 import quizzically.models.User;
+import quizzically.servlets.api.ApiServlet;
 
 /**
  * Servlet implementation class Quiz
  */
-@WebServlet("/api/Quiz")
+@WebServlet("/Quiz")
 public class Quiz extends ApiServlet {
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		if (request.getSession().getAttribute("user") != null) {
+			boolean hasUnread = Message.hasUnread((String) request.getSession().getAttribute("user"));
+			String msgIcon = hasUnread ? "msg-new.png" : "msg-def.png";
+			request.setAttribute("msgIcon", msgIcon);
+		}
+		
+		request.getRequestDispatcher("CreateQuiz.jsp").forward(request, response);	
+	}
+	
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -47,8 +62,7 @@ public class Quiz extends ApiServlet {
 					user.getId(), description, pageFormat, order);
 		}
 
-		// respond with id
-		PrintWriter out = response.getWriter();
-		out.println(quiz.id());
+		String json = "{\"id\": \"" + quiz.id() + "\"}";
+		response.getWriter().write(json);
 	}
 }
