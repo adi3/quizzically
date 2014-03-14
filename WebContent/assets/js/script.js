@@ -687,30 +687,21 @@ $(document).ready(function() {
 	
 	
 	$("#add_btn").click(function(e){
-		if ($("#ques-1:hidden").length == 1) {
+		if ($("#ques:hidden").length == 1) {
 			sendQuizData();
-			$("#ques-1").show();
-			$("#ques-1").parent().show();
+			$("#ques").show();
+			$("#ques").parent().show();
 			$question = $(".question").last().clone();
 		} else {
 			var $last = $(".question").last();
-			var $next = $last.clone();
-			if($next.length == 0) $next = $question;
-			
-			if ($last.length != 0) {
-				var $index = $next.find(".index");
-				var curr_index = parseInt($index.text());
-				$index.text(curr_index + 1);
-				$next.html($next.html().replace('id="ques-' + curr_index + '"' , 'id="ques-' + (curr_index + 1) + '"'));
-				$next.html($next.html().replace('id="ans-' + curr_index + '"' , 'id="ans-' + (curr_index + 1) + '"'));
-				$next.html($next.html().replace(/<table class="answers">((.|\s)*)<\/table>/ , '<table class="answers"></table>'));
-				$last.after($next);
-			} else $('.meta').after($next);
+			$next = $question.clone();
+			if ($last.length != 0) $last.after($next);
+			else $('.meta').after($next);
 		}
 	});
 	
 	
-	$(document).on('click', ".quiz form[id*=ques-] p[name=ques_text]", function(e) {
+	$(document).on('click', ".quiz form[id=ques] p[name=ques_text]", function(e) {
 		if ($(this).html().indexOf('textarea') == -1) {
 			var val = $(this).text();
 			var parent = $(this).parent();
@@ -720,7 +711,7 @@ $(document).ready(function() {
 	});
 	
 
-	$(document).on('focusout', ".quiz form[id*=ques-] textarea[name=ques_text]", function(e) {
+	$(document).on('focusout', ".quiz form[id*=ques] textarea[name=ques_text]", function(e) {
 		var val = $(this).val();
 		var parent = $(this).parent();
 		$(parent).html('<p name="ques_text">' + val + '</p>');
@@ -728,7 +719,7 @@ $(document).ready(function() {
 	});
 	
 	
-	$(document).on('change', ".quiz form[id*=ques-] select", function(e) {
+	$(document).on('change', ".quiz form[id*=ques] select", function(e) {
 		if ($(this).val() == "3") {
 			$(this).parent().next().find('p').text("Enter image link here...");
 		} else {
@@ -738,14 +729,18 @@ $(document).ready(function() {
 		var $boxes = $(this).closest('.row').find('table.answers tr td:nth-child(3)');
 		if ($(this).val() == "2") {
 			$.each($boxes, function(i, val) {
-				$boxes[i].css('visibility', 'visible');
+				$(val).find('input').css('visibility', 'visible');
 			});
 		} else {
 			$.each($boxes, function(i, val) {
-				$boxes[i].css('visibility', 'hidden');
+				$(val).find('input').css('visibility', 'hidden');
 			});
 		}
+		
 		sendQuestionData($(this).parent().parent());
+		if ($(this).closest('.row').find('table.answers tr').length != 0) {
+			sendAnswerData($(this).closest('.row').find('#ans'));
+		}
 	});
 	
 	
@@ -801,7 +796,7 @@ $(document).ready(function() {
 			var group = Math.random(100);
 			$ans.append('<tr><td><img src="assets/img/close.gif" class="ans-del">' + 
 						'</td><td><p>Enter answer here...</p></td>' +
-						'<td><input type="radio" name="' + group + '" style="visibility:' + visibility + '" /></td></tr>');			
+						'<td><input type="radio" name="' + group + '" style="visibility:' + visibility + '" checked="checked" /></td></tr>');			
 			sendQuestionData($(".question").find('form')[0]);
 		} else {
 			var group = $ans.find('input[type=radio]').attr("name");
@@ -828,20 +823,38 @@ $(document).ready(function() {
 	});
 	
 	
+	$(document).on('change', 'table.answers input[type=radio]', function(e) {
+		sendAnswerData($(this).closest('form'));
+	});
+	
 	function sendAnswerData(form) {
 		$("#navbar-form-loader").css("visibility", "visible");
 
 		$form = $(form);
 	    var $p = $form.find("p");
 	    var ques_id = $(".question").find("input[name=ques_id]").val();
-	    
+
 	    var data = "";
-	    for (var i = 0; i < $p.length; i++) {
-	    	data += "texts=" + $($p[i]).text() + "&";
-	    }
-	    if (data == "") data ="texts=&";
+	    var type = $(form).closest('.row').find('select[name=ques_type]').val();
 	    
-	    data += "question_id=" + ques_id + "&correct=" + $form.find('input[name=correct]').val();
+	    if (type != 2) {
+		    for (var i = 0; i < $p.length; i++) {
+		    	data += "texts=" + $($p[i]).text() + "&";
+		    }
+		    if (data == "") data ="texts=&";
+		    data += "question_id=" + ques_id + "&correct=" + $form.find('input[name=correct]').val();
+	    } else {
+	    	for (var i = 0; i < $p.length; i++) {
+	    		var $r = $($p[i]).parent().parent().find('input[type=radio]');
+	    		data += "texts=" + $($p[i]).text();
+	    		if ($r.is(':checked')) data += "&correct=1&";
+	    		else data += "&correct=0&";
+		    }
+		    if (data == "") data ="texts=&";
+		    data += "question_id=" + ques_id;
+	    }
+	    
+	    console.log(data);
 	    var $id = $form.find("input[name=ans_id]");
 	    if ($id.val() != "") data += "&id=" + $id.val();
 	   
