@@ -1,9 +1,6 @@
 <%@include file="frags/Header.jsp" %>
 
 <div class="container quiz">
-	
-	<!--<input type="hidden" name="id" value="1" />-->
-
 	<div class="row caption">
 		<div class="col-md-1"></div>
 		<div class="col-md-10">
@@ -111,7 +108,6 @@
 	</div>
 	
 </div>
-
 
 
 <div class="mid-popup">

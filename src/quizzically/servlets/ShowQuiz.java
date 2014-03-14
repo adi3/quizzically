@@ -2,7 +2,6 @@ package quizzically.servlets;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.Enumeration;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import quizzically.models.Message;
 import quizzically.models.Question;
 import quizzically.models.QuestionResponse;
 import quizzically.models.Quiz;
@@ -33,13 +33,18 @@ public class ShowQuiz extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		int id;
 		Quiz quiz;
 		try {
 			id = Integer.parseInt(request.getParameter("id"));
 		} catch (NumberFormatException e) {
 			throw new ServletException("Invalid parameter id");
+		}
+		
+		if (request.getSession().getAttribute("user") != null) {
+			boolean hasUnread = Message.hasUnread((String) request.getSession().getAttribute("user"));
+			String msgIcon = hasUnread ? "msg-new.png" : "msg-def.png";
+			request.setAttribute("msgIcon", msgIcon);
 		}
 
 		quiz = Quiz.retrieve(id);
@@ -108,7 +113,7 @@ public class ShowQuiz extends HttpServlet {
 		request.setAttribute("gradedResponses", qrsOrdered);
 
 		request.getRequestDispatcher("GradeQuiz.jsp").forward(request, response);
-		// TODO TODO create quiz history
+		// TODO create quiz history
 	}
 
 

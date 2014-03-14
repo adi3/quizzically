@@ -31,7 +31,7 @@ public class Answer extends BaseServlet {
 		Set<String> cleanTexts = new HashSet<String>();
 		Question question;
 		quizzically.models.Answer answer;
-		int id, questionId, type;
+		int id, questionId, type, ques_type;
 		boolean correct;
 
 		umbli(request);
@@ -39,13 +39,14 @@ public class Answer extends BaseServlet {
 
 		id = getInt(request, "id", -1);
 		questionId = getInt(request, "question_id");
+		question = Question.retrieve(questionId);
+		ques_type = question.type();
+		
+		
 		correct = getInt(request, "correct", 0) == 1;
 		texts = getArray(request, "texts");
-
-		question = Question.retrieve(questionId);
-
+		
 		for (String text : texts) {
-			// skip empty
 			if (text.equals("")) {
 				continue;
 			}

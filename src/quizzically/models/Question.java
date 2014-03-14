@@ -217,10 +217,15 @@ public abstract class Question extends Model {
 	 * True if obj is a Question with the same id.
 	 */
 	@Override
-	public boolean equals(Object obj){
-		if(obj == this) return true;
-		if(! (obj instanceof Question)) return false;
-		return id() == ((Question)obj).id();
+	public boolean equals(Object o){
+		if(o == this) return true;
+		if(! (o instanceof Question)) return false;
+		return id() == ((Question)o).id();
+	}
+
+	@Override
+	public int hashCode() {
+		return new Integer(id()).hashCode();
 	}
 	
 	/**

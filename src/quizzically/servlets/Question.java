@@ -64,7 +64,7 @@ public class Question extends BaseServlet {
 	 */
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		int ques_id = getInt(request, "ques_id");
-		int quiz_id = getInt(request, "quizid");
+		int quiz_id = getInt(request, "quiz_id");
 		
 		if (!quizzically.models.Question.retrieve(ques_id).delete(quiz_id)) {
 			String json = "{\"errors\": [{ \"msg\":\"Unable to delete question. Please try again.\"}]}";

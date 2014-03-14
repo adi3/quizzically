@@ -545,10 +545,22 @@ table.answers p {
 .question .col-md-10 .col-md-10 {
 	padding:0;
 	margin-top:15px;
-	height:50px;
+	height:60px;
 	border-top: 1px solid #428bca;
+	padding-top: 5px;
 }
 
 .question > .col-md-3 {
 	padding: 0;
+}
+
+#show-quiz .answer input {
+	float: right;
+}
+
+#show-quiz input[type=submit] {
+	padding:10px;
+	width:40%;
+	margin:0 30%;
+	font-weight: bold;
 }

@@ -196,9 +196,14 @@ public class Quiz extends Model {
 	 */
 	public List<Question> questions() {
 		List<Question> questions = new ArrayList<Question>();
-		for(Question q: orderedQuestions.values()){
+		for (Question q: orderedQuestions.values()){
 			questions.add(q);
 		}
+		
+		if (order == ORDER_RANDOM){
+			Collections.shuffle(questions);
+		}
+		
 		return questions;
 	}
 

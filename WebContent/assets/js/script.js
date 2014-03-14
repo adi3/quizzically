@@ -930,4 +930,21 @@ $(document).ready(function() {
 		if (e.which == 13) return false;
 	});
 	
+	
+	$("#show-quiz").submit(function(e) {
+		e.preventDefault();
+		if (format == 0) console.log("Submit all for grading...");
+		else {
+			console.log("Submit this for grading...");			
+			
+			if(index < $("#show-quiz .question").length - 1) {
+				console.log("Showing next question...");
+				$($("#show-quiz .question").get(index)).fadeOut('fast', function(e) {
+					index += 1;
+					$($("#show-quiz .question").get(index)).fadeIn('fast');
+				});
+			} else alert("Finished quiz!");
+		}
+	});
+	
 });
