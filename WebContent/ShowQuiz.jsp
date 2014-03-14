@@ -40,7 +40,7 @@
 				<div class="col-md-2"></div>
 				<div class="col-md-8 answer">
 					<% for (Answer a : q.answers()) {
-						String qs = "question-" + q.id() + "-answer-" + a.id() + "-pos-" + pos;
+						String qs = "question-" + q.id() + "-pos-" + pos;
 						switch (q.type()) { 
 							case Question.TYPE_TEXT:
 							case Question.TYPE_FILL_IN:
@@ -48,7 +48,7 @@
 								out.println("<input placeholder=\"Your Answer\" type=\"text\" name=\"" + qs + "\" /><br />");
 								break;
 							case Question.TYPE_MULTIPLE_CHOICE:
-								out.println("<input type=\"radio\" name=\"" + qs + "\" />" + a.text() + "<br />");
+								out.println("<input type=\"radio\" name=\"" + qs + "\" value=\"" + a.id() + "\"/>" + a.text() + "<br />");
 								break;
 						}
 					} %>

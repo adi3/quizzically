@@ -14,6 +14,7 @@ public class QuizAttemptHydrator extends Hydrator {
 		int id = rs.getInt("id");
 		int quizId = rs.getInt("quiz_id");
 		int userId = rs.getInt("user_id");
+		int position = rs.getInt("position");
 		Date createdAt = new java.util.Date(rs.getTimestamp("created_at").getTime());
 		Date completedAt;
 		int score;
@@ -25,7 +26,7 @@ public class QuizAttemptHydrator extends Hydrator {
 			completedAt = null;
 			score = NULL_VALUE;
 		}
-		return new QuizAttempt(id, quizId, userId, createdAt, completedAt, score);
+		return new QuizAttempt(id, quizId, userId, createdAt, completedAt, score, position);
 	}
 
 	@Override
@@ -42,6 +43,7 @@ public class QuizAttemptHydrator extends Hydrator {
 		}
 		stmt.setInt(offset++, qA.quizId());
 		stmt.setInt(offset++, qA.userId());
+		stmt.setInt(offset++, qA.position());
 	}
 
 }

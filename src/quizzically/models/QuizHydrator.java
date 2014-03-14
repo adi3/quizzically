@@ -12,6 +12,7 @@ public class QuizHydrator extends Hydrator {
 		String name, description;
 		java.util.Date createdAt;
 		int pageFormat, order;
+		boolean immediateCorrection;
 		Quiz quiz;
 
 		id = rs.getInt("id");
@@ -21,9 +22,10 @@ public class QuizHydrator extends Hydrator {
 		createdAt = new java.util.Date(rs.getTimestamp("created_at").getTime());
 		pageFormat = rs.getInt("page_format");
 		order = rs.getInt("order");
+		immediateCorrection = rs.getInt("immediate_correction") == 1;
 
 		quiz = new Quiz(id, name, ownerId, description, 
-				createdAt, pageFormat, order);
+				createdAt, pageFormat, order, immediateCorrection);
 
 		SortedMap<Integer, Question> orderedQuestions = Question.retrieveByQuizID(id);
 		quiz.setQuestions(orderedQuestions);
@@ -43,5 +45,6 @@ public class QuizHydrator extends Hydrator {
 				new java.sql.Timestamp(quiz.createdAt().getTime()));
 		stmt.setInt(offset++, quiz.pageFormat());
 		stmt.setInt(offset++, quiz.order());
+		stmt.setInt(offset++, quiz.immediateCorrection() ? 1 : 0);
 	}
 }

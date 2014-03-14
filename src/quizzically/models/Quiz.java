@@ -11,7 +11,7 @@ import quizzically.lib.SqlResult;
 
 public class Quiz extends Model {
 	private static final String TABLE = MyDBInfo.QUIZZES_TABLE;
-	private static final String[] QUIZZES_COLUMNS = new String[]{"name", "owner_id", "description", "created_at", "page_format", "order"};
+	private static final String[] QUIZZES_COLUMNS = new String[]{"name", "owner_id", "description", "created_at", "page_format", "order", "immediate_correction"};
 	private static final String[] QUIZ_QUESTIONS_COLUMNS = new String[]{"quiz_id", "question_id", "position"};
 
 	public static final int PAGE_FORMAT_ALL_IN_ONE = 0;
@@ -45,19 +45,22 @@ public class Quiz extends Model {
 	private int owner_id;
 	private Date createdAt;
 	private int pageFormat, order;
+	private boolean immediateCorrection;
 	private User owner;
 	private SortedMap<Integer, Question> orderedQuestions;
 	
 	protected Quiz(int id, String name, int owner_id, 
 			String description, Date createdAt, int pageFormat, 
-			int order) {
+			int order, boolean immediateCorrection) {
 		this(id, name, owner_id, description, createdAt, 
-				pageFormat, order, new TreeMap<Integer, Question>());
+				pageFormat, order, immediateCorrection, 
+				new TreeMap<Integer, Question>());
 	}
 
 	private Quiz(int id, String name, int owner_id, 
 			String description, Date createdAt, int pageFormat, 
-			int order, SortedMap<Integer, Question> questions) {
+			int order, boolean immediateCorrection,
+			SortedMap<Integer, Question> questions) {
 		super(id, TABLE, new QuizHydrator());
 		this.name = name;
 		this.owner_id = owner_id;
@@ -65,15 +68,16 @@ public class Quiz extends Model {
 		this.createdAt = createdAt;
 		this.pageFormat = pageFormat;
 		this.order = order;
+		this.immediateCorrection = immediateCorrection;
 		this.orderedQuestions = questions;
 	}
 
 	public static Quiz create(String name, int ownerId, 
 			String description, int pageFormat, 
-			int order) {
+			int order, boolean immediateCorrection) {
 		Date createdAt = new Date(); // now
 		Quiz quiz = new Quiz(-1, name, ownerId, description, 
-				createdAt, pageFormat, order);
+				createdAt, pageFormat, order, immediateCorrection);
 		quiz.save(true);
 		return quiz;
 	}
@@ -190,17 +194,25 @@ public class Quiz extends Model {
 		this.order = order;
 	}
 
+	public boolean immediateCorrection() {
+		return immediateCorrection;
+	}
+
+	public void setImmediateCorrection(boolean immediateCorrection) {
+		this.immediateCorrection = immediateCorrection;
+	}
+
 	/**
 	 * Return owned Questions sorted by position
 	 * @return
 	 */
 	public List<Question> questions() {
 		List<Question> questions = new ArrayList<Question>();
-		for (Question q: orderedQuestions.values()){
+		for (Question q: orderedQuestions.values()) { // in sorted order
 			questions.add(q);
 		}
 		
-		if (order == ORDER_RANDOM){
+		if (order == ORDER_RANDOM) { // shuffle questions
 			Collections.shuffle(questions);
 		}
 		

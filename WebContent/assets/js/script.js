@@ -638,9 +638,14 @@ $(document).ready(function() {
 	$(document).on('change', ".quiz .meta #page_format", function(e) {
 		sendQuizData();
 	});
-	
+
 	
 	$(document).on('change', ".quiz .meta #order", function(e) {
+		sendQuizData();
+	});
+	
+
+	$(document).on('change', ".quiz .meta #immediate_correction", function(e) {
 		sendQuizData();
 	});
 	
@@ -654,9 +659,10 @@ $(document).ready(function() {
 	    var desc = $(".quiz .meta #description").text();
 	    var format = $(".quiz .meta #page_format").val();
 	    var order = $(".quiz .meta #order").val();
+	    var immediateCorrection = $(".quiz .meta #immediate_correction").val();
 	    
 	    var $id = $("#quiz-form #quiz_id");
-	    var data = "name=" + name + "&description=" + desc + "&page_format=" + format + "&order=" + order;
+	    var data = "name=" + name + "&description=" + desc + "&page_format=" + format + "&order=" + order + "&immediate_correction=" + immediateCorrection;
 	    if ($id.val() != "") data += "&id=" + $id.val();
 	    
 	    request = $.ajax({

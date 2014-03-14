@@ -76,10 +76,9 @@ public class ShowQuiz extends HttpServlet {
 			// assume paramName is format "question-QID-answer-AID"
 			try {
 				if (paramName.startsWith("question-")) {
-					String[] tmp = paramName.split("-", 6);
+					String[] tmp = paramName.split("-", 4);
 					int questionId = Integer.parseInt(tmp[1]);
-					int answerId = Integer.parseInt(tmp[3]);
-					int pos = Integer.parseInt(tmp[5]);
+					int pos = Integer.parseInt(tmp[3]);
 					Question question = null;
 					QuestionResponse qr = null;
 
@@ -95,6 +94,11 @@ public class ShowQuiz extends HttpServlet {
 					}
 
 					if (question != null) {
+						int answerId = -1;
+						if (question.type() == Question.TYPE_MULTIPLE_CHOICE 
+								/* || TODO MULTI_MULTI_CHOICE */) {
+							answerId = Integer.parseInt(tmp[3]);
+						}
 						qr.addResponse(answerId, request.getParameter(paramName));
 					}
 					// else skip
