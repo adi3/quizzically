@@ -54,6 +54,12 @@ public class AnswerText extends Model {
 		return Arrays.copyOf(models, models.length, AnswerText[].class);
 	}
 
+	public static AnswerText create(Answer answer, String text) {
+		AnswerText at = new AnswerText(-1, answer.id(), text);
+		at.save(true);
+		return at;
+	}
+
 	protected AnswerText(int id, int answerId, String text) {
 		super(id, TABLE, new AnswerTextHydrator());
 		this.answerId = answerId;

@@ -96,6 +96,16 @@ public class Answer extends Model {
 		question.addAnswer(answer, position); // position vacant
 		return answer;
 	}
+
+	public void delete() {
+		MySql sql = MySql.getInstance();
+		QueryBuilder qb = QueryBuilder.deleteInstance(TABLE, cols());
+		// delete my AnswerTexts
+		AnswerText.deleteOthers(this, new HashSet<AnswerText>());
+		qb.addConstraint("id", QueryBuilder.Operator.EQUALS, id());
+		// delete me
+		sql.delete(qb);
+	}
 	
 	/**
 	 * Add specified String to Set of answerTexts.
@@ -106,10 +116,7 @@ public class Answer extends Model {
 		// all answer texts in DB currently contained
 		// in answerTexts
 		if(! answerTexts.contains(answerText)){
-			answerTexts.add(new AnswerText(-1, id(), answerText));
-			MySql sql = MySql.getInstance();
-			String[] values = {Integer.toString(id()), answerText};
-			sql.insert(MyDBInfo.ANSWER_TEXTS_TABLE, ANSWER_TEXTS_COLUMNS, values);
+			answerTexts.add(AnswerText.create(this, answerText));
 		}
 	}
 	
