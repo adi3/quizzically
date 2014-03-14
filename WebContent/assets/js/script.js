@@ -736,7 +736,11 @@ $(document).ready(function() {
 				$(val).find('input').css('visibility', 'hidden');
 			});
 		}
+		
 		sendQuestionData($(this).parent().parent());
+		if ($(this).closest('.row').find('table.answers tr').length != 0) {
+			sendAnswerData($(this).closest('.row').find('#ans'));
+		}
 	});
 	
 	
@@ -792,7 +796,7 @@ $(document).ready(function() {
 			var group = Math.random(100);
 			$ans.append('<tr><td><img src="assets/img/close.gif" class="ans-del">' + 
 						'</td><td><p>Enter answer here...</p></td>' +
-						'<td><input type="radio" name="' + group + '" style="visibility:' + visibility + '" /></td></tr>');			
+						'<td><input type="radio" name="' + group + '" style="visibility:' + visibility + '" checked="checked" /></td></tr>');			
 			sendQuestionData($(".question").find('form')[0]);
 		} else {
 			var group = $ans.find('input[type=radio]').attr("name");
@@ -819,20 +823,38 @@ $(document).ready(function() {
 	});
 	
 	
+	$(document).on('change', 'table.answers input[type=radio]', function(e) {
+		sendAnswerData($(this).closest('form'));
+	});
+	
 	function sendAnswerData(form) {
 		$("#navbar-form-loader").css("visibility", "visible");
 
 		$form = $(form);
 	    var $p = $form.find("p");
 	    var ques_id = $(".question").find("input[name=ques_id]").val();
-	    
+
 	    var data = "";
-	    for (var i = 0; i < $p.length; i++) {
-	    	data += "texts=" + $($p[i]).text() + "&";
-	    }
-	    if (data == "") data ="texts=&";
+	    var type = $(form).closest('.row').find('select[name=ques_type]').val();
 	    
-	    data += "question_id=" + ques_id + "&correct=" + $form.find('input[name=correct]').val();
+	    if (type != 2) {
+		    for (var i = 0; i < $p.length; i++) {
+		    	data += "texts=" + $($p[i]).text() + "&";
+		    }
+		    if (data == "") data ="texts=&";
+		    data += "question_id=" + ques_id + "&correct=" + $form.find('input[name=correct]').val();
+	    } else {
+	    	for (var i = 0; i < $p.length; i++) {
+	    		var $r = $($p[i]).parent().parent().find('input[type=radio]');
+	    		data += "texts=" + $($p[i]).text();
+	    		if ($r.is(':checked')) data += "&correct=1&";
+	    		else data += "&correct=0&";
+		    }
+		    if (data == "") data ="texts=&";
+		    data += "question_id=" + ques_id;
+	    }
+	    
+	    console.log(data);
 	    var $id = $form.find("input[name=ans_id]");
 	    if ($id.val() != "") data += "&id=" + $id.val();
 	   
