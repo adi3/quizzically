@@ -30,8 +30,8 @@ public class TakeQuiz extends BaseServlet implements Servlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		umbli(request);
-		int qAId = getInt(request, "attempt_id");
-		if(qAId == 0){ // new attempt
+		int qAId = getInt(request, "attempt_id", -1);
+		if(qAId == -1){ // new attempt
 			int qId = getInt(request, "quiz_id");
 			QuizAttempt qA = QuizAttempt.create(qId, getUser(request).getId());
 			request.setAttribute("attempt_id", qA.id()); // for use by doPost()
