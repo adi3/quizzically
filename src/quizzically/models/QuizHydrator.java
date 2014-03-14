@@ -14,7 +14,6 @@ public class QuizHydrator extends Hydrator {
 		int pageFormat, order;
 		Quiz quiz;
 
-		rs.first();
 		id = rs.getInt("id");
 		ownerId = rs.getInt("owner_id");
 		name = rs.getString("name");

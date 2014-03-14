@@ -161,7 +161,7 @@ public abstract class Question extends Model {
 	 * @param texts the valid texts recognized for this answer
 	 * @return the created Answer
 	 */
-	public Answer createAnswer(boolean correct, ArrayList<String> texts) 
+	public Answer createAnswer(boolean correct, Set<String> texts) 
 			throws ModelException {
 		Integer pos = orderedAnswers.size() != 0 ? orderedAnswers.lastKey() + 1 : 1;
 		Answer ans = Answer.create(this, pos, correct);
@@ -208,7 +208,10 @@ public abstract class Question extends Model {
 		return orderedQuestions;
 	}
 	
-	
+	public boolean delete(int quiz_id) {
+		int status = MySql.getInstance().delete(MyDBInfo.QUIZ_QUESTIONS_TABLE, "question_id=" + this.id() + " AND quiz_id=" + quiz_id);
+		return status == 1;
+	}
 	
 	/**
 	 * True if obj is a Question with the same id.
@@ -219,7 +222,7 @@ public abstract class Question extends Model {
 		if(! (o instanceof Question)) return false;
 		return id() == ((Question)o).id();
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return new Integer(id()).hashCode();

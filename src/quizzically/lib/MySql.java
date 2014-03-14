@@ -74,13 +74,22 @@ public class MySql {
 		}
 	}
 	
-	private int executeUpdate(String sql) {
+	private int executeUpdate(PreparedStatement stmt) {
 		try {
-			Statement stmt = con.getStatement();
-			return stmt.executeUpdate(sql);
+			return stmt.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new RuntimeException("DB Error: Execute update failed");
+		}
+	}
+
+	private int executeUpdate(String sql) {
+		try {
+			PreparedStatement stmt = con.prepareStatement(sql);
+			return executeUpdate(stmt);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException("DB Error: Execute query failed");
 		}
 	}
 	
@@ -127,13 +136,30 @@ public class MySql {
 		return new SqlResult(this.executeQuery(sql));
 	}
 	
+	public Model get(String sql, Hydrator hydrator) {
+		try {
+			PreparedStatement stmt = con.prepareStatement(sql);
+			return hydrator.fromResultSet(this.executeQuery(stmt));
+		} catch (SQLException e) {
+			throw new RuntimeException("Problem retrieving from DB");
+		}
+	}
+	
+	public Model[] getMany(PreparedStatement stmt, Hydrator hydrator) {
+		return hydrator.fromResultSet(this.executeQuery(stmt), true);
+	}
+	
+	public Model get(PreparedStatement stmt, Hydrator hydrator) {
+		return hydrator.fromResultSet(this.executeQuery(stmt));
+	}
+	
 	public Model get(String table, int id, Hydrator hydrator) {
 		try {
 			String sql = "SELECT * FROM " + table + 
 				" WHERE `id` = ?";
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setInt(1, id);
-			return hydrator.fromResultSet(this.executeQuery(stmt));
+			return get(stmt, hydrator);
 		} catch (SQLException e) {
 			throw new RuntimeException("Problem retrieving from DB");
 		}
@@ -239,5 +265,30 @@ public class MySql {
 	
 	public int delete(String table, String where) {
 		return this.executeUpdate("DELETE FROM " + table + " WHERE " + where);
+	}
+
+	public int delete(QueryBuilder qb) {
+		String sql = qb.sql();
+		try {
+			PreparedStatement stmt = con.prepareStatement(sql);
+			qb.prepareStatement(stmt);
+			return executeUpdate(stmt);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException("DB delete failed");
+		}
+	}
+
+	public Model[] getMany(QueryBuilder qb, Hydrator hydrator) {
+		String sql = qb.sql();
+		try {
+			PreparedStatement stmt = con.prepareStatement(sql);
+			qb.prepareStatement(stmt);
+			return getMany(stmt, hydrator);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException("DB query failed");
+		}
+		
 	}
 }

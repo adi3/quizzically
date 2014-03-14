@@ -2,7 +2,6 @@ package quizzically.servlets;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.Enumeration;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import quizzically.models.Message;
 import quizzically.models.Question;
 import quizzically.models.QuestionResponse;
 import quizzically.models.Quiz;
@@ -33,13 +33,18 @@ public class ShowQuiz extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		int id;
 		Quiz quiz;
 		try {
 			id = Integer.parseInt(request.getParameter("id"));
 		} catch (NumberFormatException e) {
 			throw new ServletException("Invalid parameter id");
+		}
+		
+		if (request.getSession().getAttribute("user") != null) {
+			boolean hasUnread = Message.hasUnread((String) request.getSession().getAttribute("user"));
+			String msgIcon = hasUnread ? "msg-new.png" : "msg-def.png";
+			request.setAttribute("msgIcon", msgIcon);
 		}
 
 		quiz = Quiz.retrieve(id);
@@ -71,10 +76,9 @@ public class ShowQuiz extends HttpServlet {
 			// assume paramName is format "question-QID-answer-AID"
 			try {
 				if (paramName.startsWith("question-")) {
-					String[] tmp = paramName.split("-", 6);
+					String[] tmp = paramName.split("-", 4);
 					int questionId = Integer.parseInt(tmp[1]);
-					int answerId = Integer.parseInt(tmp[3]);
-					int pos = Integer.parseInt(tmp[5]);
+					int pos = Integer.parseInt(tmp[3]);
 					Question question = null;
 					QuestionResponse qr = null;
 
@@ -90,6 +94,11 @@ public class ShowQuiz extends HttpServlet {
 					}
 
 					if (question != null) {
+						int answerId = -1;
+						if (question.type() == Question.TYPE_MULTIPLE_CHOICE 
+								/* || TODO MULTI_MULTI_CHOICE */) {
+							answerId = Integer.parseInt(tmp[3]);
+						}
 						qr.addResponse(answerId, request.getParameter(paramName));
 					}
 					// else skip
@@ -108,7 +117,7 @@ public class ShowQuiz extends HttpServlet {
 		request.setAttribute("gradedResponses", qrsOrdered);
 
 		request.getRequestDispatcher("GradeQuiz.jsp").forward(request, response);
-		// TODO TODO create quiz history
+		// TODO create quiz history
 	}
 
 

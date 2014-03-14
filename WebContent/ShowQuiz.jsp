@@ -1,51 +1,84 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-<%@page import="quizzically.models.Answer"%>
-<%@page import="quizzically.models.Question"%>
-<%@page import="quizzically.models.Quiz"%>
-<%
-Quiz quiz = (Quiz) request.getAttribute("quiz");
-%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Take Quiz: <%= quiz.name() %></title>
-</head>
-<body>
-	<h1>Take Quiz: <%= quiz.name() %></h1>
-	<form action="ShowQuiz" method="POST">
+<%@include file="frags/Header.jsp" %>
+<%@page import="java.util.List"%>
+<% Quiz quiz = (Quiz) request.getAttribute("quiz"); %>
+
+<div class="container quiz">
+	
+	<div class="row caption">
+		<div class="col-md-1"></div>
+		<div class="col-md-10">
+			<h1>Take Quiz: <%= quiz.name() %></h1>
+			<p><%= quiz.description() %></p>
+			<hr />
+		</div>
+		<div class="col-md-1"></div>
+	</div>	
+	
+	
+	<form action="ShowQuiz" method="post" id="show-quiz">
 		<input type="hidden" name="id" value="<%=quiz.id()%>" />
-
-		<ol>
-		<% for (int pos = 0; pos < quiz.questions().size(); pos++ ) {
-			Question q = quiz.questions().get(pos);
-		 %>
-			<li>
-				<p>
-					<%= q.text() %>
-				</p>
-				<%
-				for (Answer a : q.answers()) {
-					 String qs = "question-" + q.id() + "-answer-" + a.id()
-						 + "-pos-" + pos;
-					switch (q.type()) { 
-						case Question.TYPE_TEXT:
-						case Question.TYPE_FILL_IN:
-						case Question.TYPE_PICTURE:
-							out.println("<input type=\"text\" name=\"" + qs + "\" /><br />");
-							break;
-						case Question.TYPE_MULTIPLE_CHOICE:
-							out.println("<input type=\"radio\" name=\"" + qs + "\" />" + a.text() + "<br />");
-							break;
-					}
-				} %>
-			</li>
+		<% List<Question> questions = quiz.questions(); %>
+		<% for (int pos = 0; pos < questions.size(); pos++ ) { %>
+			<% Question q = questions.get(pos); %>
+	 
+			<div class="row question" style="display:none">
+				<div class="col-md-1"></div>
+				<div class="col-md-10">
+					<div class="col-md-12">
+						<div class="col-md-1">
+							<h5 class="index">Q</h5>
+						</div>
+						<div class="col-md-10">
+							<h5><%= q.text() %></h5>
+						</div>
+						<div class="col-md-1"></div>
+					</div>
+				</div>
+				
+				<div class="col-md-1"></div>
+				
+				<div class="col-md-2"></div>
+				<div class="col-md-8 answer">
+					<% for (Answer a : q.answers()) {
+						String qs = "question-" + q.id() + "-pos-" + pos;
+						switch (q.type()) { 
+							case Question.TYPE_TEXT:
+							case Question.TYPE_FILL_IN:
+							case Question.TYPE_PICTURE:
+								out.println("<input placeholder=\"Your Answer\" type=\"text\" name=\"" + qs + "\" /><br />");
+								break;
+							case Question.TYPE_MULTIPLE_CHOICE:
+								out.println("<input type=\"radio\" name=\"" + qs + "\" value=\"" + a.id() + "\"/>" + a.text() + "<br />");
+								break;
+						}
+					} %>
+				</div>
+				<div class="col-md-2"></div>
+			</div>
 		<% } %>
-		</ol>
-
-		<input type="submit" value="Grade" />
+		
+		<div class="row">
+			<div class="col-md-1"></div>
+			<div class="col-md-10">
+				<hr style="margin:4% 2% 1%;"/>
+				<input type="submit" value="Submit!" class="btn btn-default" />
+			</div>
+			<div class="col-md-1"></div>
+		</div>
+		
 	</form>
+	
+</div>
 
-</body>
-</html>
+<%@include file="frags/Footer.jsp" %>
+<script type="text/javascript">
+	var format = <%= quiz.pageFormat() %>;
+	var index = 0;
+	
+	console.log($("#show-quiz .question"));
+	if (format == 0) {
+		$.each($("#show-quiz .question"), function(i, val) {
+			$(val).show();
+		});
+	} else $("#show-quiz .question").first().show();
+</script>

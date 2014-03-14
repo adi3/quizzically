@@ -3,11 +3,25 @@ package quizzically.models;
 import java.sql.ResultSet;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public abstract class Hydrator {
 	public Model fromResultSet(ResultSet rs) {
+		return fromResultSet(rs, false)[0];
+	}
+	
+	public Model[] fromResultSet(ResultSet rs, boolean many) {
 		try {
-			return hydrate(rs);
+			if (many) {
+				ArrayList<Model> results = new ArrayList<Model>();
+				while (rs.next()) {
+					results.add(hydrate(rs));
+				}
+				return results.toArray(new Model[0]);
+			} else {
+				rs.first();
+				return new Model[] { hydrate(rs) };
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new RuntimeException("DB Error: Problem re-hydrating model");

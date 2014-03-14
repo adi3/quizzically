@@ -23,8 +23,8 @@ public class Quiz extends Model {
 	};
 
 	public static final String[] PAGE_FORMAT_STRINGS = {
-		"On One Page",
-		"One Per Page"
+		"Single Page",
+		"Multiple Pages"
 	};
 
 	public static final int ORDER_STANDARD = 0;
@@ -36,7 +36,7 @@ public class Quiz extends Model {
 	};
 
 	public static final String[] ORDER_STRINGS = {
-		"In Order",
+		"Given Order",
 		"Random Order"
 	};
 
@@ -196,12 +196,14 @@ public class Quiz extends Model {
 	 */
 	public List<Question> questions() {
 		List<Question> questions = new ArrayList<Question>();
-		for(Question q: orderedQuestions.values()){ // in sorted order
+		for (Question q: orderedQuestions.values()) { // in sorted order
 			questions.add(q);
 		}
-		if(order == ORDER_RANDOM){ // shuffle questions
+		
+		if (order == ORDER_RANDOM) { // shuffle questions
 			Collections.shuffle(questions);
 		}
+		
 		return questions;
 	}
 

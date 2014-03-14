@@ -6,18 +6,18 @@ $(document).ready(function() {
 	
 	var request = null;
 	var interval = 3000;
+	var $question = "";
 	
 	$("#sign-in").submit(function(event){
 	    // abort any pending request
 	    if (request) request.abort();
 	    
-	    $(".navbar-form #form-loader").css("visibility", "visible");
+	    $("#navbar-form-loader").css("visibility", "visible");
 	    
 	    var $form = $(this);
 	    var $inputs = $form.find("input");	//.find("input, select, button, textarea");
 	    var serializedData = $form.serialize();
 	    
-	    // disable inputs for the duration of the ajax request TODO: maybe disable a processing circle
 	    $inputs.prop("disabled", true);
 
 	    request = $.ajax({
@@ -33,7 +33,9 @@ $(document).ready(function() {
 	        	$(".msg-container .msg-img").css("background", "url(assets/img/success.png)");
 	        	$(".msg-container .msg").text("You have been logged in as " + json["name"]);
 	        	
-	        	var html = '<a href="Inbox"><img src="assets/img/' + json["img"] + '" class="msg-icon" /></a>' +
+	        	var html =  '<div class="form-group loader" id="navbar-form-loader">' +
+		    				'<img src="assets/img/ajax-loader.gif"></div>' +
+		    				'<a href="Inbox"><img src="assets/img/' + json["img"] + '" class="msg-icon" /></a>' +
 	        				'<a href="Profile" class="btn btn-success">' + json["name"] + 
 	        				'</a><div class="form-group line"></div><a class="btn btn-success' +
 	        				' sign-out" href="Logout">Sign Out</a>';
@@ -61,7 +63,7 @@ $(document).ready(function() {
 	    request.always(function () {
 	    	$(".navbar-form input[name='password']").val("");
 	        $inputs.prop("disabled", false);
-	        $(".container .navbar-form #form-loader").css("visibility", "hidden");
+	        $("#navbar-form-loader").css("visibility", "hidden");
 	    });
 
 	    event.preventDefault();
@@ -596,6 +598,353 @@ $(document).ready(function() {
 	    	$(".msg-container .msg").text("Weird network error. Please try again!");
 	    	$(".msg-container").hide().slideToggle();
 	    });
+	});
+	
+	
+	$(document).on('click', ".quiz #name", function(e) {
+		if ($(this).html().indexOf('type="text"') == -1) {
+			var val = $(this).text();
+			$(this).html('<input type="text" name="name" value="' + val + '" />');
+			$(this).css("padding", "0px");
+			$(this.children[0]).focus();
+		}
+	});
+	
+
+	$(document).on('focusout', ".quiz #name", function(e) {
+		var val = $(this.children[0]).val();
+		$(this).html(val);
+		$(this).css("padding", "5px 0px");
+		sendQuizData();
+	});
+	
+	
+	$(document).on('click', ".quiz .meta #description", function(e) {
+		if ($(this).html().indexOf('textarea') == -1) {
+			var val = $(this).text();
+			$(this).html('<textarea name="description" style="margin-top:-3px;margin-left:-3px">' + val + '</textarea>');
+			$(this.children[0]).focus();
+		}
+	});
+	
+
+	$(document).on('focusout', ".quiz .meta #description", function(e) {
+		var val = $(this.children[0]).val();
+		$(this).html(val);
+		sendQuizData();
+	});
+	
+	
+	$(document).on('change', ".quiz .meta #page_format", function(e) {
+		sendQuizData();
+	});
+	
+	
+	$(document).on('change', ".quiz .meta #order", function(e) {
+		sendQuizData();
+	});
+	
+	
+	function sendQuizData() {
+		$("#navbar-form-loader").css("visibility", "visible");
+	    var $inputs = $("#quiz-form").find("input, textarea");
+	    $inputs.prop("disabled", true);
+	    
+	    var name = $(".quiz .meta #name").text();
+	    var desc = $(".quiz .meta #description").text();
+	    var format = $(".quiz .meta #page_format").val();
+	    var order = $(".quiz .meta #order").val();
+	    
+	    var $id = $("#quiz-form #quiz_id");
+	    var data = "name=" + name + "&description=" + desc + "&page_format=" + format + "&order=" + order;
+	    if ($id.val() != "") data += "&id=" + $id.val();
+	    
+	    request = $.ajax({
+	        url: "Quiz",
+	        type: "post",
+	        data: data
+	    });
+	    
+	 // on success
+	    request.done(function (response, textStatus, jqXHR){
+	    	var json = $.parseJSON(response);	    	
+	        if (json["errors"] == null) $id.val(json["id"]);
+	    });
+
+	    // on failure
+	    request.fail(function (jqXHR, textStatus, errorThrown){
+	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+	    	$(".msg-container .msg").text("Weird network error. Please refresh page and try again!");
+	    	$(".msg-container").hide().slideToggle();
+	    });
+	    
+	    // akin to Java's finally clause
+	    request.always(function () {
+	        $inputs.prop("disabled", false);
+	        $("#navbar-form-loader").css("visibility", "hidden");
+	    });
+	}
+	
+	
+	$("#add_btn").click(function(e){
+		if ($("#ques:hidden").length == 1) {
+			sendQuizData();
+			$("#ques").show();
+			$("#ques").parent().show();
+			$question = $(".question").last().clone();
+		} else {
+			var $last = $(".question").last();
+			$next = $question.clone();
+			if ($last.length != 0) $last.after($next);
+			else $('.meta').after($next);
+		}
+	});
+	
+	
+	$(document).on('click', ".quiz form[id=ques] p[name=ques_text]", function(e) {
+		if ($(this).html().indexOf('textarea') == -1) {
+			var val = $(this).text();
+			var parent = $(this).parent();
+			$(parent).html('<textarea name="ques_text">' + val + '</textarea>');
+			$(parent).children().focus();
+		}
+	});
+	
+
+	$(document).on('focusout', ".quiz form[id*=ques] textarea[name=ques_text]", function(e) {
+		var val = $(this).val();
+		var parent = $(this).parent();
+		$(parent).html('<p name="ques_text">' + val + '</p>');
+		sendQuestionData(parent.parent('form'));
+	});
+	
+	
+	$(document).on('change', ".quiz form[id*=ques] select", function(e) {
+		if ($(this).val() == "3") {
+			$(this).parent().next().find('p').text("Enter image link here...");
+		} else {
+			$(this).parent().next().find('p').text("Enter question here...");
+		}
+
+		var $boxes = $(this).closest('.row').find('table.answers tr td:nth-child(3)');
+		if ($(this).val() == "2") {
+			$.each($boxes, function(i, val) {
+				$(val).find('input').css('visibility', 'visible');
+			});
+		} else {
+			$.each($boxes, function(i, val) {
+				$(val).find('input').css('visibility', 'hidden');
+			});
+		}
+		
+		sendQuestionData($(this).parent().parent());
+		if ($(this).closest('.row').find('table.answers tr').length != 0) {
+			sendAnswerData($(this).closest('.row').find('#ans'));
+		}
+	});
+	
+	
+	function sendQuestionData(form) {
+		$("#navbar-form-loader").css("visibility", "visible");
+		
+		$form = $(form);
+	    var $inputs = $form.find("input, textarea");
+	    $inputs.prop("disabled", true);
+	    
+	    var type = $form.find("select[name=ques_type]").val();
+	    var text = $form.find("p[name=ques_text]").text();
+	    var quiz_id = $("#quiz-form #quiz_id").val();
+	    
+	    var $id = $form.find("input[name=ques_id]");
+	    var data = "quiz_id=" + quiz_id + "&type=" + type + "&text=" + text;
+	    if ($id.val() != "") data += "&id=" + $id.val();
+	    
+	    request = $.ajax({
+	        url: "Question",
+	        type: "post",
+	        data: data
+	    });
+	    
+	 // on success
+	    request.done(function (response, textStatus, jqXHR){
+	    	var json = $.parseJSON(response);
+	        if (json["errors"] == null) $id.val(json["id"]);
+	    });
+
+	    // on failure
+	    request.fail(function (jqXHR, textStatus, errorThrown){
+	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+	    	$(".msg-container .msg").text("Weird network error. Please refresh page and try again!");
+	    	$(".msg-container").hide().slideToggle();
+	    });
+	    
+	    // akin to Java's finally clause
+	    request.always(function () {
+	        $inputs.prop("disabled", false);
+	        $("#navbar-form-loader").css("visibility", "hidden");
+	    });
+	}
+	
+	
+	$(document).on('click', '.add_ans', function(e) {
+		var type = $(this).closest('.row').find('select[name=ques_type]').val();
+		$ans = $(this).closest('.row').find('table.answers');
+		var visibility = "visible";
+		if (type != "2") visibility = "hidden";
+		
+		if ($ans.find('tr').length == 0) {
+			var group = Math.random(100);
+			$ans.append('<tr><td><img src="assets/img/close.gif" class="ans-del">' + 
+						'</td><td><p>Enter answer here...</p></td>' +
+						'<td><input type="radio" name="' + group + '" style="visibility:' + visibility + '" checked="checked" /></td></tr>');
+
+			sendQuestionData($(this).closest(".question").find('form')[0]);
+		} else {
+			var group = $ans.find('input[type=radio]').attr("name");
+			$ans.append('<tr><td><img src="assets/img/close.gif" class="ans-del">' + 
+						'</td><td><p>Enter another possible answer here...</p></td>' +
+						'<td><input type="radio" name="' + group + '" style="visibility:' + visibility + '" /></td></tr>');
+		}
+	});
+	
+	
+	$(document).on('click', 'table.answers td:nth-child(2)', function(e) {
+		if ($(this).html().indexOf('type="text"') == -1) {
+			var val = $(this).text();
+			$(this).html('<input type="text" name="texts" value="' + val + '"/>');
+			$(this.children[0]).focus();
+		}
+	});
+	
+	
+	$(document).on('focusout', 'table.answers td:nth-child(2)', function(e) {
+		var val = $(this.children[0]).val();
+		$(this).html('<p>' + val + '</p>');
+		sendAnswerData($(this).closest('form'));
+	});
+	
+	
+	$(document).on('change', 'table.answers input[type=radio]', function(e) {
+		sendAnswerData($(this).closest('form'));
+	});
+	
+	function sendAnswerData(form) {
+		$("#navbar-form-loader").css("visibility", "visible");
+
+		$form = $(form);
+	    var $p = $form.find("p");
+	    var ques_id = $(form).closest('.row').find("input[name=ques_id]").val();
+	    
+	    var data = "";
+	    var type = $(form).closest('.row').find('select[name=ques_type]').val();
+	    
+	    if (type != 2) {
+		    for (var i = 0; i < $p.length; i++) {
+		    	data += "texts=" + $($p[i]).text() + "&";
+		    }
+		    if (data == "") data ="texts=&";
+		    data += "question_id=" + ques_id + "&correct=" + $form.find('input[name=correct]').val();
+	    } else {
+	    	for (var i = 0; i < $p.length; i++) {
+	    		var $r = $($p[i]).parent().parent().find('input[type=radio]');
+	    		data += "texts=" + $($p[i]).text();
+	    		if ($r.is(':checked')) data += "&correct=1&";
+	    		else data += "&correct=0&";
+		    }
+		    if (data == "") data ="texts=&";
+		    data += "question_id=" + ques_id;
+	    }
+	    
+	    var $id = $form.find("input[name=ans_id]");
+	    if ($id.val() != "") data += "&id=" + $id.val();
+	   
+	    request = $.ajax({
+	        url: "Answer",
+	        type: "post",
+	        data: data
+	    });
+	    
+	 // on success
+	    request.done(function (response, textStatus, jqXHR){
+	    	var json = $.parseJSON(response);
+	        if (json["errors"] == null) $id.val(json["id"]);
+	    });
+
+	    // on failure
+	    request.fail(function (jqXHR, textStatus, errorThrown){
+	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+	    	$(".msg-container .msg").text("Weird network error. Please refresh page and try again!");
+	    	$(".msg-container").hide().slideToggle();
+	    });
+	    
+	    // akin to Java's finally clause
+	    request.always(function () {
+	        $("#navbar-form-loader").css("visibility", "hidden");
+	    });
+	}
+	
+	
+	$(document).on('click', '.ans-del', function(e) {
+		var form = $(this).closest('form');
+		var row = $(this).closest('tr');
+		$(row).replaceWith("");
+		sendAnswerData(form);
+	});
+	
+	
+	$(document).on('click', '.ques-del', function(e) {
+		$("#navbar-form-loader").css("visibility", "visible");
+		
+		var row = $(this).closest('.question');
+		var id = $(this).closest('form').find('input[name=ques_id]').val();
+		if (id == "" || id == undefined) {
+			$(row).replaceWith("");
+			return;
+		}
+		
+		request = $.ajax({
+	        url: "Question?ques_id=" + id + "&quiz_id=" + $("#quiz-form #quiz_id").val(),
+	        type: "delete"
+	    });
+	    
+	 // on success
+	    request.done(function (response, textStatus, jqXHR){
+	    	$(row).replaceWith("");
+	    });
+
+	    // on failure
+	    request.fail(function (jqXHR, textStatus, errorThrown){
+	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+	    	$(".msg-container .msg").text("Unable to delete question. Please try again!");
+	    	$(".msg-container").hide().slideToggle();
+	    });
+	    
+	    // akin to Java's finally clause
+	    request.always(function () {
+	        $("#navbar-form-loader").css("visibility", "hidden");
+	    });
+	});
+	
+	
+	$(document).on('keypress', ".question", function(e){
+		if (e.which == 13) return false;
+	});
+	
+	
+	$("#show-quiz").submit(function(e) {
+		e.preventDefault();
+		if (format == 0) console.log("Submit all for grading...");
+		else {
+			console.log("Submit this for grading...");			
+			
+			if(index < $("#show-quiz .question").length - 1) {
+				console.log("Showing next question...");
+				$($("#show-quiz .question").get(index)).fadeOut('fast', function(e) {
+					index += 1;
+					$($("#show-quiz .question").get(index)).fadeIn('fast');
+				});
+			} else alert("Finished quiz!");
+		}
 	});
 	
 });
