@@ -903,7 +903,7 @@ $(document).ready(function() {
 		}
 		
 		request = $.ajax({
-	        url: "Question?id=" + id,
+	        url: "Question?ques_id=" + id + "&quiz_id=" + $("#quiz-form #quiz_id").val(),
 	        type: "delete"
 	    });
 	    
@@ -915,7 +915,7 @@ $(document).ready(function() {
 	    // on failure
 	    request.fail(function (jqXHR, textStatus, errorThrown){
 	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
-	    	$(".msg-container .msg").text("Weird network error. Please refresh page and try again!");
+	    	$(".msg-container .msg").text("Unable to delete question. Please try again!");
 	    	$(".msg-container").hide().slideToggle();
 	    });
 	    

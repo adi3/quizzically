@@ -208,6 +208,11 @@ public abstract class Question extends Model {
 		return orderedQuestions;
 	}
 	
+	public boolean delete(int quiz_id) {
+		int status = MySql.getInstance().delete(MyDBInfo.QUIZ_QUESTIONS_TABLE, "question_id=" + this.id() + " AND quiz_id=" + quiz_id);
+		return status == 1;
+	}
+	
 	/**
 	 * True if obj is a Question with the same id.
 	 */
