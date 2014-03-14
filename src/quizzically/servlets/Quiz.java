@@ -40,6 +40,7 @@ public class Quiz extends BaseServlet {
 		String name, description;
 		quizzically.models.Quiz quiz;
 		int id, pageFormat, order;
+		boolean immediateCorrection;
 
 		umbli(request);
 		user = getUser(request);
@@ -49,16 +50,20 @@ public class Quiz extends BaseServlet {
 		description = getString(request, "description");
 		pageFormat = getInt(request, "page_format");
 		order = getInt(request, "order");
+		immediateCorrection = getInt(request, "immediate_correction") == 1;
 
 		if (id != -1) {
 			quiz = quizzically.models.Quiz.retrieve(id);
-//			TODO support update
 			quiz.setName(name);
 			quiz.setDescription(description);
+			quiz.setPageFormat(pageFormat);
+			quiz.setOrder(order);
+			quiz.setImmediateCorrection(immediateCorrection);
 			quiz.save();
 		} else {
 			quiz = quizzically.models.Quiz.create(name, 
-					user.getId(), description, pageFormat, order);
+					user.getId(), description, pageFormat, order, 
+					immediateCorrection);
 		}
 
 		String json = "{\"id\": \"" + quiz.id() + "\"}";

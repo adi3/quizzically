@@ -37,6 +37,11 @@
 							<option value="<%= val %>"><%= str %></option>
 						<% } %>
 					</select>
+					<h5 style="margin-top: 10px;width:25%">Grading</h5>
+					<select name="immediate_correction" id="immediate_correction">
+						<option value="0">At the End</option>
+						<option value="1">After Every Question</option>
+					</select>
 				</div>
 			</form>
 		</div>
