@@ -104,7 +104,7 @@ public class TakeQuiz extends BaseServlet implements Servlet {
 						int answerId = -1;
 						if (question.type() == Question.TYPE_MULTIPLE_CHOICE 
 								/* || TODO MULTI_MULTI_CHOICE */) {
-							answerId = Integer.parseInt(tmp[3]);
+							answerId = getInt(request, paramName);
 						}
 						qr.addResponse(answerId, request.getParameter(paramName));
 					}
