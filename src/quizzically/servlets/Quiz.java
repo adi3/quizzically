@@ -2,6 +2,7 @@ package quizzically.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -29,7 +30,11 @@ public class Quiz extends BaseServlet {
 			request.setAttribute("msgIcon", msgIcon);
 		}
 		
-		request.getRequestDispatcher("CreateQuiz.jsp").forward(request, response);	
+		String id = request.getParameter("id");
+		if (id != null) {
+			request.setAttribute("quiz", quizzically.models.Quiz.retrieve(Integer.parseInt(id)));
+			request.getRequestDispatcher("EditQuiz.jsp").forward(request, response);
+		} else request.getRequestDispatcher("CreateQuiz.jsp").forward(request, response);
 	}
 	
 	/**

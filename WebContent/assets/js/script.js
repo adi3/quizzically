@@ -698,11 +698,16 @@ $(document).ready(function() {
 			$("#ques").show();
 			$("#ques").parent().show();
 			$question = $(".question").last().clone();
-		} else {
+		} else if ($question.length != 0){
 			var $last = $(".question").last();
 			$next = $question.clone();
 			if ($last.length != 0) $last.after($next);
 			else $('.meta').after($next);
+		} else {
+			$next = $(".question").last().clone();
+			$next.find('.col-md-10 > .col-md-10').show();
+			$next.find('.col-md-10 #ques').show();
+			$('.add').before($next);
 		}
 	});
 	

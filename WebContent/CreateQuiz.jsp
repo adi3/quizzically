@@ -13,7 +13,7 @@
 	
  	<div class="row meta">
 		<div class="col-md-1"></div>
-		<div class="col-md-10" style="margin-bottom:10px">
+		<div class="col-md-10" style="height: 120px;">
 			<form action="Quiz" method="post" id="quiz-form">
 				<div class="col-md-1">
 					<input type="hidden" name="id" value="" id="quiz_id" />
@@ -30,14 +30,14 @@
 							<option value="<%= val %>"><%= str %></option>
 						<% } %>
 					</select>
-					<h5 style="margin-top: 10px;width:25%">Order</h5>
+					<h5 style="margin-top: 5px;width:25%">Order</h5>
 					<select name="order" id="order">
 						<% for (int val : Quiz.ORDERS) { %>
 							<% String str = Quiz.ORDER_STRINGS[val]; %>
 							<option value="<%= val %>"><%= str %></option>
 						<% } %>
 					</select>
-					<h5 style="margin-top: 10px;width:25%">Grading</h5>
+					<h5 style="margin-top: 5px;width:25%">Grading</h5>
 					<select name="immediate_correction" id="immediate_correction">
 						<option value="0">At the End</option>
 						<option value="1">After Every Question</option>
@@ -47,7 +47,6 @@
 		</div>
 		<div class="col-md-1"></div>
 	</div>
-	
 	
 	<div class="row question" >
 		<div class="col-md-1"></div>

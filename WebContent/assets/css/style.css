@@ -564,3 +564,10 @@ table.answers p {
 	margin:0 30%;
 	font-weight: bold;
 }
+
+.opts {
+	margin-bottom: 5px;
+	text-align: right;
+	margin-right: 25px;
+	padding-top: 6px;	
+}

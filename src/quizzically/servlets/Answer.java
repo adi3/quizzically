@@ -110,6 +110,7 @@ public class Answer extends BaseServlet {
 						// well shit... we're not gonna backtrack... just throw it to the user
 						throw new ServletException(e.getMessage());
 					}
+					i++;
 				}
 				// return the id of the first one just for shits, we don't care though when they edit
 				answer = newAnswers[0];

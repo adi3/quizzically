@@ -28,7 +28,7 @@
 						<div class="col-md-1">
 							<h5 class="index">Q</h5>
 						</div>
-						<div class="col-md-10">
+						<div class="col-md-10" style="height: inherit;">
 							<h5><%= q.text() %></h5>
 						</div>
 						<div class="col-md-1"></div>
@@ -48,7 +48,8 @@
 								out.println("<input placeholder=\"Your Answer\" type=\"text\" name=\"" + qs + "\" /><br />");
 								break;
 							case Question.TYPE_MULTIPLE_CHOICE:
-								out.println("<input type=\"radio\" name=\"" + qs + "\" value=\"" + a.id() + "\"/>" + a.text() + "<br />");
+								out.println("<div><input type=\"radio\" name=\"" + qs + "\" value=\"" + a.id() + "\"/>" +
+											"<p class=\"opts\">" + a.text() + "</p></div>");
 								break;
 						}
 					} %>
