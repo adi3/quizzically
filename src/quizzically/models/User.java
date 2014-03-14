@@ -127,6 +127,10 @@ public class User {
 		return id;
 	}
 	
+	public String profileLink() {
+		return "Profile?id=" + getId();
+	}
+	
 	@Override
 	public int hashCode() {
 		return this.username.hashCode();
