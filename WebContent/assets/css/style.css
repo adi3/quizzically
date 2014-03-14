@@ -481,8 +481,19 @@ form[id*=ques-] div:nth-child(2) {
 	padding: 0;
 }
 
+form[id*=ans-] tr td:nth-child(2) {
+	width: 230px;
+}
+
 form[id*=ans-] tr td {	
 	float: left;
+}
+
+.quiz input[type=checkbox],
+.quiz input[type=radio] {
+	width: inherit;
+	padding: 0;
+	margin-top: 11px;
 }
 
 .quiz .index {
@@ -539,5 +550,5 @@ table.answers p {
 }
 
 .question > .col-md-3 {
-	padding-left: 0;
+	padding: 0;
 }

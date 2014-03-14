@@ -729,6 +729,22 @@ $(document).ready(function() {
 	
 	
 	$(document).on('change', ".quiz form[id*=ques-] select", function(e) {
+		if ($(this).val() == "3") {
+			$(this).parent().next().find('p').text("Enter image link here...");
+		} else {
+			$(this).parent().next().find('p').text("Enter question here...");
+		}
+
+		var $boxes = $(this).closest('.row').find('table.answers tr td:nth-child(3)');
+		if ($(this).val() == "2") {
+			$.each($boxes, function(i, val) {
+				$boxes[i].css('visibility', 'visible');
+			});
+		} else {
+			$.each($boxes, function(i, val) {
+				$boxes[i].css('visibility', 'hidden');
+			});
+		}
 		sendQuestionData($(this).parent().parent());
 	});
 	
@@ -776,13 +792,23 @@ $(document).ready(function() {
 	
 	
 	$(document).on('click', '.add_ans', function(e) {
+		var type = $(this).closest('.row').find('select[name=ques_type]').val();
 		$ans = $(this).closest('.row').find('table.answers');
+		var visibility = "visible";
+		if (type != "2") visibility = "hidden";
+		
 		if ($ans.find('tr').length == 0) {
+			var group = Math.random(100);
 			$ans.append('<tr><td><img src="assets/img/close.gif" class="ans-del">' + 
-						'</td><td><p>Enter answer here...</p></td></tr>');
+						'</td><td><p>Enter answer here...</p></td>' +
+						'<td><input type="radio" name="' + group + '" style="visibility:' + visibility + '" /></td></tr>');			
 			sendQuestionData($(".question").find('form')[0]);
-		} else $ans.append('<tr><td><img src="assets/img/close.gif" class="ans-del">' + 
-							'</td><td><p>Enter another possible answer here...</p></td></tr>');
+		} else {
+			var group = $ans.find('input[type=radio]').attr("name");
+			$ans.append('<tr><td><img src="assets/img/close.gif" class="ans-del">' + 
+						'</td><td><p>Enter another possible answer here...</p></td>' +
+						'<td><input type="radio" name="' + group + '" style="visibility:' + visibility + '" /></td></tr>');
+		}
 	});
 	
 	
@@ -813,7 +839,7 @@ $(document).ready(function() {
 	    for (var i = 0; i < $p.length; i++) {
 	    	data += "texts=" + $($p[i]).text() + "&";
 	    }
-	    if (data = "") data ="texts=&";
+	    if (data == "") data ="texts=&";
 	    
 	    data += "question_id=" + ques_id + "&correct=" + $form.find('input[name=correct]').val();
 	    var $id = $form.find("input[name=ans_id]");
