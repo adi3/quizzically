@@ -6,6 +6,7 @@ $(document).ready(function() {
 	
 	var request = null;
 	var interval = 3000;
+	var $question = "";
 	
 	$("#sign-in").submit(function(event){
 	    // abort any pending request
@@ -690,18 +691,21 @@ $(document).ready(function() {
 			sendQuizData();
 			$("#ques-1").show();
 			$("#ques-1").parent().show();
+			$question = $(".question").last().clone();
 		} else {
 			var $last = $(".question").last();
 			var $next = $last.clone();
+			if($next.length == 0) $next = $question;
 			
-			var $index = $next.find(".index");
-			var curr_index = parseInt($index.text());
-			$index.text(curr_index + 1);
-			$next.html($next.html().replace('id="ques-' + curr_index + '"' , 'id="ques-' + (curr_index + 1) + '"'));
-			$next.html($next.html().replace('id="ans-' + curr_index + '"' , 'id="ans-' + (curr_index + 1) + '"'));
-			$next.html($next.html().replace(/<table class="answers">((.|\s)*)<\/table>/ , '<table class="answers"></table>'));
-			
-			$last.after($next);
+			if ($last.length != 0) {
+				var $index = $next.find(".index");
+				var curr_index = parseInt($index.text());
+				$index.text(curr_index + 1);
+				$next.html($next.html().replace('id="ques-' + curr_index + '"' , 'id="ques-' + (curr_index + 1) + '"'));
+				$next.html($next.html().replace('id="ans-' + curr_index + '"' , 'id="ans-' + (curr_index + 1) + '"'));
+				$next.html($next.html().replace(/<table class="answers">((.|\s)*)<\/table>/ , '<table class="answers"></table>'));
+				$last.after($next);
+			} else $('.meta').after($next);
 		}
 	});
 	
