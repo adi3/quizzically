@@ -10,6 +10,7 @@ body > .container {
 
 hr {
 	margin: 10px;
+	border-top: 1px solid #cdcdcd;
 }
 
 .navbar-form .form-control {
@@ -41,7 +42,7 @@ hr {
 	margin-left: 8px;
 }
 
-.navbar-form #form-loader {
+#navbar-form-loader {
 	margin-right: 10px;
 	visibility: hidden;
 }
@@ -77,7 +78,7 @@ hr {
 
 .row .btn-edit {
 	float: left;
-	margin: 5% 5px;
+	margin: 20% 5px;
 }
 
 footer {
@@ -242,25 +243,33 @@ footer {
 
 .frnd-req {
 	float: left;
-	margin-top: 4%;
-	margin-left: 5%;
+	margin-top: 19%;
+	margin-left: 19%;
 }
 
 .friends-info td:first-child img {
 	width: 40px;
 }
 
-.friends-info td {
+.quiz-info td:first-child img {
+	width: 16px;
+	margin-left: 20px;
+}
+
+.friends-info td,
+.quiz-info td {
 	padding: 4px;
 	text-align: left;
 	font-weight: bold;
 }
 
-.friends-info td:first-child {
+.friends-info td:first-child,
+.quiz-info td:first-child {
 	width: 60px;
 }
 
-.friends-info td:nth-child(2) {
+.friends-info td:nth-child(2),
+.quiz-info td:nth-child(2) {
 	width: 130px;
 }
 
@@ -400,4 +409,135 @@ td a:hover {
 #search-results div:nth-child(2) {
 	overflow-y: auto;
 	max-height: 250px;
+}
+
+.quiz .caption h1 {
+	text-align: center;
+	margin-top: 3%;
+}
+
+.quiz .caption p {
+	text-align: center;
+	font-style: italic;
+}
+
+.quiz h3 {
+	font-size: 26px;
+	padding: 5px 0px;
+}
+
+.quiz #description textarea {
+	resize: none;
+	width: 360px;
+}
+
+.quiz h5 {
+	font-weight: bold;
+	display: inline-block;
+	margin-right: 20px;
+}
+
+.quiz .meta select {
+	width: 120px;
+}
+
+#add_btn {
+	float: right;
+	cursor: pointer;
+}
+
+#add_btn img {
+	width: 16px;
+	margin-top: -3px;
+	margin-right: 9px;
+}
+
+#quiz-form div:nth-child(2) {
+	padding-left: 8px;
+}
+
+
+form[id*=ques-] textarea {
+	margin-top:3px;
+	margin-left:-3px;
+	width: 300px;
+	resize: none;
+}
+
+form[id*=ques-] div:nth-child(1) {
+	padding-left: 8px;
+}
+
+form[id*=ques-] div:nth-child(1) img,
+form[id*=ans-] tr td:first-child img {
+	width: 16px;
+    margin-top: 11px;
+    border: 1px solid white;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+form[id*=ques-] div:nth-child(2) {
+	padding: 0;
+}
+
+form[id*=ans-] tr td {	
+	float: left;
+}
+
+.quiz .index {
+	float: right;
+	margin-right: 0;
+	margin-top: 11px;
+}
+
+.quiz .index:after{ 
+	content:".";
+}
+
+.quiz p[name=ques_text] {
+	margin-top: 6px;
+}
+
+.quiz .add_ans {
+	padding: 6px 0 0 18px;
+	font-size: 12px;
+	cursor: pointer;
+}
+
+.quiz .add_ans img {
+	width: 12px;
+	margin-right: 5px;
+}
+
+table.answers {
+	width: 100%;
+}
+
+table.answers input {
+	width: 220px;
+	margin-top: 8px;
+	margin-left: 16px;
+	padding: 0;
+	font-size: 12px;
+}
+
+table.answers p {
+	width: 100%;
+	margin-top: 10px;
+	margin-left: 18px;
+	font-size: 12px;
+	margin-bottom: 0;
+	height: 19px;
+}
+
+.question .col-md-10 .col-md-10 {
+	padding:0;
+	margin-top:15px;
+	height:50px;
+	border-top: 1px solid #428bca;
+}
+
+.question > .col-md-3 {
+	padding-left: 0;
 }

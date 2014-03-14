@@ -52,7 +52,7 @@
   <div class="navbar-collapse collapse">
   	<% if (request.getSession().getAttribute("user") == null) { %>
 	    <form class="navbar-form navbar-right" role="form" id="sign-in" method="post">
-	    	<div class="form-group loader" id="form-loader">
+	    	<div class="form-group loader" id="navbar-form-loader">
 	    		<img src="assets/img/ajax-loader.gif" />
 	    	</div>
 	      <div class="form-group">
@@ -67,6 +67,9 @@
 	    </form>
 	 <% } else { %>
 	 	<form class="navbar-form navbar-right">
+	 		<div class="form-group loader" id="navbar-form-loader">
+	    		<img src="assets/img/ajax-loader.gif" />
+	    	</div>
 	 		<a href="Inbox"><img src="assets/img/<%= request.getAttribute("msgIcon") %>" class="msg-icon" /></a>
 	 		<a href="Profile" class="btn btn-success"><%= request.getSession().getAttribute("name") %></a>
 	 		<div class="form-group line"></div>

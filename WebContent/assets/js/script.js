@@ -6,18 +6,18 @@ $(document).ready(function() {
 	
 	var request = null;
 	var interval = 3000;
+	var $question = "";
 	
 	$("#sign-in").submit(function(event){
 	    // abort any pending request
 	    if (request) request.abort();
 	    
-	    $(".navbar-form #form-loader").css("visibility", "visible");
+	    $("#navbar-form-loader").css("visibility", "visible");
 	    
 	    var $form = $(this);
 	    var $inputs = $form.find("input");	//.find("input, select, button, textarea");
 	    var serializedData = $form.serialize();
 	    
-	    // disable inputs for the duration of the ajax request TODO: maybe disable a processing circle
 	    $inputs.prop("disabled", true);
 
 	    request = $.ajax({
@@ -33,7 +33,9 @@ $(document).ready(function() {
 	        	$(".msg-container .msg-img").css("background", "url(assets/img/success.png)");
 	        	$(".msg-container .msg").text("You have been logged in as " + json["name"]);
 	        	
-	        	var html = '<a href="Inbox"><img src="assets/img/' + json["img"] + '" class="msg-icon" /></a>' +
+	        	var html =  '<div class="form-group loader" id="navbar-form-loader">' +
+		    				'<img src="assets/img/ajax-loader.gif"></div>' +
+		    				'<a href="Inbox"><img src="assets/img/' + json["img"] + '" class="msg-icon" /></a>' +
 	        				'<a href="Profile" class="btn btn-success">' + json["name"] + 
 	        				'</a><div class="form-group line"></div><a class="btn btn-success' +
 	        				' sign-out" href="Logout">Sign Out</a>';
@@ -61,7 +63,7 @@ $(document).ready(function() {
 	    request.always(function () {
 	    	$(".navbar-form input[name='password']").val("");
 	        $inputs.prop("disabled", false);
-	        $(".container .navbar-form #form-loader").css("visibility", "hidden");
+	        $("#navbar-form-loader").css("visibility", "hidden");
 	    });
 
 	    event.preventDefault();
@@ -595,6 +597,292 @@ $(document).ready(function() {
 	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
 	    	$(".msg-container .msg").text("Weird network error. Please try again!");
 	    	$(".msg-container").hide().slideToggle();
+	    });
+	});
+	
+	
+	$(document).on('click', ".quiz #name", function(e) {
+		if ($(this).html().indexOf('type="text"') == -1) {
+			var val = $(this).text();
+			$(this).html('<input type="text" name="name" value="' + val + '" />');
+			$(this).css("padding", "0px");
+			$(this.children[0]).focus();
+		}
+	});
+	
+
+	$(document).on('focusout', ".quiz #name", function(e) {
+		var val = $(this.children[0]).val();
+		$(this).html(val);
+		$(this).css("padding", "5px 0px");
+		sendQuizData();
+	});
+	
+	
+	$(document).on('click', ".quiz .meta #description", function(e) {
+		if ($(this).html().indexOf('textarea') == -1) {
+			var val = $(this).text();
+			$(this).html('<textarea name="description" style="margin-top:-3px;margin-left:-3px">' + val + '</textarea>');
+			$(this.children[0]).focus();
+		}
+	});
+	
+
+	$(document).on('focusout', ".quiz .meta #description", function(e) {
+		var val = $(this.children[0]).val();
+		$(this).html(val);
+		sendQuizData();
+	});
+	
+	
+	$(document).on('change', ".quiz .meta #page_format", function(e) {
+		sendQuizData();
+	});
+	
+	
+	$(document).on('change', ".quiz .meta #order", function(e) {
+		sendQuizData();
+	});
+	
+	
+	function sendQuizData() {
+		$("#navbar-form-loader").css("visibility", "visible");
+	    var $inputs = $("#quiz-form").find("input, textarea");
+	    $inputs.prop("disabled", true);
+	    
+	    var name = $(".quiz .meta #name").text();
+	    var desc = $(".quiz .meta #description").text();
+	    var format = $(".quiz .meta #page_format").val();
+	    var order = $(".quiz .meta #order").val();
+	    
+	    var $id = $("#quiz-form #quiz_id");
+	    var data = "name=" + name + "&description=" + desc + "&page_format=" + format + "&order=" + order;
+	    if ($id.val() != "") data += "&id=" + $id.val();
+	    
+	    request = $.ajax({
+	        url: "Quiz",
+	        type: "post",
+	        data: data
+	    });
+	    
+	 // on success
+	    request.done(function (response, textStatus, jqXHR){
+	    	var json = $.parseJSON(response);	    	
+	        if (json["errors"] == null) $id.val(json["id"]);
+	    });
+
+	    // on failure
+	    request.fail(function (jqXHR, textStatus, errorThrown){
+	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+	    	$(".msg-container .msg").text("Weird network error. Please refresh page and try again!");
+	    	$(".msg-container").hide().slideToggle();
+	    });
+	    
+	    // akin to Java's finally clause
+	    request.always(function () {
+	        $inputs.prop("disabled", false);
+	        $("#navbar-form-loader").css("visibility", "hidden");
+	    });
+	}
+	
+	
+	$("#add_btn").click(function(e){
+		if ($("#ques-1:hidden").length == 1) {
+			sendQuizData();
+			$("#ques-1").show();
+			$("#ques-1").parent().show();
+			$question = $(".question").last().clone();
+		} else {
+			var $last = $(".question").last();
+			var $next = $last.clone();
+			if($next.length == 0) $next = $question;
+			
+			if ($last.length != 0) {
+				var $index = $next.find(".index");
+				var curr_index = parseInt($index.text());
+				$index.text(curr_index + 1);
+				$next.html($next.html().replace('id="ques-' + curr_index + '"' , 'id="ques-' + (curr_index + 1) + '"'));
+				$next.html($next.html().replace('id="ans-' + curr_index + '"' , 'id="ans-' + (curr_index + 1) + '"'));
+				$next.html($next.html().replace(/<table class="answers">((.|\s)*)<\/table>/ , '<table class="answers"></table>'));
+				$last.after($next);
+			} else $('.meta').after($next);
+		}
+	});
+	
+	
+	$(document).on('click', ".quiz form[id*=ques-] p[name=ques_text]", function(e) {
+		if ($(this).html().indexOf('textarea') == -1) {
+			var val = $(this).text();
+			var parent = $(this).parent();
+			$(parent).html('<textarea name="ques_text">' + val + '</textarea>');
+			$(parent).children().focus();
+		}
+	});
+	
+
+	$(document).on('focusout', ".quiz form[id*=ques-] textarea[name=ques_text]", function(e) {
+		var val = $(this).val();
+		var parent = $(this).parent();
+		$(parent).html('<p name="ques_text">' + val + '</p>');
+		sendQuestionData(parent.parent('form'));
+	});
+	
+	
+	$(document).on('change', ".quiz form[id*=ques-] select", function(e) {
+		sendQuestionData($(this).parent().parent());
+	});
+	
+	
+	function sendQuestionData(form) {
+		$("#navbar-form-loader").css("visibility", "visible");
+		
+		$form = $(form);
+	    var $inputs = $form.find("input, textarea");
+	    $inputs.prop("disabled", true);
+	    
+	    var type = $form.find("select[name=ques_type]").val();
+	    var text = $form.find("p[name=ques_text]").text();
+	    var quiz_id = $("#quiz-form #quiz_id").val();
+	    
+	    var $id = $form.find("input[name=ques_id]");
+	    var data = "quiz_id=" + quiz_id + "&type=" + type + "&text=" + text;
+	    if ($id.val() != "") data += "&id=" + $id.val();
+	    
+	    request = $.ajax({
+	        url: "Question",
+	        type: "post",
+	        data: data
+	    });
+	    
+	 // on success
+	    request.done(function (response, textStatus, jqXHR){
+	    	var json = $.parseJSON(response);
+	        if (json["errors"] == null) $id.val(json["id"]);
+	    });
+
+	    // on failure
+	    request.fail(function (jqXHR, textStatus, errorThrown){
+	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+	    	$(".msg-container .msg").text("Weird network error. Please refresh page and try again!");
+	    	$(".msg-container").hide().slideToggle();
+	    });
+	    
+	    // akin to Java's finally clause
+	    request.always(function () {
+	        $inputs.prop("disabled", false);
+	        $("#navbar-form-loader").css("visibility", "hidden");
+	    });
+	}
+	
+	
+	$(document).on('click', '.add_ans', function(e) {
+		$ans = $(this).closest('.row').find('table.answers');
+		if ($ans.find('tr').length == 0) {
+			$ans.append('<tr><td><img src="assets/img/close.gif" class="ans-del">' + 
+						'</td><td><p>Enter answer here...</p></td></tr>');
+			sendQuestionData($(".question").find('form')[0]);
+		} else $ans.append('<tr><td><img src="assets/img/close.gif" class="ans-del">' + 
+							'</td><td><p>Enter another possible answer here...</p></td></tr>');
+	});
+	
+	
+	$(document).on('click', 'table.answers td:nth-child(2)', function(e) {
+		if ($(this).html().indexOf('type="text"') == -1) {
+			var val = $(this).text();
+			$(this).html('<input type="text" name="texts" value="' + val + '"/>');
+			$(this.children[0]).focus();
+		}
+	});
+	
+	
+	$(document).on('focusout', 'table.answers td:nth-child(2)', function(e) {
+		var val = $(this.children[0]).val();
+		$(this).html('<p>' + val + '</p>');
+		sendAnswerData($(this).closest('form'));
+	});
+	
+	
+	function sendAnswerData(form) {
+		$("#navbar-form-loader").css("visibility", "visible");
+
+		$form = $(form);
+	    var $p = $form.find("p");
+	    var ques_id = $(".question").find("input[name=ques_id]").val();
+	    
+	    var data = "";
+	    for (var i = 0; i < $p.length; i++) {
+	    	data += "texts=" + $($p[i]).text() + "&";
+	    }
+	    if (data = "") data ="texts=&";
+	    
+	    data += "question_id=" + ques_id + "&correct=" + $form.find('input[name=correct]').val();
+	    var $id = $form.find("input[name=ans_id]");
+	    if ($id.val() != "") data += "&id=" + $id.val();
+	   
+	    request = $.ajax({
+	        url: "Answer",
+	        type: "post",
+	        data: data
+	    });
+	    
+	 // on success
+	    request.done(function (response, textStatus, jqXHR){
+	    	var json = $.parseJSON(response);
+	        if (json["errors"] == null) $id.val(json["id"]);
+	    });
+
+	    // on failure
+	    request.fail(function (jqXHR, textStatus, errorThrown){
+	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+	    	$(".msg-container .msg").text("Weird network error. Please refresh page and try again!");
+	    	$(".msg-container").hide().slideToggle();
+	    });
+	    
+	    // akin to Java's finally clause
+	    request.always(function () {
+	        $("#navbar-form-loader").css("visibility", "hidden");
+	    });
+	}
+	
+	
+	$(document).on('click', '.ans-del', function(e) {
+		var form = $(this).closest('form');
+		var row = $(this).closest('tr');
+		$(row).replaceWith("");
+		sendAnswerData(form);
+	});
+	
+	
+	$(document).on('click', '.ques-del', function(e) {
+		$("#navbar-form-loader").css("visibility", "visible");
+		
+		var row = $(this).closest('.question');
+		var id = $(this).closest('form').find('input[name=ques_id]').val();
+		if (id == "" || id == undefined) {
+			$(row).replaceWith("");
+			return;
+		}
+		
+		request = $.ajax({
+	        url: "Question?id=" + id,
+	        type: "delete"
+	    });
+	    
+	 // on success
+	    request.done(function (response, textStatus, jqXHR){
+	    	$(row).replaceWith("");
+	    });
+
+	    // on failure
+	    request.fail(function (jqXHR, textStatus, errorThrown){
+	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+	    	$(".msg-container .msg").text("Weird network error. Please refresh page and try again!");
+	    	$(".msg-container").hide().slideToggle();
+	    });
+	    
+	    // akin to Java's finally clause
+	    request.always(function () {
+	        $("#navbar-form-loader").css("visibility", "hidden");
 	    });
 	});
 	

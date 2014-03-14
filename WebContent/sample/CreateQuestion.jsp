@@ -21,7 +21,6 @@
 		<option value="<%= type %>"><%= typeStr %></option>
 	<% } %>
 	</select><br />
-	<input type="submit" />
 </form>
 
 </body>
