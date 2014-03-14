@@ -796,8 +796,9 @@ $(document).ready(function() {
 			var group = Math.random(100);
 			$ans.append('<tr><td><img src="assets/img/close.gif" class="ans-del">' + 
 						'</td><td><p>Enter answer here...</p></td>' +
-						'<td><input type="radio" name="' + group + '" style="visibility:' + visibility + '" checked="checked" /></td></tr>');			
-			sendQuestionData($(".question").find('form')[0]);
+						'<td><input type="radio" name="' + group + '" style="visibility:' + visibility + '" checked="checked" /></td></tr>');
+
+			sendQuestionData($(this).closest(".question").find('form')[0]);
 		} else {
 			var group = $ans.find('input[type=radio]').attr("name");
 			$ans.append('<tr><td><img src="assets/img/close.gif" class="ans-del">' + 
@@ -832,8 +833,8 @@ $(document).ready(function() {
 
 		$form = $(form);
 	    var $p = $form.find("p");
-	    var ques_id = $(".question").find("input[name=ques_id]").val();
-
+	    var ques_id = $(form).closest('.row').find("input[name=ques_id]").val();
+	    
 	    var data = "";
 	    var type = $(form).closest('.row').find('select[name=ques_type]').val();
 	    
@@ -854,7 +855,6 @@ $(document).ready(function() {
 		    data += "question_id=" + ques_id;
 	    }
 	    
-	    console.log(data);
 	    var $id = $form.find("input[name=ans_id]");
 	    if ($id.val() != "") data += "&id=" + $id.val();
 	   
@@ -923,6 +923,11 @@ $(document).ready(function() {
 	    request.always(function () {
 	        $("#navbar-form-loader").css("visibility", "hidden");
 	    });
+	});
+	
+	
+	$(document).on('keypress', ".question", function(e){
+		if (e.which == 13) return false;
 	});
 	
 });

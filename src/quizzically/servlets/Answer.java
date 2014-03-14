@@ -14,13 +14,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import quizzically.models.Question;
 import quizzically.models.User;
-import quizzically.servlets.api.ApiServlet;
 
 /**
  * Servlet implementation class Answer
  */
 @WebServlet("/Answer")
-public class Answer extends ApiServlet {
+public class Answer extends BaseServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
