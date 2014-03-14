@@ -932,18 +932,15 @@ $(document).ready(function() {
 	
 	
 	$("#show-quiz").submit(function(e) {
-		e.preventDefault();
-		if (format == 0) console.log("Submit all for grading...");
-		else {
-			console.log("Submit this for grading...");			
-			
+		if (format == 1) {			
 			if(index < $("#show-quiz .question").length - 1) {
+				e.preventDefault();
 				console.log("Showing next question...");
 				$($("#show-quiz .question").get(index)).fadeOut('fast', function(e) {
 					index += 1;
 					$($("#show-quiz .question").get(index)).fadeIn('fast');
 				});
-			} else alert("Finished quiz!");
+			}
 		}
 	});
 	

@@ -7,7 +7,7 @@
 	<div class="row caption">
 		<div class="col-md-1"></div>
 		<div class="col-md-10">
-			<h1>Take Quiz: <%= quiz.name() %></h1>
+			<h1>Quiz: <%= quiz.name() %></h1>
 			<p><%= quiz.description() %></p>
 			<hr />
 		</div>
@@ -75,7 +75,6 @@
 	var format = <%= quiz.pageFormat() %>;
 	var index = 0;
 	
-	console.log($("#show-quiz .question"));
 	if (format == 0) {
 		$.each($("#show-quiz .question"), function(i, val) {
 			$(val).show();
