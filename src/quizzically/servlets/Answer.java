@@ -1,4 +1,4 @@
-package quizzically.servlets.api;
+package quizzically.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,11 +12,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import quizzically.models.Question;
 import quizzically.models.User;
+import quizzically.servlets.api.ApiServlet;
 
 /**
  * Servlet implementation class Answer
  */
-@WebServlet("/api/Answer")
+@WebServlet("/Answer")
 public class Answer extends ApiServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -62,9 +63,8 @@ public class Answer extends ApiServlet {
 			}
 		}
 
-		// respond with id
-		PrintWriter out = response.getWriter();
-		out.println(answer.id());
+		String json = "{\"id\": \"" + answer.id() + "\"}";
+		response.getWriter().write(json);
 	}
 
 }

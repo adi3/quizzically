@@ -1,13 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Sample Create Answer</title>
-</head>
-<body>
-<form action="/Quizzically/api/Answer" method="POST">
+
+
+<form action="/Quizzically/api/Answer" method="POST" id="form">
 	question_id: <input type="text" name="question_id" /><br />
 	texts: 
 	<input type="text" name="texts" /><br />
@@ -18,6 +11,13 @@
 	<input type="submit" />
 </form>
 
+<script src="http://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>
+<script>
+	$("#form").submit(function(e) {
+		e.preventDefault();
+		console.log($(this).serialize());
+	});
+</script>
 
 </body>
 </html>

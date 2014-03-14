@@ -51,10 +51,11 @@
 		<div class="col-md-1"></div>
 		<div class="col-md-10">
 			<div class="col-md-1"></div>
-			<div class="col-md-10" style="padding:0; margin-top:10px; height:50px; display:none">
+			<div class="col-md-10" style="display:none">
 				<form action="Question" method="post" id="ques-1" style="display:none">
 					<div class="col-md-1">
-						<input type="hidden" name="id" value="" />
+						<input type="hidden" name="ques_id" value="" />
+						<img src="assets/img/close.gif" class="ques-del">
 						<h5 class="index">1</h5>
 					</div>
 					<div class="col-md-4">
@@ -66,15 +67,31 @@
 							<% } %>
 						</select>
 					</div>
-					<div class="col-md-1"></div>
 					<div class="col-md-5" style="padding:0;">	
 						<p name="ques_text">Enter question here...</p>
 					</div>
+					<div class="col-md-2 add_ans">
+						<img src="assets/img/add.png" />
+						<b>Add Answer</b>
+					</div>
 				</form>
+				<div class="col-md-1"></div>
 			</div>
 			<div class="col-md-1"></div>
 		</div>
+		
 		<div class="col-md-1"></div>
+		
+		<div class="col-md-5"></div>
+		<div class="col-md-3">
+			<form action="Answer" method="post" id="ans-1">
+				<input type="hidden" name="correct" value="1" />
+				<input type="hidden" name="ans_id" value="" />
+				<table class="answers">
+				</table>
+			</form>
+		</div>
+		<div class="col-md-4"></div>
 	</div>
 	
 	<div class="row add">

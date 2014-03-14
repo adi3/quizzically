@@ -698,7 +698,9 @@ $(document).ready(function() {
 			var curr_index = parseInt($index.text());
 			$index.text(curr_index + 1);
 			$next.html($next.html().replace('id="ques-' + curr_index + '"' , 'id="ques-' + (curr_index + 1) + '"'));
-
+			$next.html($next.html().replace('id="ans-' + curr_index + '"' , 'id="ans-' + (curr_index + 1) + '"'));
+			$next.html($next.html().replace(/<table class="answers">((.|\s)*)<\/table>/ , '<table class="answers"></table>'));
+			
 			$last.after($next);
 		}
 	});
@@ -723,14 +725,13 @@ $(document).ready(function() {
 	
 	
 	$(document).on('change', ".quiz form[id*=ques-] select", function(e) {
-		console.log($(this).parent().parent());
 		sendQuestionData($(this).parent().parent());
 	});
 	
 	
 	function sendQuestionData(form) {
 		$("#navbar-form-loader").css("visibility", "visible");
-
+		
 		$form = $(form);
 	    var $inputs = $form.find("input, textarea");
 	    $inputs.prop("disabled", true);
@@ -739,10 +740,10 @@ $(document).ready(function() {
 	    var text = $form.find("p[name=ques_text]").text();
 	    var quiz_id = $("#quiz-form #quiz_id").val();
 	    
-	    var $id = $form.find("input[name=id]");
-	    var data = "quiz_id=" + quiz_id + "&type=" + type + "&text=" + text;;
+	    var $id = $form.find("input[name=ques_id]");
+	    var data = "quiz_id=" + quiz_id + "&type=" + type + "&text=" + text;
 	    if ($id.val() != "") data += "&id=" + $id.val();
-	  
+	    
 	    request = $.ajax({
 	        url: "Question",
 	        type: "post",
@@ -751,7 +752,7 @@ $(document).ready(function() {
 	    
 	 // on success
 	    request.done(function (response, textStatus, jqXHR){
-	    	var json = $.parseJSON(response);	    	
+	    	var json = $.parseJSON(response);
 	        if (json["errors"] == null) $id.val(json["id"]);
 	    });
 
@@ -768,4 +769,117 @@ $(document).ready(function() {
 	        $("#navbar-form-loader").css("visibility", "hidden");
 	    });
 	}
+	
+	
+	$(document).on('click', '.add_ans', function(e) {
+		$ans = $(this).closest('.row').find('table.answers');
+		if ($ans.find('tr').length == 0) {
+			$ans.append('<tr><td><img src="assets/img/close.gif" class="ans-del">' + 
+						'</td><td><p>Enter answer here...</p></td></tr>');
+			sendQuestionData($(".question").find('form')[0]);
+		} else $ans.append('<tr><td><img src="assets/img/close.gif" class="ans-del">' + 
+							'</td><td><p>Enter another possible answer here...</p></td></tr>');
+	});
+	
+	
+	$(document).on('click', 'table.answers td:nth-child(2)', function(e) {
+		if ($(this).html().indexOf('type="text"') == -1) {
+			var val = $(this).text();
+			$(this).html('<input type="text" name="texts" value="' + val + '"/>');
+			$(this.children[0]).focus();
+		}
+	});
+	
+	
+	$(document).on('focusout', 'table.answers td:nth-child(2)', function(e) {
+		var val = $(this.children[0]).val();
+		$(this).html('<p>' + val + '</p>');
+		sendAnswerData($(this).closest('form'));
+	});
+	
+	
+	function sendAnswerData(form) {
+		$("#navbar-form-loader").css("visibility", "visible");
+
+		$form = $(form);
+	    var $p = $form.find("p");
+	    var ques_id = $(".question").find("input[name=ques_id]").val();
+	    
+	    var data = "";
+	    for (var i = 0; i < $p.length; i++) {
+	    	data += "texts=" + $($p[i]).text() + "&";
+	    }
+	    if (data = "") data ="texts=&";
+	    
+	    data += "question_id=" + ques_id + "&correct=" + $form.find('input[name=correct]').val();
+	    var $id = $form.find("input[name=ans_id]");
+	    if ($id.val() != "") data += "&id=" + $id.val();
+	   
+	    request = $.ajax({
+	        url: "Answer",
+	        type: "post",
+	        data: data
+	    });
+	    
+	 // on success
+	    request.done(function (response, textStatus, jqXHR){
+	    	var json = $.parseJSON(response);
+	        if (json["errors"] == null) $id.val(json["id"]);
+	    });
+
+	    // on failure
+	    request.fail(function (jqXHR, textStatus, errorThrown){
+	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+	    	$(".msg-container .msg").text("Weird network error. Please refresh page and try again!");
+	    	$(".msg-container").hide().slideToggle();
+	    });
+	    
+	    // akin to Java's finally clause
+	    request.always(function () {
+	        $("#navbar-form-loader").css("visibility", "hidden");
+	    });
+	}
+	
+	
+	$(document).on('click', '.ans-del', function(e) {
+		var form = $(this).closest('form');
+		var row = $(this).closest('tr');
+		$(row).replaceWith("");
+		sendAnswerData(form);
+	});
+	
+	
+	$(document).on('click', '.ques-del', function(e) {
+		$("#navbar-form-loader").css("visibility", "visible");
+		
+		var row = $(this).closest('.question');
+		var id = $(this).closest('form').find('input[name=ques_id]').val();
+		if (id == "" || id == undefined) {
+			$(row).replaceWith("");
+			return;
+		}
+		
+		request = $.ajax({
+	        url: "Question?id=" + id,
+	        type: "delete"
+	    });
+	    
+	 // on success
+	    request.done(function (response, textStatus, jqXHR){
+	    	$(row).replaceWith("");
+	    });
+
+	    // on failure
+	    request.fail(function (jqXHR, textStatus, errorThrown){
+	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+	    	$(".msg-container .msg").text("Weird network error. Please refresh page and try again!");
+	    	$(".msg-container").hide().slideToggle();
+	    });
+	    
+	    // akin to Java's finally clause
+	    request.always(function () {
+	        $("#navbar-form-loader").css("visibility", "hidden");
+	    });
+	});
+	
 });
