@@ -34,18 +34,24 @@ public class TakeQuiz extends BaseServlet implements Servlet {
 		if(qAId == 0){ // new attempt
 			int qId = getInt(request, "quiz_id");
 			QuizAttempt qA = QuizAttempt.create(qId, getUser(request).getId());
-			
-			
-			RequestDispatcher dispatch = request.getRequestDispatcher("ShowQuiz.jsp");
-			dispatch.forward(request, response);
+			request.setAttribute("attempt_id", qA.id()); // for use by doPost()
+		} else { // retrieve existing attempt
+			QuizAttempt qA = QuizAttempt.retrieve(qAId);
 		}
+		
+		RequestDispatcher dispatch = request.getRequestDispatcher("ShowQuiz.jsp");
+		dispatch.forward(request, response);
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		QuizAttempt qA = QuizAttempt.retrieve(Integer.parseInt(getString(request, "attempt_id")));
+		//grade question -> update QuizAttempt score
+		// set QuizAttempt position to current Question position
+		// if all Questions completed -> setCompletAt(new Date()) on QuizAttempt
+		
 	}
 
 }
