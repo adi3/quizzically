@@ -13,9 +13,9 @@ public class Answer extends Model {
 	private int questionID; // ID of question to which this answer belongs
 	private int position; // position of answer in question, -1 if not applicable
 	private boolean correct;
-	private Set<String> answerTexts; // set of Strings which correspond to this answer, e.g. {FloMo, Florence Moore}
+	private Set<AnswerText> answerTexts; // set of Strings which correspond to this answer, e.g. {FloMo, Florence Moore}
 
-	protected Answer(int ID, int questionID, int position, boolean correct, Set<String> answerTexts) {
+	protected Answer(int ID, int questionID, int position, boolean correct, Set<AnswerText> answerTexts) {
 		super(ID, TABLE, new AnswerHydrator());
 		this.correct = correct;
 		this.questionID = questionID;
@@ -43,11 +43,20 @@ public class Answer extends Model {
 		this.position = position;
 	}
 	
-	public Set<String> answerTexts() {
+	public Set<AnswerText> answerTexts() {
 		return answerTexts;
 	}
 
-	public void setAnswerTexts(Set<String> texts) {
+	public void setAnswerTextsStrings(Set<String> texts) {
+		Set<AnswerText> ats = new HashSet<AnswerText>();
+		for (String s : texts) {
+			ats.add(new AnswerText(-1, id(), s));
+		}
+		
+		answerTexts = ats;
+	}
+	
+	public void setAnswerTexts(Set<AnswerText> texts) {
 		answerTexts = texts;
 		// TODO update db..?
 	}
@@ -56,8 +65,8 @@ public class Answer extends Model {
 	 * Get a single answer text
 	 */
 	public String text() {
-		for (String s : answerTexts()) {
-			return s;
+		for (AnswerText t : answerTexts()) {
+			return t.text();
 		}
 		return ""; // shouldn't occur
 	}
@@ -82,7 +91,8 @@ public class Answer extends Model {
 		if(question.occupiedPositions().contains(position)){
 			return null;
 		}
-		Answer answer = new Answer(-1, question.id(), position, correct, new HashSet<String>());
+		Answer answer = new Answer(-1, question.id(), position, correct, new HashSet<AnswerText>());
+		answer.save(true);
 		question.addAnswer(answer, position); // position vacant
 		return answer;
 	}
@@ -96,7 +106,7 @@ public class Answer extends Model {
 		// all answer texts in DB currently contained
 		// in answerTexts
 		if(! answerTexts.contains(answerText)){
-			answerTexts.add(answerText);
+			answerTexts.add(new AnswerText(-1, id(), answerText));
 			MySql sql = MySql.getInstance();
 			String[] values = {Integer.toString(id()), answerText};
 			sql.insert(MyDBInfo.ANSWER_TEXTS_TABLE, ANSWER_TEXTS_COLUMNS, values);

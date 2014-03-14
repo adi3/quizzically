@@ -43,8 +43,8 @@ public class TextQuestion extends Question {
 
 		// check the response is correct
 		correctAnswer = answers().get(0);
-		for (String text : correctAnswer.answerTexts()) {
-			if (text.equals(rsp.text())) {
+		for (AnswerText text : correctAnswer.answerTexts()) {
+			if (text.text().equals(rsp.text())) {
 				return new Grade(1, POSSIBLE);
 			}
 		}

@@ -11,7 +11,6 @@ public class AnswerTextHydrator extends Hydrator {
 		int id, answerId;
 		String text;
 
-		rs.first();
 		id = rs.getInt("id");
 		answerId = rs.getInt("answer_id");
 		text = rs.getString("text");

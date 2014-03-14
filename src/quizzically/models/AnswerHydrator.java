@@ -18,8 +18,8 @@ public class AnswerHydrator extends Hydrator {
 		int id, questionId, position, correctInt;
 		boolean correct;
 		Answer answer;
+		HashSet<AnswerText> answerTexts = new HashSet<AnswerText>();
 
-		rs.first();
 		id = rs.getInt("id");
 		questionId = rs.getInt("question_id");
 		position = rs.getInt("position");
@@ -27,13 +27,12 @@ public class AnswerHydrator extends Hydrator {
 
 		correct = correctInt == 1;
 
-		Set<String> answerTexts = new HashSet<String>();
-		MySql sql = MySql.getInstance();
-		SqlResult answerTextsResult = sql.get(MyDBInfo.ANSWER_TEXTS_TABLE, "`answer_id`="+id);
-		for(int i=0; i<answerTextsResult.size(); i++){
-			answerTexts.add(answerTextsResult.get(i).get("text"));
-		}
+		AnswerText[] texts = AnswerText.retrieveByAnswerId(id);
 
+		for (AnswerText text : texts) {
+			answerTexts.add(text);
+		}
+		
 		return new Answer(id, questionId, position, correct, answerTexts);
 	}
 
@@ -46,9 +45,11 @@ public class AnswerHydrator extends Hydrator {
 		stmt.setInt(offset++, answer.correct() ? 1 : 0);
 
 		// FIXME update the answertexts
-//		AnswerText.deleteOthers(answer.answerTexts());
-//		for (AnswerText txt : answer.answerTexts()) {
-//			txt.save(true);
-//		}
+		if (answer.id() != -1) {
+			AnswerText.deleteOthers(answer, answer.answerTexts());
+		}
+		for (AnswerText txt : answer.answerTexts()) {
+			txt.save(true);
+		}
 	}
 }

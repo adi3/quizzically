@@ -55,7 +55,7 @@ public class Answer extends ApiServlet {
 		if (id != -1) {
 			answer = quizzically.models.Answer.retrieve(id);
 			answer.setCorrect(correct);
-			answer.setAnswerTexts(cleanTexts);
+			answer.setAnswerTextsStrings(cleanTexts);
 			answer.save();
 		} else {
 			try {

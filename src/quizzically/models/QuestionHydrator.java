@@ -13,7 +13,6 @@ public class QuestionHydrator extends Hydrator {
 		String text;
 		Question question;
 
-		rs.first();
 		id = rs.getInt("id");
 		type = rs.getInt("type");
 		text = rs.getString("text");
