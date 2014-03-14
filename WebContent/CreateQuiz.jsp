@@ -52,11 +52,11 @@
 		<div class="col-md-10">
 			<div class="col-md-1"></div>
 			<div class="col-md-10" style="display:none">
-				<form action="Question" method="post" id="ques-1" style="display:none">
+				<form action="Question" method="post" id="ques" style="display:none">
 					<div class="col-md-1">
 						<input type="hidden" name="ques_id" value="" />
 						<img src="assets/img/close.gif" class="ques-del">
-						<h5 class="index">1</h5>
+						<h5 class="index">Q</h5>
 					</div>
 					<div class="col-md-4">
 						<h5>Type</h5>
@@ -84,7 +84,7 @@
 		
 		<div class="col-md-5"></div>
 		<div class="col-md-3">
-			<form action="Answer" method="post" id="ans-1">
+			<form action="Answer" method="post" id="ans">
 				<input type="hidden" name="correct" value="1" />
 				<input type="hidden" name="ans_id" value="" />
 				<table class="answers">

@@ -457,19 +457,19 @@ td a:hover {
 }
 
 
-form[id*=ques-] textarea {
+form[id*=ques] textarea {
 	margin-top:3px;
 	margin-left:-3px;
 	width: 300px;
 	resize: none;
 }
 
-form[id*=ques-] div:nth-child(1) {
+form[id*=ques] div:nth-child(1) {
 	padding-left: 8px;
 }
 
-form[id*=ques-] div:nth-child(1) img,
-form[id*=ans-] tr td:first-child img {
+form[id*=ques] div:nth-child(1) img,
+form[id*=ans] tr td:first-child img {
 	width: 16px;
     margin-top: 11px;
     border: 1px solid white;
@@ -477,15 +477,15 @@ form[id*=ans-] tr td:first-child img {
     cursor: pointer;
 }
 
-form[id*=ques-] div:nth-child(2) {
+form[id*=ques] div:nth-child(2) {
 	padding: 0;
 }
 
-form[id*=ans-] tr td:nth-child(2) {
+form[id*=ans] tr td:nth-child(2) {
 	width: 230px;
 }
 
-form[id*=ans-] tr td {	
+form[id*=ans] tr td {	
 	float: left;
 }
 
