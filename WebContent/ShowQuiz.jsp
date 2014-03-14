@@ -1,6 +1,9 @@
 <%@include file="frags/Header.jsp" %>
-<%@page import="java.util.List"%>
-<% Quiz quiz = (Quiz) request.getAttribute("quiz"); %>
+<%@page import="quizzically.models.Quiz,quizzically.models.QuizAttempt,java.util.List"%>
+<% 
+QuizAttempt attempt = (QuizAttempt) request.getAttribute("attempt");
+Quiz quiz = attempt.quiz();
+%>
 
 <div class="container quiz">
 	
@@ -15,8 +18,8 @@
 	</div>	
 	
 	
-	<form action="ShowQuiz" method="post" id="show-quiz">
-		<input type="hidden" name="id" value="<%=quiz.id()%>" />
+	<form action="TakeQuiz" method="post" id="show-quiz">
+		<input type="hidden" name="attempt_id" value="<%=attempt.id()%>" />
 		<% List<Question> questions = quiz.questions(); %>
 		<% for (int pos = 0; pos < questions.size(); pos++ ) { %>
 			<% Question q = questions.get(pos); %>

@@ -7,6 +7,7 @@ public class QuizAttempt extends Model {
 	private static final String TABLE = "quiz_attempts";
 	private static final String[] QUIZ_ATTEMPTS_COLUMNS = {"created_at", "completed_at", "score", "quiz_id", "user_id", "position"};
 	
+	private Quiz quiz;
 	private int quizId;
 	private int userId;
 	private Date createdAt;
@@ -14,10 +15,11 @@ public class QuizAttempt extends Model {
 	private int score;
 	private int position;
 
-	protected QuizAttempt(int id, int quizId, int userId, Date createdAt, Date completedAt, 
+	protected QuizAttempt(int id, Quiz quiz, int userId, Date createdAt, Date completedAt, 
 			int score, int position) {
 		super(id, TABLE, new QuizAttemptHydrator());
-		this.quizId = quizId;
+		this.quiz = quiz;
+		this.quizId = quiz.id();
 		this.userId = userId;
 		this.createdAt = createdAt;
 		this.completedAt = completedAt;
@@ -26,9 +28,9 @@ public class QuizAttempt extends Model {
 	}
 
 	
-	public static QuizAttempt create(int quiz_id, int user_id) {
+	public static QuizAttempt create(Quiz quiz, int user_id) {
 		Date createdAt = new Date();
-		QuizAttempt qA = new QuizAttempt(NULL_VALUE, quiz_id, user_id, createdAt, null, NULL_VALUE, 0);
+		QuizAttempt qA = new QuizAttempt(NULL_VALUE, quiz, user_id, createdAt, null, 0, 0);
 		qA.save(true); // dehydrates, inserts into DB and sets id to generated key
 		return qA;
 	}
@@ -43,6 +45,10 @@ public class QuizAttempt extends Model {
 	
 	public int quizId() {
 		return quizId;
+	}
+
+	public Quiz quiz() {
+		return quiz;
 	}
 	
 	public int userId() {
