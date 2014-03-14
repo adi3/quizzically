@@ -7,6 +7,7 @@ import java.util.*;
 
 import quizzically.config.MyDBInfo;
 import quizzically.lib.MySql;
+import quizzically.lib.QueryBuilder;
 import quizzically.lib.SqlResult;
 
 public class Quiz extends Model {
@@ -89,6 +90,15 @@ public class Quiz extends Model {
 		Model m = Model.retrieve(TABLE, id, new QuizHydrator());
 		Quiz quiz = (Quiz) m;
 		return quiz;
+	}
+
+	public static Quiz[] retrieveByOwnerId(int ownerId) {
+		MySql sql = MySql.getInstance();
+		QueryBuilder qb = QueryBuilder.selectInstance(TABLE, QUIZZES_COLUMNS);
+		Model[] models;
+		qb.addConstraint("owner_id", QueryBuilder.Operator.EQUALS, ownerId);
+		models = sql.getMany(qb, new QuizHydrator());
+		return Arrays.copyOf(models, models.length, Quiz[].class);
 	}
 	
 	protected void setQuestions(SortedMap<Integer, Question> orderedQuestions) {

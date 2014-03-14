@@ -130,6 +130,10 @@ public class User {
 	public String profileLink() {
 		return "Profile?id=" + getId();
 	}
+
+	public Quiz[] quizzes() {
+		return Quiz.retrieveByOwnerId(getId());
+	}
 	
 	@Override
 	public int hashCode() {
