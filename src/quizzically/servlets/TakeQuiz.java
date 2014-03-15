@@ -56,7 +56,7 @@ public class TakeQuiz extends BaseServlet implements Servlet {
 			request.setAttribute("msgIcon", msgIcon);
 		}
 
-		RequestDispatcher dispatch = request.getRequestDispatcher("ShowQuiz.jsp");
+		RequestDispatcher dispatch = request.getRequestDispatcher("TakeQuiz.jsp");
 		dispatch.forward(request, response);
 	}
 

@@ -956,4 +956,35 @@ $(document).ready(function() {
 		}
 	});
 	
+	
+	$("#my_quizzes_lnk").click(function(e) {
+		e.preventDefault();
+		if (request) request.abort();
+		$("#navbar-form-loader").css("visibility", "visible");
+		
+		$(".mid-popup").fadeOut(function() {
+		    request = $.ajax({
+		        url: "MyQuizzes",
+		        type: "get"
+		    });
+		    
+		    // on success
+		    request.done(function (response, textStatus, jqXHR){
+		    	$(".mid-popup").html(response).fadeIn();
+		    });
+	
+		    // on failure
+		    request.fail(function (jqXHR, textStatus, errorThrown){
+		    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+		    	$(".msg-container .msg").text("Weird network error. Please try again!");
+		    	$(".msg-container").hide().slideToggle();
+		    });
+	
+		    // akin to Java's finally clause
+		    request.always(function () {
+		    	$("#navbar-form-loader").css("visibility", "hidden");
+		    });
+		});
+	});
+	
 });
