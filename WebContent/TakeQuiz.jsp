@@ -12,6 +12,7 @@ Quiz quiz = attempt.quiz();
 		<div class="col-md-10">
 			<h1>Quiz: <%= quiz.name() %></h1>
 			<p><%= quiz.description() %></p>
+			<p><a href="Profile?id=<%= quiz.ownerId() %>"><%= quiz.owner().getName() %></a></p>
 			<hr />
 		</div>
 		<div class="col-md-1"></div>
@@ -82,6 +83,7 @@ Quiz quiz = attempt.quiz();
 <script type="text/javascript">
 	var format = <%= quiz.pageFormat() %>;
 	var index = 0;
+	var quiz_id = <%= quiz.id() %>;
 	
 	if (format == 0) {
 		$.each($("#show-quiz .question"), function(i, val) {

@@ -418,7 +418,6 @@ td a:hover {
 
 .quiz .caption p {
 	text-align: center;
-	font-style: italic;
 }
 
 .quiz h3 {
@@ -596,4 +595,18 @@ table.answers p {
 
 .grade_report tr {
 	height: 40px !important;
+}
+
+.tiny-msg {
+	text-align: right;
+	font-weight: bold;
+	font-size: 11px;
+	font-style: italic;
+	padding: 0;
+}
+
+.score-msg{
+	font-weight: bold;
+	text-align: right;
+	margin-top: 15px;
 }

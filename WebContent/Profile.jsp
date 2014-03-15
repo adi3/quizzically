@@ -103,21 +103,23 @@
 		<% } %>
 		</div>
 		<div class="col-md-4"></div>
-		<div class="col-md-3">
-			<div class="quiz-info">
-				<div class="sidebar-title"><h3>Quiz</h3></div>
-				<table>
-					<tr>
-						<td><a href="Quiz" ><img src="assets/img/add.png" /></a></td>
-						<td><a href="Quiz" >Create A Quiz!</a></td>
-					</tr>
-					<tr>
-						<td><a href="Quiz" ><img src="assets/img/edit.png" /></a></td>
-						<td><a href="#" id="my_quizzes_lnk">My Quizzes</a></td>
-					</tr>
-				</table>
+		<% if (sessionUser != null && request.getAttribute("username").equals(sessionUser)) { %>
+			<div class="col-md-3">
+				<div class="quiz-info">
+					<div class="sidebar-title"><h3>Quiz</h3></div>
+					<table>
+						<tr>
+							<td><a href="Quiz" ><img src="assets/img/add.png" /></a></td>
+							<td><a href="Quiz" >Create A Quiz!</a></td>
+						</tr>
+						<tr>
+							<td><a href="Quiz" ><img src="assets/img/edit.png" /></a></td>
+							<td><a href="#" id="my_quizzes_lnk">My Quizzes</a></td>
+						</tr>
+					</table>
+				</div>
 			</div>
-		</div>
+		<% } %>
 	</div>
 </div>
 
