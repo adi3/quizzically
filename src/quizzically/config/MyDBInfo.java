@@ -22,6 +22,7 @@ public class MyDBInfo {
 	public static final String ANSWER_TEXTS_TABLE = "answer_texts";
 	public static final String USERS_TABLE = "users";
 	public static final String FRIENDS_TABLE = "friends";
-	public static final String MESSAGES_TABLE = "messages";	
+	public static final String MESSAGES_TABLE = "messages";
+	public static final String QUIZ_ATTEMPTS_TABLE = "quiz_attempts";
 
 }
