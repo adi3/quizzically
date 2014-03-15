@@ -20,6 +20,7 @@ Quiz quiz = attempt.quiz();
 	
 	<form action="TakeQuiz" method="post" id="show-quiz">
 		<input type="hidden" name="attempt_id" value="<%=attempt.id()%>" />
+		<input type="hidden" name="quiz_mode" value="<%= quiz.immediateCorrection() %>" />
 		<% List<Question> questions = quiz.questions(); %>
 		<% for (int pos = 0; pos < questions.size(); pos++ ) { %>
 			<% Question q = questions.get(pos); %>
@@ -65,13 +66,16 @@ Quiz quiz = attempt.quiz();
 			<div class="col-md-1"></div>
 			<div class="col-md-10">
 				<hr style="margin:4% 2% 1%;"/>
-				<input type="submit" value="Submit!" class="btn btn-default" />
+				<input type="submit" value="Submit!" class="btn btn-default" id="quiz_submit"/>
 			</div>
 			<div class="col-md-1"></div>
 		</div>
 		
 	</form>
 	
+</div>
+
+<div class="mid-popup">
 </div>
 
 <%@include file="frags/Footer.jsp" %>

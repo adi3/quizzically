@@ -7,6 +7,7 @@ $(document).ready(function() {
 	var request = null;
 	var interval = 3000;
 	var $question = "";
+	var quiz_mode = false;
 	
 	$("#sign-in").submit(function(event){
 	    // abort any pending request
@@ -77,6 +78,18 @@ $(document).ready(function() {
 	
 	$(document).on('click', ".mid-popup .close", function(e){
 		$(".mid-popup").fadeOut();
+	});
+	
+	$(document).on('keypress', document, function(e){
+		if (e.which == 32 && quiz_mode) {
+			quiz_mode = false;
+			$(".mid-popup .close").click();
+			$($("#show-quiz .question").get(index)).fadeOut('fast', function(e) {
+				index += 1;
+				$($("#show-quiz .question").get(index)).fadeIn('fast');
+			});
+			return false;
+		}
 	});
 	
 	
@@ -944,16 +957,17 @@ $(document).ready(function() {
 	
 	
 	$("#show-quiz").submit(function(e) {
+		e.preventDefault();
+		$("#quiz_submit").blur();
+		$form = $(this);
+		
 		if (format == 1) {			
+			var mode = $form.find("input[name=quiz_mode]").val();
 			if(index < $("#show-quiz .question").length - 1) {
-				e.preventDefault();
-				console.log("Showing next question...");
-				$($("#show-quiz .question").get(index)).fadeOut('fast', function(e) {
-					index += 1;
-					$($("#show-quiz .question").get(index)).fadeIn('fast');
-				});
-			}
-		}
+				if (mode == "true") getGradeReport($form);
+				quiz_mode = true;
+			} else getGradeReport($form);
+		} else getGradeReport($form);
 	});
 	
 	
@@ -986,5 +1000,36 @@ $(document).ready(function() {
 		    });
 		});
 	});
+	
+	
+	function getGradeReport(form) {
+		$("#navbar-form-loader").css("visibility", "visible");
+		var data = form.serialize();
+		
+		$(".mid-popup").fadeOut(function() {
+		    request = $.ajax({
+		        url: "TakeQuiz",
+		        type: "post",
+		        data: data
+		    });
+		    
+		    // on success
+		    request.done(function (response, textStatus, jqXHR){
+		    	$(".mid-popup").html(response).fadeIn();
+		    });
+	
+		    // on failure
+		    request.fail(function (jqXHR, textStatus, errorThrown){
+		    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+		    	$(".msg-container .msg").text("Trouble retrieving grade report. Please try again!");
+		    	$(".msg-container").hide().slideToggle();
+		    });
+	
+		    // akin to Java's finally clause
+		    request.always(function () {
+		    	$("#navbar-form-loader").css("visibility", "hidden");
+		    });
+		});
+	}
 	
 });
