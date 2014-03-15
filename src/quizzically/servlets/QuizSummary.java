@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import quizzically.models.Quiz;
+import quizzically.models.QuizAttempt;
+import quizzically.models.User;
 
 /**
  * Servlet implementation class QuizSummary
@@ -22,18 +24,33 @@ public class QuizSummary extends BaseServlet implements Servlet {
      * Default constructor. 
      */
     public QuizSummary() {
-        // TODO Auto-generated constructor stub
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		int quizID = getInt(request, "id");
-		Quiz quiz = quizzically.models.Quiz.retrieve(quizID);
+		int id = getInt(request, "id");
+		Quiz quiz;
+		User user;
+		QuizAttempt[] userAttempts, highestAllTimeAttempts, 
+			highestTodayAttempts, recentAttempts;
 		umbli(request);
+		quiz = quizzically.models.Quiz.retrieve(id);
+		user = getUser(request);
+
+		userAttempts = quiz.userAttempts(user);
+		highestAllTimeAttempts = quiz.highestAttempts();
+		highestTodayAttempts = quiz.highestTodayAttempts();
+		recentAttempts = quiz.recentAttempts();
+
 		request.setAttribute("quiz", quiz);
 		request.setAttribute("user", getUser(request));
+
+		request.setAttribute("userAttempts", userAttempts);
+		request.setAttribute("highestAllTimeAttempts", highestAllTimeAttempts);
+		request.setAttribute("highestTodayAttempts", highestTodayAttempts);
+		request.setAttribute("recentAttempts", recentAttempts);
 		RequestDispatcher dispatch = request.getRequestDispatcher("QuizSummary.jsp");
 		dispatch.forward(request, response);
 	}

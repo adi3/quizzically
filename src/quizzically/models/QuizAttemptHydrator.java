@@ -10,10 +10,10 @@ public class QuizAttemptHydrator extends Hydrator {
 
 	@Override
 	protected Model hydrate(ResultSet rs) throws SQLException {
-		rs.first();
 		int id = rs.getInt("id");
 		int quizId = rs.getInt("quiz_id");
 		Quiz quiz;
+		User user;
 		int userId = rs.getInt("user_id");
 		int position = rs.getInt("position");
 		Date createdAt = new java.util.Date(rs.getTimestamp("created_at").getTime());
@@ -28,7 +28,8 @@ public class QuizAttemptHydrator extends Hydrator {
 			score = 0;
 		}
 		quiz = Quiz.retrieve(quizId);
-		return new QuizAttempt(id, quiz, userId, createdAt, completedAt, score, position);
+		user = User.retrieve(userId);
+		return new QuizAttempt(id, quiz, user, createdAt, completedAt, score, position);
 	}
 
 	@Override

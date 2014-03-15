@@ -44,7 +44,7 @@ public class TakeQuiz extends BaseServlet implements Servlet {
 		if(qAId == -1){ // new attempt
 			int qId = getInt(request, "id");
 			Quiz quiz = Quiz.retrieve(qId);
-			qA = QuizAttempt.create(quiz, getUser(request).getId());
+			qA = QuizAttempt.create(quiz, getUser(request));
 		} else { // retrieve existing attempt
 			qA = QuizAttempt.retrieve(qAId);
 		}

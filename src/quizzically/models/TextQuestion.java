@@ -50,4 +50,8 @@ public class TextQuestion extends Question {
 		}
 		return new Grade(0, POSSIBLE);
 	}
+
+	public int possiblePoints() {
+		return POSSIBLE;
+	}
 }
