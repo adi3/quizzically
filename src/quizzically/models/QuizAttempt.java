@@ -71,6 +71,18 @@ public class QuizAttempt extends Model {
 		return Arrays.copyOf(models, models.length, QuizAttempt[].class);
 	}
 
+	public static QuizAttempt[] retrieveByUserIdOrderByCompletedAt(int userId) {
+		MySql sql = MySql.getInstance();
+		QueryBuilder qb = QueryBuilder.selectInstance(TABLE, COLUMNS);
+		Model[] models;
+		qb.addConstraint("user_id", QueryBuilder.Operator.EQUALS, userId);
+		qb.addConstraint("completed_at", QueryBuilder.Operator.NOT_NULL);
+		qb.setOrder("completed_at", QueryBuilder.Order.DESCENDING);
+		qb.setLimit(5);
+		models = sql.getMany(qb, new QuizAttemptHydrator());
+		return Arrays.copyOf(models, models.length, QuizAttempt[].class);
+	}
+
 	public static String averagePercent(Quiz quiz) {
 		MySql sql = MySql.getInstance();
 		String where = "`quiz_id` = " + quiz.id() + " AND `completed_at` IS NOT NULL";
@@ -181,8 +193,6 @@ public class QuizAttempt extends Model {
 		return COLUMNS;
 	}
 	
-	
-	
 	public static List<Quiz> popularQuizzes() {
 		List<Quiz> popularQuizzes = new ArrayList<Quiz>();
 		MySql sql = MySql.getInstance();
@@ -195,13 +205,6 @@ public class QuizAttempt extends Model {
 		return popularQuizzes;
 	}
 	
-	
-	
-	
-	
-	
-	
-
 	/**
 	 * percentage correct given a score
 	 * @return score / possible
@@ -211,5 +214,49 @@ public class QuizAttempt extends Model {
 		return "" + (int) (pct * 100) + "%";
 	}
 
+
+	/**
+	 * This should be in a util clss
+	 * Renders a table of Quiz Attempts
+	 */
+	public static String renderTable(QuizAttempt[] attempts) {
+		return renderTable(attempts, true);
+	}
+
+	public static String renderTable(QuizAttempt[] attempts, boolean showUser) {
+		String output = "";
+		if (attempts.length == 0) {
+			return "Nothing to see here...";
+		}
+
+		output += "<table>";
+		if (showUser) {
+			output += "<th>Who</th>";
+		}
+		output += "<th>Percent Correct</th>";
+		output += "<th>Time Taken</th>";
+		output += "<th>When</th>";
+		for (QuizAttempt qa : attempts) {
+			output += "<tr>";
+			if (showUser) {
+				output += "<td>" +
+					"<a href=\"" + qa.user().profileLink() + "\">" + 
+					qa.user().getName() + "</a>" +
+					"</td>";
+			}
+			output += "<td>" +
+				qa.percentCorrect() +
+				"</td>";
+			output += "<td>" +
+				qa.timeTaken() +
+				"</td>";
+			output += "<td>" +
+				qa.completedAt() +
+				"</td>";
+			output += "</tr>";
+		}
+		output += "</table>";
+		return output;
+	}
 
 }

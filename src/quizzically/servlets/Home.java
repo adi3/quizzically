@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import quizzically.models.Message;
+import quizzically.models.QuizAttempt;
 import quizzically.models.User;
 
 /**
@@ -32,6 +33,7 @@ public class Home extends HttpServlet {
 		String username = (String) request.getSession().getAttribute("user");
 		
 		if (username != null) {
+			User user = new User(username);
 			request.setAttribute("username", username);
 			request.setAttribute("name", new User(username).getName());
 			
@@ -41,6 +43,11 @@ public class Home extends HttpServlet {
 			boolean hasUnread = Message.hasUnread(username);
 			String msgIcon = hasUnread ? "msg-new.png" : "msg-def.png";
 			request.setAttribute("msgIcon", msgIcon);
+
+
+			QuizAttempt[] userAttempts;
+			userAttempts = QuizAttempt.retrieveByUserIdOrderByCompletedAt(user.getId());
+			request.setAttribute("userAttempts", userAttempts);
 		}
 		request.getRequestDispatcher("Home.jsp").forward(request, response);
 	}

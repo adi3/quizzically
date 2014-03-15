@@ -3,39 +3,6 @@
 <%@ page import="quizzically.models.*" %> 
 
 
-<%!
-String renderTable(QuizAttempt[] attempts) {
-	String output = "";
-	if (attempts.length == 0) {
-		return "Nothing to see here...";
-	}
-
-	output += "<table>";
-	output += "<th>Who</th>";
-	output += "<th>Percent Correct</th>";
-	output += "<th>Time Taken</th>";
-	output += "<th>When</th>";
-	for (QuizAttempt qa : attempts) {
-		output += "<tr>";
-		output += "<td>" +
-			"<a href=\"" + qa.user().profileLink() + "\">" + 
-			qa.user().getName() + "</a>" +
-			"</td>";
-		output += "<td>" +
-			qa.percentCorrect() +
-			"</td>";
-		output += "<td>" +
-			qa.timeTaken() +
-			"</td>";
-		output += "<td>" +
-			qa.completedAt() +
-			"</td>";
-		output += "</tr>";
-	}
-	output += "</table>";
-	return output;
-}
-%>
 
 <%
 Quiz quiz = (Quiz) request.getAttribute("quiz");
@@ -63,19 +30,19 @@ String averageScore = (String) request.getAttribute("averageScore");
 	</div>
 	<div>
 		<h2>My History</h2>
-		<%= renderTable(userAttempts) %>
+		<%= QuizAttempt.renderTable(userAttempts, false) %>
 	</div>
 	<div>
 		<h2>Top Scores (All Time)</h2>
-		<%= renderTable(highestAllTimeAttempts) %>
+		<%= QuizAttempt.renderTable(highestAllTimeAttempts) %>
 	</div>
 	<div>
 		<h2>Top Scores (Today)</h2>
-		<%= renderTable(highestTodayAttempts) %>
+		<%= QuizAttempt.renderTable(highestTodayAttempts) %>
 	</div>
 	<div>
 		<h2>Recent Scores</h2>
-		<%= renderTable(recentAttempts) %>
+		<%= QuizAttempt.renderTable(recentAttempts) %>
 	</div>
 	<div>
 		<h2>Average Score</h2>

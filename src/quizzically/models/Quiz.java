@@ -100,6 +100,29 @@ public class Quiz extends Model {
 		models = sql.getMany(qb, new QuizHydrator());
 		return Arrays.copyOf(models, models.length, Quiz[].class);
 	}
+
+	public static Quiz[] retrieveByOwnerIdOrderByCreated(int ownerId) {
+		MySql sql = MySql.getInstance();
+		QueryBuilder qb = QueryBuilder.selectInstance(TABLE, QUIZZES_COLUMNS);
+		Model[] models;
+		qb.addConstraint("owner_id", QueryBuilder.Operator.EQUALS, ownerId);
+		qb.addConstraint("completed_at", QueryBuilder.Operator.NOT_NULL);
+		qb.setOrder("completed_at", QueryBuilder.Order.DESCENDING);
+		qb.setLimit(5);
+		models = sql.getMany(qb, new QuizHydrator());
+		return Arrays.copyOf(models, models.length, Quiz[].class);
+	}
+
+	public static Quiz[] retrieveOrderByCreated() {
+		MySql sql = MySql.getInstance();
+		QueryBuilder qb = QueryBuilder.selectInstance(TABLE, QUIZZES_COLUMNS);
+		Model[] models;
+		qb.addConstraint("completed_at", QueryBuilder.Operator.NOT_NULL);
+		qb.setOrder("completed_at", QueryBuilder.Order.DESCENDING);
+		qb.setLimit(5);
+		models = sql.getMany(qb, new QuizHydrator());
+		return Arrays.copyOf(models, models.length, Quiz[].class);
+	}
 	
 	protected void setQuestions(SortedMap<Integer, Question> orderedQuestions) {
 		this.orderedQuestions = orderedQuestions;
