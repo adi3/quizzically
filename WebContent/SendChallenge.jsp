@@ -1,6 +1,8 @@
 <%@page import="java.util.ArrayList"%>
 <%@page import="quizzically.models.*"%>
 
+<% User u = new User((String) request.getSession().getAttribute("user")); %>
+<% Quiz q = Quiz.retrieve(Integer.parseInt((String)request.getAttribute("quiz_id"))); %>
 <h3>Send Challenge</h3>
 
 <div class="loader" id="form-loader">
@@ -13,6 +15,10 @@
 <div id="msg">
 	<form action="Messages" method="post" id="create-msg">
 		<input type="hidden" name="challenge" value="1" />
+		
+		<div class="col-md-12">
+		<b>Quiz:</b> <%= q.name() %>
+		</div>
 		<div class="row">
 				<div class="col-md-12 msg-info">
 					<b>To: </b><input type="text" name="to" placeholder="Enter comma-separated usernames..." style="width: 90%;padding: 3px" /></p>
@@ -34,9 +40,6 @@
 				<% } %>
 				
 				<div class="col-md-3">
-					<% User u = new User((String) request.getSession().getAttribute("user")); %>
-					<% Quiz q = Quiz.retrieve(Integer.parseInt((String)request.getAttribute("quiz_id"))); %>
-					<b>Quiz:</b> <%= q.name() %>
 					
 					<textarea name="msg" style="display:none">
 						<a href="Profile?id="<%= u.getId() %> ><%= u.getName() %></a> has challenged you to take <%= q.name() %>.
