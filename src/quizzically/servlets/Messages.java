@@ -82,7 +82,6 @@ public class Messages extends HttpServlet {
 		String msg = (String) request.getParameter("msg");
 		String challenge = (String) request.getParameter("challenge");
 		
-		System.out.println(msg);
 		String type = "NOTE";
 		if (challenge != null) type = "CHALLENGE";
 		

@@ -16,7 +16,7 @@
 	<form action="Messages" method="post" id="create-msg">
 		<input type="hidden" name="challenge" value="1" />
 		
-		<div class="col-md-12">
+		<div class="col-md-12" style="padding:0;font-size:15px;margin-bottom:15px;">
 		<b>Quiz:</b> <%= q.name() %>
 		</div>
 		<div class="row">
@@ -42,8 +42,7 @@
 				<div class="col-md-3">
 					
 					<textarea name="msg" style="display:none">
-						<a href="Profile?id="<%= u.getId() %> ><%= u.getName() %></a> has challenged you to take <%= q.name() %>.
-						Click <a href=TakeQuiz?id=<%= q.id() %> >here</a> to take it now!
+						<%= u.getName() %> has challenged you to take <%= q.name() %>. Take it now!
 					</textarea>
 				</div>
 			
