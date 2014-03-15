@@ -33,6 +33,13 @@ public class QuestionResponse {
 	}
 
 	public String responseString() {
-		return ""; // TODO
+		String str = "";
+		for (int i = 0; i < r.size(); i++) {
+			str += r.get(i).text();
+			if (i + 1 < r.size()) {
+				str += ", ";
+			}
+		}
+		return str;
 	}
 }
