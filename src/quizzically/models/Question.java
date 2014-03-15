@@ -212,6 +212,8 @@ public abstract class Question extends Model {
 		int status = MySql.getInstance().delete(MyDBInfo.QUIZ_QUESTIONS_TABLE, "question_id=" + this.id() + " AND quiz_id=" + quiz_id);
 		return status == 1;
 	}
+
+	public abstract int possiblePoints();
 	
 	/**
 	 * True if obj is a Question with the same id.

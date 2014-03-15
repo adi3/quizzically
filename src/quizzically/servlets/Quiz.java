@@ -1,7 +1,6 @@
 package quizzically.servlets;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,13 +22,23 @@ public class Quiz extends BaseServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		if (request.getSession().getAttribute("user") != null) {
+		if (request.getSession().getAttribute("user") == null) {
+			response.sendRedirect("Home");
+		} else {
 			boolean hasUnread = Message.hasUnread((String) request.getSession().getAttribute("user"));
 			String msgIcon = hasUnread ? "msg-new.png" : "msg-def.png";
 			request.setAttribute("msgIcon", msgIcon);
+			
+			String id = request.getParameter("id");
+			if (id != null) {
+				quizzically.models.Quiz quiz = quizzically.models.Quiz.retrieve(Integer.parseInt(id));
+				User user = new User((String)request.getSession().getAttribute("user"));
+				if (user.equals(quiz.owner())) {
+					request.setAttribute("quiz", quizzically.models.Quiz.retrieve(Integer.parseInt(id)));
+					request.getRequestDispatcher("EditQuiz.jsp").forward(request, response);
+				} else response.sendRedirect("Profile");
+			} else request.getRequestDispatcher("CreateQuiz.jsp").forward(request, response);
 		}
-		
-		request.getRequestDispatcher("CreateQuiz.jsp").forward(request, response);	
 	}
 	
 	/**
@@ -40,6 +49,7 @@ public class Quiz extends BaseServlet {
 		String name, description;
 		quizzically.models.Quiz quiz;
 		int id, pageFormat, order;
+		boolean immediateCorrection;
 
 		umbli(request);
 		user = getUser(request);
@@ -49,16 +59,20 @@ public class Quiz extends BaseServlet {
 		description = getString(request, "description");
 		pageFormat = getInt(request, "page_format");
 		order = getInt(request, "order");
+		immediateCorrection = getInt(request, "immediate_correction") == 1;
 
 		if (id != -1) {
 			quiz = quizzically.models.Quiz.retrieve(id);
-//			TODO support update
 			quiz.setName(name);
 			quiz.setDescription(description);
+			quiz.setPageFormat(pageFormat);
+			quiz.setOrder(order);
+			quiz.setImmediateCorrection(immediateCorrection);
 			quiz.save();
 		} else {
 			quiz = quizzically.models.Quiz.create(name, 
-					user.getId(), description, pageFormat, order);
+					user.getId(), description, pageFormat, order, 
+					immediateCorrection);
 		}
 
 		String json = "{\"id\": \"" + quiz.id() + "\"}";

@@ -7,6 +7,7 @@ $(document).ready(function() {
 	var request = null;
 	var interval = 3000;
 	var $question = "";
+	var quiz_mode = false;
 	
 	$("#sign-in").submit(function(event){
 	    // abort any pending request
@@ -77,6 +78,18 @@ $(document).ready(function() {
 	
 	$(document).on('click', ".mid-popup .close", function(e){
 		$(".mid-popup").fadeOut();
+	});
+	
+	$(document).on('keypress', document, function(e){
+		if (e.which == 32 && quiz_mode) {
+			quiz_mode = false;
+			$(".mid-popup .close").click();
+			$($("#show-quiz .question").get(index)).fadeOut('fast', function(e) {
+				index += 1;
+				$($("#show-quiz .question").get(index)).fadeIn('fast');
+			});
+			return false;
+		}
 	});
 	
 	
@@ -638,9 +651,14 @@ $(document).ready(function() {
 	$(document).on('change', ".quiz .meta #page_format", function(e) {
 		sendQuizData();
 	});
-	
+
 	
 	$(document).on('change', ".quiz .meta #order", function(e) {
+		sendQuizData();
+	});
+	
+
+	$(document).on('change', ".quiz .meta #immediate_correction", function(e) {
 		sendQuizData();
 	});
 	
@@ -654,9 +672,10 @@ $(document).ready(function() {
 	    var desc = $(".quiz .meta #description").text();
 	    var format = $(".quiz .meta #page_format").val();
 	    var order = $(".quiz .meta #order").val();
+	    var immediateCorrection = $(".quiz .meta #immediate_correction").val();
 	    
 	    var $id = $("#quiz-form #quiz_id");
-	    var data = "name=" + name + "&description=" + desc + "&page_format=" + format + "&order=" + order;
+	    var data = "name=" + name + "&description=" + desc + "&page_format=" + format + "&order=" + order + "&immediate_correction=" + immediateCorrection;
 	    if ($id.val() != "") data += "&id=" + $id.val();
 	    
 	    request = $.ajax({
@@ -692,11 +711,16 @@ $(document).ready(function() {
 			$("#ques").show();
 			$("#ques").parent().show();
 			$question = $(".question").last().clone();
-		} else {
+		} else if ($question.length != 0){
 			var $last = $(".question").last();
 			$next = $question.clone();
 			if ($last.length != 0) $last.after($next);
 			else $('.meta').after($next);
+		} else {
+			$next = $(".question").last().clone();
+			$next.find('.col-md-10 > .col-md-10').show();
+			$next.find('.col-md-10 #ques').show();
+			$('.add').before($next);
 		}
 	});
 	
@@ -885,6 +909,7 @@ $(document).ready(function() {
 	
 	
 	$(document).on('click', '.ans-del', function(e) {
+		console.log("x");
 		var form = $(this).closest('form');
 		var row = $(this).closest('tr');
 		$(row).replaceWith("");
@@ -933,18 +958,78 @@ $(document).ready(function() {
 	
 	$("#show-quiz").submit(function(e) {
 		e.preventDefault();
-		if (format == 0) console.log("Submit all for grading...");
-		else {
-			console.log("Submit this for grading...");			
-			
+		$("#quiz_submit").blur();
+		$form = $(this);
+		
+		if (format == 1) {			
+			var mode = $form.find("input[name=quiz_mode]").val();
 			if(index < $("#show-quiz .question").length - 1) {
-				console.log("Showing next question...");
-				$($("#show-quiz .question").get(index)).fadeOut('fast', function(e) {
-					index += 1;
-					$($("#show-quiz .question").get(index)).fadeIn('fast');
-				});
-			} else alert("Finished quiz!");
-		}
+				if (mode == "true") getGradeReport($form);
+				quiz_mode = true;
+			} else getGradeReport($form);
+		} else getGradeReport($form);
 	});
+	
+	
+	$("#my_quizzes_lnk").click(function(e) {
+		e.preventDefault();
+		if (request) request.abort();
+		$("#navbar-form-loader").css("visibility", "visible");
+		
+		$(".mid-popup").fadeOut(function() {
+		    request = $.ajax({
+		        url: "MyQuizzes",
+		        type: "get"
+		    });
+		    
+		    // on success
+		    request.done(function (response, textStatus, jqXHR){
+		    	$(".mid-popup").html(response).fadeIn();
+		    });
+	
+		    // on failure
+		    request.fail(function (jqXHR, textStatus, errorThrown){
+		    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+		    	$(".msg-container .msg").text("Weird network error. Please try again!");
+		    	$(".msg-container").hide().slideToggle();
+		    });
+	
+		    // akin to Java's finally clause
+		    request.always(function () {
+		    	$("#navbar-form-loader").css("visibility", "hidden");
+		    });
+		});
+	});
+	
+	
+	function getGradeReport(form) {
+		$("#navbar-form-loader").css("visibility", "visible");
+		var data = form.serialize();
+		
+		$(".mid-popup").fadeOut(function() {
+		    request = $.ajax({
+		        url: "TakeQuiz",
+		        type: "post",
+		        data: data
+		    });
+		    
+		    // on success
+		    request.done(function (response, textStatus, jqXHR){
+		    	$(".mid-popup").html(response).fadeIn();
+		    });
+	
+		    // on failure
+		    request.fail(function (jqXHR, textStatus, errorThrown){
+		    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+		    	$(".msg-container .msg").text("Trouble retrieving grade report. Please try again!");
+		    	$(".msg-container").hide().slideToggle();
+		    });
+	
+		    // akin to Java's finally clause
+		    request.always(function () {
+		    	$("#navbar-form-loader").css("visibility", "hidden");
+		    });
+		});
+	}
 	
 });

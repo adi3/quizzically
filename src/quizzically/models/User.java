@@ -34,6 +34,11 @@ public class User {
 		this.isAdmin = user.get(0).get("is_admin").equals("1") ? true : false;
 	}
 	
+
+	public static User retrieve(int id) {
+		return User.getUserById(Integer.toString(id));
+	}
+
 	public static User getUserById(String id) {
 		SqlResult row = MySql.getInstance().get(MyDBInfo.USERS_TABLE, "id = " + id);
 		return new User(row.get(0).get("username"));
@@ -129,6 +134,10 @@ public class User {
 	
 	public String profileLink() {
 		return "Profile?id=" + getId();
+	}
+
+	public Quiz[] quizzes() {
+		return Quiz.retrieveByOwnerId(getId());
 	}
 	
 	@Override

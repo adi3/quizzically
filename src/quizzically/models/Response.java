@@ -24,4 +24,6 @@ public abstract class Response {
 		return rsp;
 	}
 
+	public abstract String text();
+
 }

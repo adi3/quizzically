@@ -1,13 +1,16 @@
 <%@include file="frags/Header.jsp" %>
-<%@page import="java.util.List"%>
-<% Quiz quiz = (Quiz) request.getAttribute("quiz"); %>
+<%@page import="quizzically.models.Quiz,quizzically.models.QuizAttempt,java.util.List"%>
+<% 
+QuizAttempt attempt = (QuizAttempt) request.getAttribute("attempt");
+Quiz quiz = attempt.quiz();
+%>
 
 <div class="container quiz">
 	
 	<div class="row caption">
 		<div class="col-md-1"></div>
 		<div class="col-md-10">
-			<h1>Take Quiz: <%= quiz.name() %></h1>
+			<h1>Quiz: <%= quiz.name() %></h1>
 			<p><%= quiz.description() %></p>
 			<hr />
 		</div>
@@ -15,8 +18,9 @@
 	</div>	
 	
 	
-	<form action="ShowQuiz" method="post" id="show-quiz">
-		<input type="hidden" name="id" value="<%=quiz.id()%>" />
+	<form action="TakeQuiz" method="post" id="show-quiz">
+		<input type="hidden" name="attempt_id" value="<%=attempt.id()%>" />
+		<input type="hidden" name="quiz_mode" value="<%= quiz.immediateCorrection() %>" />
 		<% List<Question> questions = quiz.questions(); %>
 		<% for (int pos = 0; pos < questions.size(); pos++ ) { %>
 			<% Question q = questions.get(pos); %>
@@ -28,7 +32,7 @@
 						<div class="col-md-1">
 							<h5 class="index">Q</h5>
 						</div>
-						<div class="col-md-10">
+						<div class="col-md-10" style="height: inherit;">
 							<h5><%= q.text() %></h5>
 						</div>
 						<div class="col-md-1"></div>
@@ -48,7 +52,8 @@
 								out.println("<input placeholder=\"Your Answer\" type=\"text\" name=\"" + qs + "\" /><br />");
 								break;
 							case Question.TYPE_MULTIPLE_CHOICE:
-								out.println("<input type=\"radio\" name=\"" + qs + "\" value=\"" + a.id() + "\"/>" + a.text() + "<br />");
+								out.println("<div><input type=\"radio\" name=\"" + qs + "\" value=\"" + a.id() + "\"/>" +
+											"<p class=\"opts\">" + a.text() + "</p></div>");
 								break;
 						}
 					} %>
@@ -61,7 +66,7 @@
 			<div class="col-md-1"></div>
 			<div class="col-md-10">
 				<hr style="margin:4% 2% 1%;"/>
-				<input type="submit" value="Submit!" class="btn btn-default" />
+				<input type="submit" value="Submit!" class="btn btn-default" id="quiz_submit"/>
 			</div>
 			<div class="col-md-1"></div>
 		</div>
@@ -70,12 +75,14 @@
 	
 </div>
 
+<div class="mid-popup">
+</div>
+
 <%@include file="frags/Footer.jsp" %>
 <script type="text/javascript">
 	var format = <%= quiz.pageFormat() %>;
 	var index = 0;
 	
-	console.log($("#show-quiz .question"));
 	if (format == 0) {
 		$.each($("#show-quiz .question"), function(i, val) {
 			$(val).show();

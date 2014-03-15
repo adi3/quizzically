@@ -16,7 +16,9 @@ public class QuizAttemptTest {
 		int quizId = 11;
 		int userId = 100;
 		int position = 0;
-		QuizAttempt attempt = QuizAttempt.create(quizId, userId);
+		Quiz quiz = Quiz.retrieve(quizId);
+		User user = User.retrieve(userId);
+		QuizAttempt attempt = QuizAttempt.create(quiz, user);
 		QuizAttempt retrieved = QuizAttempt.retrieve(attempt.id());
 		assertState(retrieved, quizId, userId, -1, attempt.createdAt(), null, 0);
 		
@@ -30,11 +32,6 @@ public class QuizAttemptTest {
 		
 		QuizAttempt r2 = QuizAttempt.retrieve(attempt.id());
 		assertState(r2, quizId, userId, score, retrieved.createdAt(), retrieved.completedAt(), retrieved.position());
-		
-		
-		
-		
-		
 	}
 	
 	
