@@ -3,9 +3,11 @@
 <%@page import="quizzically.models.Question"%>
 <%@page import="quizzically.models.QuestionResponse"%>
 <%@page import="quizzically.models.Quiz"%>
+<%@page import="quizzically.models.QuizAttempt"%>
 <%
 Quiz quiz = (Quiz) request.getAttribute("quiz");
 QuestionResponse[] qrs = (QuestionResponse[]) request.getAttribute("gradedResponses");
+QuizAttempt qA = (QuizAttempt) request.getAttribute("attempt");
 %>
 <h3>Grade Report: <%= quiz.name() %></h3>
 <div class="close">
@@ -60,4 +62,17 @@ QuestionResponse[] qrs = (QuestionResponse[]) request.getAttribute("gradedRespon
 			<% } %>
 		</table>
 	</div>
+</div>
+
+
+<div class="row">
+	<% if (!qA.completed()) { %>
+		<div class="col-md-1"></div>
+		<div class="col-md-4" style="margin-top:15px;">
+			<a href="#" class="btn btn-default" id="send_challenge">Challenge A Friend!</a>
+		</div>
+		<div class="col-md-6 score-msg">Total Score: <%= qA.score() %></div>
+	<% } else { %>
+		<div class="col-md-11 tiny-msg">Press space bar to continue...</div>
+	<% } %>
 </div>

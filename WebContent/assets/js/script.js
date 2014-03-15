@@ -1032,4 +1032,50 @@ $(document).ready(function() {
 		});
 	}
 	
+	
+	$(document).on("click", "#send_challenge", function(e) {
+		e.preventDefault();
+		$("#navbar-form-loader").css("visibility", "visible");
+	    
+		var data = $(this).attr("href").split("?")[1];
+		
+		request = $.ajax({
+	        url: "Challenge",
+	        type: "get",
+	        data: data + "&id=" + quiz_id
+	    });
+		
+		// on success
+	    request.done(function (response, textStatus, jqXHR){
+    		var json = null;
+	    	
+	    	try {
+	    	    json = $.parseJSON(data);
+	    	    $(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+	        	var errors = "";
+	        	for (var i = 0; i < json["errors"].length; i++) {
+	        		errors += json["errors"][i]["msg"];
+	        		if (i != json["errors"].length - 1) errors += "<hr />";
+	        	}
+	        	$(".msg-container .msg").html(errors);
+		        $(".msg-container").hide().slideToggle();
+	    	} catch (e) {
+		        $(".mid-popup").fadeOut('fast', function() {
+		    	    $(".mid-popup").html(response).fadeIn();
+		        });
+	    	}
+	    });
+
+	    // on failure
+	    request.fail(function (jqXHR, textStatus, errorThrown){
+	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
+	    	$(".msg-container .msg").text("Weird network error. Please try again!");
+	    	$(".msg-container").hide().slideToggle();
+	    });
+
+	    // akin to Java's finally clause
+	    request.always(function () {
+	    	$("#navbar-form-loader").css("visibility", "hidden");
+	    });
+	});
 });

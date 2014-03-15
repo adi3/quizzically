@@ -80,7 +80,11 @@ public class Messages extends HttpServlet {
 		String username = (String) request.getSession().getAttribute("user");
 		String to = (String) request.getParameter("to");
 		String msg = (String) request.getParameter("msg");
-
+		String challenge = (String) request.getParameter("challenge");
+		
+		String type = "NOTE";
+		if (challenge != null) type = "CHALLENGE";
+		
 		ArrayList<String> errors = new ArrayList<String>();
 		User fromUser = new User(username);
 		List<String> toArr = Arrays.asList(to.split(","));
@@ -90,7 +94,7 @@ public class Messages extends HttpServlet {
 				errors.add("Message not delivered to " + toUsername + ".");
 			} else {
 				User toUser = new User(toUsername.trim());	
-				if (!new Message(msg, "NOTE", fromUser, toUser).save()) {
+				if (!new Message(msg, type, fromUser, toUser).save()) {
 					errors.add("Message not delivered to " + toUsername  + ".");
 				}
 			}

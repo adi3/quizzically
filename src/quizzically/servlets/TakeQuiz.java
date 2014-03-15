@@ -117,7 +117,11 @@ public class TakeQuiz extends BaseServlet implements Servlet {
 		Collection<QuestionResponse> qrs = responses.values();
 		QuestionResponse[] qrsOrdered = new QuestionResponse[qrs.size()];
 		int gradeAccum = qA.score();
+
 		int qAPos = qA.position() + qrs.size();
+		if (quiz.immediateCorrection()) {
+			qAPos = qA.position() + 1;
+		}
 		for (QuestionResponse qr : qrs) {
 			try {
 				qrsOrdered[qr.position()] = qr;
@@ -132,6 +136,9 @@ public class TakeQuiz extends BaseServlet implements Servlet {
 		qA.setScore(gradeAccum);
 		qA.setPosition(qAPos);
 		// quiz is done
+
+		request.setAttribute("attempt", qA);
+		
 		if (qAPos == quiz.questions().size()) {
 			qA.setCompletedAt(new Date());
 		}
@@ -141,7 +148,6 @@ public class TakeQuiz extends BaseServlet implements Servlet {
 		request.setAttribute("gradedResponses", qrsOrdered);
 
 		request.getRequestDispatcher("GradeQuiz.jsp").forward(request, response);
-		// TODO create quiz history
 	}
 
 }

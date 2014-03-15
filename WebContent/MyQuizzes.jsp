@@ -16,7 +16,7 @@
 	<table style="table-layout:fixed;">
 		<% for (Quiz q : qs) { %>
 			<tr>
-				<td style="padding: 8px;text-align: center;"><a href="" ><%= q.name() %></a></td>
+				<td style="padding: 8px;text-align: center;"><a href="QuizSummary?id=<%= q.id() %>" ><%= q.name() %></a></td>
 				<td style="min-width:300px;font-size: 12px;font-style: italic;text-align:left;"><%= q.description() %></td>
 				<td style="text-align:right;padding-right:5px;padding-left:0">
 					<a href="Quiz?id=<%= q.id() %>" ><img style="width:16px" src="assets/img/edit.png" /></a>
