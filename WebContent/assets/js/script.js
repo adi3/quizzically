@@ -896,6 +896,7 @@ $(document).ready(function() {
 	
 	
 	$(document).on('click', '.ans-del', function(e) {
+		console.log("x");
 		var form = $(this).closest('form');
 		var row = $(this).closest('tr');
 		$(row).replaceWith("");

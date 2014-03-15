@@ -1,8 +1,6 @@
 package quizzically.servlets;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,17 +22,23 @@ public class Quiz extends BaseServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		if (request.getSession().getAttribute("user") != null) {
+		if (request.getSession().getAttribute("user") == null) {
+			response.sendRedirect("Home");
+		} else {
 			boolean hasUnread = Message.hasUnread((String) request.getSession().getAttribute("user"));
 			String msgIcon = hasUnread ? "msg-new.png" : "msg-def.png";
 			request.setAttribute("msgIcon", msgIcon);
+			
+			String id = request.getParameter("id");
+			if (id != null) {
+				quizzically.models.Quiz quiz = quizzically.models.Quiz.retrieve(Integer.parseInt(id));
+				User user = new User((String)request.getSession().getAttribute("user"));
+				if (user.equals(quiz.owner())) {
+					request.setAttribute("quiz", quizzically.models.Quiz.retrieve(Integer.parseInt(id)));
+					request.getRequestDispatcher("EditQuiz.jsp").forward(request, response);
+				} else response.sendRedirect("Profile");
+			} else request.getRequestDispatcher("CreateQuiz.jsp").forward(request, response);
 		}
-		
-		String id = request.getParameter("id");
-		if (id != null) {
-			request.setAttribute("quiz", quizzically.models.Quiz.retrieve(Integer.parseInt(id)));
-			request.getRequestDispatcher("EditQuiz.jsp").forward(request, response);
-		} else request.getRequestDispatcher("CreateQuiz.jsp").forward(request, response);
 	}
 	
 	/**
