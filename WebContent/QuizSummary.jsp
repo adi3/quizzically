@@ -44,6 +44,7 @@ QuizAttempt[] userAttempts = (QuizAttempt[]) request.getAttribute("userAttempts"
 		highestAllTimeAttempts = (QuizAttempt[]) request.getAttribute("highestAllTimeAttempts"),
 		highestTodayAttempts = (QuizAttempt[]) request.getAttribute("highestTodayAttempts"),
 		recentAttempts = (QuizAttempt[]) request.getAttribute("recentAttempts");
+String averageScore = (String) request.getAttribute("averageScore");
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -75,6 +76,10 @@ QuizAttempt[] userAttempts = (QuizAttempt[]) request.getAttribute("userAttempts"
 	<div>
 		<h2>Recent Scores</h2>
 		<%= renderTable(recentAttempts) %>
+	</div>
+	<div>
+		<h2>Average Score</h2>
+		<%= averageScore %>
 	</div>
 	<div>
 		<a href="<%= quiz.takeLink() %>"> Take Quiz </a>

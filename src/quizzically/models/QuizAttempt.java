@@ -4,6 +4,7 @@ import java.util.*;
 
 import quizzically.lib.MySql;
 import quizzically.lib.QueryBuilder;
+import quizzically.lib.SqlResult;
 
 public class QuizAttempt extends Model {
 	private static final int NULL_VALUE = -1;
@@ -69,11 +70,23 @@ public class QuizAttempt extends Model {
 		return Arrays.copyOf(models, models.length, QuizAttempt[].class);
 	}
 
-	/* TODO finish
-	public static String averagePercent(int quizId) {
-		String sql = "SELECT AVG(`" + field + "`) FROM " + table + " WHERE 
+	public static String averagePercent(Quiz quiz) {
+		MySql sql = MySql.getInstance();
+		String where = "`quiz_id` = " + quiz.id() + " AND `completed_at` IS NOT NULL";
+		SqlResult r = sql.get(new String[]{"AVG(`score`)"}, TABLE, where);
+		HashMap<String, String> hm = r.get(0);
+		String avg = "0";
+		// should only be one! i hope...
+		for (String s : hm.values()) {
+			avg = s;
+		}
+		Double d = 0.0;
+		try {
+			d = Double.parseDouble(avg);
+		} catch (NumberFormatException e) {}
+		int scoreTruncated = (int) d.doubleValue();
+		return percentCorrect(scoreTruncated, quiz);
 	}
-	*/
 
 
 	public static QuizAttempt[] retrieveByQuizIdAfterDateOrderByScore(int quizId, Date date) {
