@@ -1,6 +1,7 @@
 package quizzically.servlets;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import quizzically.models.Achievement;
 import quizzically.models.Message;
 import quizzically.models.User;
 
@@ -73,6 +75,7 @@ public class Quiz extends BaseServlet {
 			quiz = quizzically.models.Quiz.create(name, 
 					user.getId(), description, pageFormat, order, 
 					immediateCorrection);
+			List<Achievement> newAchievements = Achievement.newAuthorAchievements(user.getId());
 		}
 
 		String json = "{\"id\": \"" + quiz.id() + "\"}";

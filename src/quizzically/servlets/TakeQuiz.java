@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
@@ -14,11 +15,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import quizzically.exceptions.InvalidResponseException;
+import quizzically.models.Achievement;
 import quizzically.models.Message;
 import quizzically.models.QuizAttempt;
 import quizzically.models.Quiz;
 import quizzically.models.Question;
 import quizzically.models.QuestionResponse;
+import quizzically.models.User;
 
 /**
  * Servlet implementation class TakeQuiz
@@ -143,6 +146,14 @@ public class TakeQuiz extends BaseServlet implements Servlet {
 			qA.setCompletedAt(new Date());
 		}
 		qA.save();
+		
+		if (qAPos == quiz.questions().size()) {
+			List<Achievement> newAchievements = Achievement.newTakerAchievements(
+					((User) request.getSession().getAttribute("user")).getId(), quiz.id());
+			
+		}
+		
+		
 
 		request.setAttribute("quiz", quiz);
 		request.setAttribute("gradedResponses", qrsOrdered);

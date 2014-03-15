@@ -1,7 +1,11 @@
 <%@include file="frags/Header.jsp" %>
+<%@ page import="quizzically.models.*" %> 
+<%@ page import="java.util.*" %> 
+
 
 <% ArrayList<User> friends = (ArrayList<User>)request.getAttribute("friends"); %>
 <% String sessionUser = (String)request.getSession().getAttribute("user"); %>
+<% List<Achievement> achievements = Achievement.earnedAchievements((new User((String) request.getSession().getAttribute("user"))).getId()); %>
 <div class="container profile">
  	<div class="row">
 		<br />
@@ -50,6 +54,13 @@
 								<td>Location</td>
 								<td name="loc"><%= request.getAttribute("loc") %></td>
 							</tr>
+							<tr>
+								<td>Achievements</td>
+								<td name="achievements"><%
+								for (Achievement a : achievements) {
+									out.println(a + "<br />");
+								}
+								%>
 						</table>
 					</div>
 				<% } %>
