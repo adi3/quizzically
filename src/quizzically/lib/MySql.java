@@ -158,6 +158,11 @@ public class MySql {
 		return new SqlResult(rs);
 	}
 	
+	public SqlResult getCustomQuery(String query){
+		ResultSet rs = this.executeQuery(query);
+		return new SqlResult(rs);
+	}
+	
 	public SqlResult get(String[] cols, String table, String where) {
 		String strCols = Arrays.asList(cols).toString();
 		strCols = strCols.substring(1, strCols.length() - 1);

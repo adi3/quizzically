@@ -9,12 +9,19 @@ public class AchievementTest {
 
 	@Test
 	public void test() {
-		List<Achievement> achievements = Achievement.newAuthorAchievements(100);
+		List<Achievement> achievements = Achievement.newAuthorAchievements(41);
 		for(Achievement a: achievements){
 			System.out.println(a);
 		}
+		System.out.println();
 		
-		achievements = Achievement.newTakerAchievements(100, 11);
+		achievements = Achievement.newTakerAchievements(41, 73);
+		for(Achievement a: achievements){
+			System.out.println(a);
+		}
+		System.out.println();
+		
+		achievements = Achievement.earnedAchievements(41);
 		for(Achievement a: achievements){
 			System.out.println(a);
 		}

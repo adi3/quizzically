@@ -32,6 +32,11 @@ public class QuizAttemptTest {
 		
 		QuizAttempt r2 = QuizAttempt.retrieve(attempt.id());
 		assertState(r2, quizId, userId, score, retrieved.createdAt(), retrieved.completedAt(), retrieved.position());
+		
+		List<Quiz> popularQuizzes = QuizAttempt.popularQuizzes();
+		for(Quiz q: popularQuizzes){
+			System.out.println(q.id());
+		}
 	}
 	
 	

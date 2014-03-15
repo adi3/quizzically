@@ -4,9 +4,11 @@ import java.util.*;
 
 import quizzically.lib.MySql;
 import quizzically.lib.QueryBuilder;
+import quizzically.lib.SqlResult;
 
 public class QuizAttempt extends Model {
 	private static final int NULL_VALUE = -1;
+	private static final int SHOW_LIMIT = 5;
 	private static final String TABLE = "quiz_attempts";
 	private static final String[] COLUMNS = {"created_at", "completed_at", "score", "quiz_id", "user_id", "position"};
 	
@@ -166,6 +168,27 @@ public class QuizAttempt extends Model {
 	public String[] cols() {
 		return COLUMNS;
 	}
+	
+	
+	
+	public static List<Quiz> popularQuizzes() {
+		List<Quiz> popularQuizzes = new ArrayList<Quiz>();
+		MySql sql = MySql.getInstance();
+		String query = "SELECT COUNT(*) as `POP`, `quiz_id` FROM `quiz_attempts` GROUP BY `quiz_id` ORDER BY `POP` DESC";
+		SqlResult result = sql.getCustomQuery(query);
+		for(int i=0; i<Math.min(SHOW_LIMIT, result.size()); i++){
+			HashMap<String, String> row = result.get(i);
+			popularQuizzes.add(Quiz.retrieve(Integer.parseInt(row.get("quiz_id"))));
+		}
+		return popularQuizzes;
+	}
+	
+	
+	
+	
+	
+	
+	
 
 	/**
 	 * percentage correct given a score
