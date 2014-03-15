@@ -33,6 +33,7 @@ public class QuizSummary extends BaseServlet implements Servlet {
 		int id = getInt(request, "id");
 		Quiz quiz;
 		User user;
+		String avgScore = "";
 		QuizAttempt[] userAttempts, highestAllTimeAttempts, 
 			highestTodayAttempts, recentAttempts;
 		umbli(request);
@@ -44,6 +45,8 @@ public class QuizSummary extends BaseServlet implements Servlet {
 		highestTodayAttempts = quiz.highestTodayAttempts();
 		recentAttempts = quiz.recentAttempts();
 
+		avgScore = QuizAttempt.averagePercent(quiz);
+
 		request.setAttribute("quiz", quiz);
 		request.setAttribute("user", getUser(request));
 
@@ -51,6 +54,7 @@ public class QuizSummary extends BaseServlet implements Servlet {
 		request.setAttribute("highestAllTimeAttempts", highestAllTimeAttempts);
 		request.setAttribute("highestTodayAttempts", highestTodayAttempts);
 		request.setAttribute("recentAttempts", recentAttempts);
+		request.setAttribute("averageScore", avgScore);
 		RequestDispatcher dispatch = request.getRequestDispatcher("QuizSummary.jsp");
 		dispatch.forward(request, response);
 	}
