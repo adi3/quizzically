@@ -210,4 +210,6 @@ public class Quiz extends Model {
 	public String[] cols() {
 		return QUIZZES_COLUMNS;
 	}
+	
+	
 }
