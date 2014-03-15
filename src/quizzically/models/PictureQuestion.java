@@ -13,6 +13,10 @@ public class PictureQuestion extends TextQuestion {
 		this.type = Question.TYPE_PICTURE;
 	}
 
+	public String text() {
+		return "<img src=\"" + super.text() + "\" style=\"width: 500px;\"/>";
+	}
+
 	// TODO necessary constructor?
 //	public PictureQuestion(String url, ArrayList<Answer> answers) {
 //		super("<img src=\"url\" />", answers);

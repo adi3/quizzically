@@ -45,4 +45,8 @@ public class MultipleChoiceQuestion extends Question {
 
 		return new Grade(correctAnswer.id() == rsp.id() ? 1 : 0, POSSIBLE);
 	}
+
+	public int possiblePoints() {
+		return POSSIBLE;
+	}
 }

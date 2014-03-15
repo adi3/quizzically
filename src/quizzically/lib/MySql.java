@@ -124,6 +124,35 @@ public class MySql {
 	}
 	*/
 	
+	/**
+	 * number of tuples in result
+	 * @param table
+	 * @param where
+	 * @return
+	 */
+	public int count(String table, String where){
+		return get(table, where).size();
+	}
+	
+	/**
+	 * maximum value of column in result
+	 * @param table
+	 * @param where
+	 * @param column
+	 * @return
+	 */
+	public int max(String table, String where, String column){
+		ResultSet rs = this.executeQuery("SELECT MAX(`" + column + "`) AS `MAX` FROM " + table + " WHERE " + where);
+		SqlResult result = new SqlResult(rs);
+		HashMap<String, String> row = result.get(0); // returns single row
+		String max = row.get("MAX");
+		if(max == null || max.equals("null")){
+			return -1;
+		}
+		return Integer.parseInt(max);
+	}
+	
+	
 	public SqlResult get(String table, String where) {
 		ResultSet rs = this.executeQuery("SELECT * FROM " + table + " WHERE " + where);
 		return new SqlResult(rs);
@@ -291,4 +320,5 @@ public class MySql {
 		}
 		
 	}
+	
 }

@@ -149,7 +149,7 @@ public class Quiz extends Model {
 	}
 	
 	public String editLink() {
-		return "EditQuiz?id="+id();
+		return "Quiz?id="+id();
 	}
 	
 	public String name() {
@@ -229,7 +229,49 @@ public class Quiz extends Model {
 		return questions;
 	}
 
+	/**
+	 * Get the user's most recent attempts on the quiz
+	 */
+	public QuizAttempt[] userAttempts(User user) {
+		return QuizAttempt.retrieveByQuizIdAndUserIdOrderByCompletedAt(id(), user.getId());
+	}
+
+	/**
+	 * Get the highest scoring attempts on the quiz
+	 */
+	public QuizAttempt[] highestAttempts() {
+		return QuizAttempt.retrieveByQuizIdOrderByScore(id());
+	}
+
+
+	/**
+	 * Get the highest scoring attempts on the quiz
+	 */
+	public QuizAttempt[] highestTodayAttempts() {
+		// 24 h ago
+		Date today = new Date(System.currentTimeMillis() - (24 * 60 * 60 * 1000));
+
+		return QuizAttempt.retrieveByQuizIdAfterDateOrderByScore(id(), today);
+	}
+
+	/**
+	 * Get the highest scoring attempts on the quiz
+	 */
+	public QuizAttempt[] recentAttempts() {
+		return QuizAttempt.retrieveByQuizIdOrderByCompletedAt(id());
+	}
+
+
 	public String[] cols() {
 		return QUIZZES_COLUMNS;
+	}
+
+	public int possiblePoints() {
+		List<Question> questions = questions();
+		int poss = 0;
+		for (Question q : questions) {
+			poss += q.possiblePoints();
+		}
+		return poss;
 	}
 }

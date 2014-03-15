@@ -8,29 +8,49 @@ import quizzically.config.MyDBInfo;
 
 public class QueryBuilder {
 	public enum Type {
-		TYPE_SELECT, TYPE_INSERT, TYPE_UPDATE, TYPE_DELETE
+		SELECT, INSERT, UPDATE, DELETE
 	}
 
 	public enum Order {
-		ORDER_ASCENDING, ORDER_DESCENDING
+		ASCENDING, DESCENDING;
+		public String toString() {
+			switch (this) {
+				case ASCENDING:
+					return "ASC";
+				case DESCENDING:
+					return "DESC";
+				default:
+					throw new RuntimeException("Invalid Order");
+			}
+		}
 	}
 
 	public enum Operator {
-		EQUALS, GREATER_THAN, LESS_THAN, IN, NOT_IN;
+		EQUALS, NOT_EQUAL, GREATER_THAN, LESS_THAN, IN, NOT_IN,
+			GREATER_THAN_OR_EQUAL, LESS_THAN_OR_EQUAL,
+			NOT_NULL;
 		public String toString() {
 			switch (this) {
 				case EQUALS:
 					return "=";
+				case NOT_EQUAL:
+					return "!=";
 				case GREATER_THAN:
 					return ">";
 				case LESS_THAN:
 					return "<";
+				case GREATER_THAN_OR_EQUAL:
+					return ">=";
+				case LESS_THAN_OR_EQUAL:
+					return "<=";
 				case IN:
 					return "IN";
 				case NOT_IN:
 					return "NOT IN";
+				case NOT_NULL:
+					return "IS NOT NULL";
 				default:
-					throw new RuntimeException("Invalid operator");
+					throw new RuntimeException("Invalid Operator");
 			}
 		}
 	}
@@ -39,33 +59,34 @@ public class QueryBuilder {
 	 * Get a QueryBuilder for a select query
 	 */
 	public static QueryBuilder selectInstance(String table, String[] cols) {
-		return new QueryBuilder(Type.TYPE_SELECT, table, cols);
+		return new QueryBuilder(Type.SELECT, table, cols);
 	}
 
 	/**
 	 * Get a QueryBuilder for an insert query
 	 */
 	public static QueryBuilder insertInstance(String table, String[] cols) {
-		return new QueryBuilder(Type.TYPE_INSERT, table, cols);
+		return new QueryBuilder(Type.INSERT, table, cols);
 	}
 
 	/**
 	 * Get a QueryBuilder for an update query
 	 */
 	public static QueryBuilder updateInstance(String table, String[] cols) {
-		return new QueryBuilder(Type.TYPE_UPDATE, table, cols);
+		return new QueryBuilder(Type.UPDATE, table, cols);
 	}
 
 	/**
 	 * Get a QueryBuilder for a delete query
 	 */
 	public static QueryBuilder deleteInstance(String table, String[] cols) {
-		return new QueryBuilder(Type.TYPE_DELETE, table, cols);
+		return new QueryBuilder(Type.DELETE, table, cols);
 	}
 
 	private Type type;
 	private String orderBy;
 	private Order order;
+	int limit;
 	private ArrayList<Constraint> constraints;
 	private String table;
 	private String[] cols;
@@ -74,6 +95,8 @@ public class QueryBuilder {
 		this.type = type;
 		this.table = table;
 		this.cols = cols;
+		this.orderBy = null;
+		this.limit = -1;
 		constraints = new ArrayList<Constraint>();
 	}
 
@@ -83,9 +106,24 @@ public class QueryBuilder {
 	 * @param order QueryBuilder.ASCENDING|QueryBuilder.DESCENDING
 	 */
 	public void setOrder(String field, Order order) {
-		assert(type == Type.TYPE_SELECT);
-		orderBy = field;
+		assert(type == Type.SELECT);
+		this.orderBy = field;
 		this.order = order;
+	}
+
+	/**
+	 * Set the limit on the query
+	 * Note: should be > 0
+	 * @param limit the limit
+	 */
+	public void setLimit(int limit) {
+		assert(limit > 0);
+		this.limit = limit;
+	}
+
+	public void addConstraint(String field, Operator op) {
+		assert(op == Operator.NOT_NULL);
+		addConstraint(field, op, new NullType());
 	}
 
 	public void addConstraint(String field, Operator op, Object value) {
@@ -111,18 +149,23 @@ public class QueryBuilder {
 	public String sql() {
 		String sql = "";
 		switch (type) {
-			case TYPE_SELECT:
+			case SELECT:
 				sql += "SELECT * FROM ";
 				sql += db() + "." + table();
 				sql += " WHERE " + where();
-				// TODO support order by, limit
+				if (orderBy != null) {
+					sql += " ORDER BY `" + orderBy + "` " + order;
+				}
+				if (limit != -1) {
+					sql += " LIMIT " + limit;
+				}
 				break;
-			case TYPE_INSERT:
-			case TYPE_UPDATE:
+			case INSERT:
+			case UPDATE:
 				// TODO impl
 				throw new RuntimeException("QueryBuilder type not implemented yet");
 //				break;
-			case TYPE_DELETE:
+			case DELETE:
 				sql += "DELETE FROM ";
 				sql += db() + "." + table();
 				sql += " WHERE " + where();
@@ -139,26 +182,34 @@ public class QueryBuilder {
 	public void prepareStatement(PreparedStatement stmt) throws SQLException {
 		int constraintOffset = 0;
 		switch (type) {
-			case TYPE_SELECT:
+			case SELECT:
 				constraintOffset = 0; // TODO modify to support non * column queries
 				break;
-			case TYPE_INSERT:
-			case TYPE_UPDATE:
+			case INSERT:
+			case UPDATE:
 				constraintOffset = cols().length;
 				break;
-			case TYPE_DELETE:
+			case DELETE:
 				constraintOffset = 0;
 				break;
 		}
-		for (int i = 0; i < constraints.size(); i++) {
+		int max = constraints.size();
+		int inset = 0;
+		for (int i = 0; i < max;) {
 			Constraint c = constraints.get(i);
 			for (Object value : c.values()) {
+				int ind = 1 + constraintOffset + i + inset;
 				if (value instanceof Integer) {
-					stmt.setInt(1 + constraintOffset + i, (Integer) value);
+					stmt.setInt(ind, (Integer) value);
 				}
-				// TODO impl
-	//			else if (c instanceof Date) {
-	//			}
+				else if (value instanceof java.util.Date) {
+					stmt.setTimestamp(ind, new java.sql.Timestamp(((java.util.Date) value).getTime()));
+				}
+				else if (value instanceof NullType) {
+					// do nothing
+					inset--;
+				}
+				// TODO impl String, etc...
 				else {
 					throw new RuntimeException("QueryBuilder value type not implemented yet");
 				}
@@ -217,7 +268,16 @@ public class QueryBuilder {
 				}
 				placeholder += ")";
 			}
+			else if (op == Operator.NOT_NULL) {
+				return "`" + field + "` " + op;
+			}
 			return "`" + field + "` " + op + " " + placeholder;
 		}
+	}
+
+	/**
+	 * Used for Constraints with no value
+	 */
+	private class NullType {
 	}
 }
