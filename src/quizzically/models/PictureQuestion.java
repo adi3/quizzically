@@ -13,6 +13,12 @@ public class PictureQuestion extends TextQuestion {
 		this.type = Question.TYPE_PICTURE;
 	}
 
+	/**
+	 * Returns a string representation of an HTML image tag, with the image source set
+	 * to the result of the superclass's `text` method and a specified width of 500 pixels.
+	 *
+	 * @returns an HTML string containing an image tag with the specified width.
+	 */
 	public String text() {
 		return "<img src=\"" + super.text() + "\" style=\"width: 500px;\"/>";
 	}

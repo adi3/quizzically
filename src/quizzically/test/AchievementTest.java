@@ -5,8 +5,17 @@ import quizzically.models.*;
 import org.junit.Test;
 import java.util.*;
 
+/**
+ * Contains a single test method that exercises three Achievement factory methods,
+ * printing the resulting achievements to the console.
+ */
 public class AchievementTest {
 
+	/**
+	 * Verifies the functionality of three Achievement methods: `newAuthorAchievements`,
+	 * `newTakerAchievements`, and `earnedAchievements`, by printing their results for a
+	 * given ID (41) and optionally a different ID (73).
+	 */
 	@Test
 	public void test() {
 		List<Achievement> achievements = Achievement.newAuthorAchievements(41);

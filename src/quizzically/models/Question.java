@@ -12,6 +12,10 @@ import java.util.*;
 
 import quizzically.exceptions.*;
 
+/**
+ * It represents a question entity with attributes such as text, type, and answers,
+ * and provides methods for creating, retrieving, and managing questions.
+ */
 public abstract class Question extends Model {
 	private static final String TABLE = MyDBInfo.QUESTIONS_TABLE;
 	private static final String[] QUESTIONS_COLUMNS = {"text", "type"};
@@ -35,6 +39,15 @@ public abstract class Question extends Model {
 		"Picture-Response"
 	};
 
+	/**
+	 * Retrieves a string value from an array `TYPE_STRINGS` based on the input integer
+	 * `type` and returns it as a string. The function appears to be a simple lookup
+	 * operation. The result is determined by the index of the input `type` in the array.
+	 *
+	 * @param type index into the `TYPE_STRINGS` array.
+	 *
+	 * @returns a string value from the TYPE_STRINGS array based on the input type index.
+	 */
 	public static String typeString(int type) {
 		return TYPE_STRINGS[type];
 	}
@@ -67,6 +80,11 @@ public abstract class Question extends Model {
 		return text;
 	}
 
+	/**
+	 * Sets a string value to the `text` field, updating its current state.
+	 *
+	 * @param text new text to be set for the object.
+	 */
 	public void setText(String text) {
 		this.text = text;
 	}
@@ -78,6 +96,12 @@ public abstract class Question extends Model {
 		return type;
 	}
 
+	/**
+	 * Sets an integer value to the `type` field of the class, updating its state. The
+	 * value is assigned directly without any validation or transformation.
+	 *
+	 * @param type value to be assigned to the `type` field of the current object.
+	 */
 	public void setType(int type) {
 		this.type = type;
 	}
@@ -125,6 +149,31 @@ public abstract class Question extends Model {
 		return question;
 	}
 
+	/**
+	 * Creates a Question object based on the provided type. It returns an instance of
+	 * TextQuestion, FillInQuestion, MultipleChoiceQuestion, or PictureQuestion, depending
+	 * on the type parameter, or throws a RuntimeException if the type is unknown.
+	 *
+	 * @param id unique identifier for the question being created.
+	 *
+	 * @param text text of the question being created.
+	 *
+	 * @param type type of question being created, determining which subclass of the
+	 * `Question` class to instantiate.
+	 *
+	 * @param orderedAnswers a map of answers sorted by their order, which is used to
+	 * construct the corresponding type of question.
+	 *
+	 * Extract the type properties from the switch statement.
+	 *
+	 * @returns an instance of a Question subclass, such as TextQuestion, FillInQuestion,
+	 * etc., depending on the type parameter.
+	 *
+	 * The returned output is an instance of a question class, which is one of four
+	 * subclasses: TextQuestion, FillInQuestion, MultipleChoiceQuestion, or PictureQuestion,
+	 * depending on the type parameter. Each subclass has its own properties, such as id,
+	 * text, and ordered answers.
+	 */
 	protected static Question instance(int id, String text, 
 			int type, SortedMap<Integer, Answer> orderedAnswers) {
 		switch (type) {
@@ -208,6 +257,14 @@ public abstract class Question extends Model {
 		return orderedQuestions;
 	}
 	
+	/**
+	 * Deletes a quiz question from a database table based on the provided `quiz_id`, and
+	 * returns `true` if the deletion is successful.
+	 *
+	 * @param quiz_id ID of the quiz in which the question is to be deleted.
+	 *
+	 * @returns a boolean indicating whether the deletion operation was successful or not.
+	 */
 	public boolean delete(int quiz_id) {
 		int status = MySql.getInstance().delete(MyDBInfo.QUIZ_QUESTIONS_TABLE, "question_id=" + this.id() + " AND quiz_id=" + quiz_id);
 		return status == 1;
@@ -225,6 +282,14 @@ public abstract class Question extends Model {
 		return id() == ((Question)o).id();
 	}
 
+	/**
+	 * Calculates and returns a unique integer hash code for the object, based on the
+	 * result of the `id` method. The `id` method is called to obtain a unique identifier,
+	 * which is then wrapped in an `Integer` object and its `hashCode` method is called
+	 * to generate the hash code.
+	 *
+	 * @returns the hash code of the integer value returned by the `id()` method.
+	 */
 	@Override
 	public int hashCode() {
 		return new Integer(id()).hashCode();
@@ -249,15 +314,31 @@ public abstract class Question extends Model {
 			this.possible = possible;
 		}
 
+		/**
+		 * Returns the value of the `points` variable.
+		 *
+		 * @returns the value of the `points` variable.
+		 */
 		public int points() {
 			return points;
 		}
 
+		/**
+		 * Returns the value of the variable `possible`, which is an integer representing a
+		 * possible outcome or state.
+		 *
+		 * @returns an integer value representing the possible outcome.
+		 */
 		public int possible() {
 			return possible;
 		}
 	}
 
+	/**
+	 * Returns an array of column names, specifically QUESTIONS_COLUMNS.
+	 *
+	 * @returns an array of Strings representing column names for a set of questions.
+	 */
 	public String[] cols() {
 		return QUESTIONS_COLUMNS;
 	}

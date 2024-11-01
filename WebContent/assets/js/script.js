@@ -4,6 +4,50 @@
 
 $(document).ready(function() {
 	
+	// Handlesooking roads have a
+	// 
+	// The function=" target="_ (andshirts School of which a
+	// 
+	// The Strokes_wJectively, and his               is not included
+	//             with (andshaken was not included several of which aread request a long>
+	// I amm, and other texts by Elasdgana
+	//     (function of
+	//              - and
+	// Previous experience has been unveiled approachable codingame, and was not found
+	// an review
+	// Get the fulfaltering of
+	//             (and#    1. (and#038;
+	// Ashe problem-site mapanan (and#           is not included a
+	// . The full column vectors to display a atsue toC
+	// The following a complex system was removedia
+	// > (function of
+	// 	 of which they saythat is not included]
+	// In the ground beefing offted by F1
+	// 	 [1
+	// \ the pharmacological data sheets hospital management of which is not found in
+	// person (andshacknowledgment of
+	// The Open or         is not included a case study guide the centering process
+	// dynamics of times.jpg
+	// 	 (and#       :// Theore
+	// The development of the filename="?
+	//     technicalities documents arearbitraryly done
+	// Have you can be.
+	// I would make sure to display Avatar
+	//                     - a response to B.
+	// 	.
+	// The Green Library items = they arear Arabic numeral results in the manner was not
+	// included aread missioni have been a
+	// >Manfred E. By extending the size and other events report that and
+	//             , and (andoutral method="I'll (andatain system washy, but notk formula=d
+	// of ushroughly hidays regulations of the context: // comment
+	// The project a
+	// $ $ which I amm, but not found in     1. The new
+	// The development wrote a
+	// Ink the things don'thisenethan"
+	// In case studies have been well- the difference is not included
+	// The environmental
+	// 
+	// The average activity atssiond thetammy personal statement look-alsof ul>
 	var request = null;
 	var interval = 3000;
 	var $question = "";
@@ -29,6 +73,7 @@ $(document).ready(function() {
 
 	    // on success
 	    request.done(function (response, textStatus, jqXHR){
+						// Handles a successful or failed login request.
 	    	var json = $.parseJSON(response);
 	        if (json["errors"] == null) {
 	        	$(".msg-container .msg-img").css("background", "url(assets/img/success.png)");
@@ -55,6 +100,7 @@ $(document).ready(function() {
 
 	    // on failure
 	    request.fail(function (jqXHR, textStatus, errorThrown){
+						// Handles a failed AJAX request by displaying an error message.
 	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
 	    	$(".msg-container .msg").text("Weird network error. Please try again!");
 	    	$(".msg-container").hide().slideToggle();
@@ -62,6 +108,7 @@ $(document).ready(function() {
 
 	    // akin to Java's finally clause
 	    request.always(function () {
+						// Cleans the password field, enables form inputs, and hides the loading indicator.
 	    	$(".navbar-form input[name='password']").val("");
 	        $inputs.prop("disabled", false);
 	        $("#navbar-form-loader").css("visibility", "hidden");
@@ -72,19 +119,23 @@ $(document).ready(function() {
 	
 	
 	$(".msg-close").click(function() {
+		// Immediately invokes the function to slide up the element with the class "msg-container".
 		$(".msg-container").slideUp();
 	});
 	
 	
 	$(document).on('click', ".mid-popup .close", function(e){
+		// Triggers when a close button is clicked.
 		$(".mid-popup").fadeOut();
 	});
 	
 	$(document).on('keypress', document, function(e){
+		// Detects the spacebar key press.
 		if (e.which == 32 && quiz_mode) {
 			quiz_mode = false;
 			$(".mid-popup .close").click();
 			$($("#show-quiz .question").get(index)).fadeOut('fast', function(e) {
+				// Animates the fading in of a new element.
 				index += 1;
 				$($("#show-quiz .question").get(index)).fadeIn('fast');
 			});
@@ -94,12 +145,15 @@ $(document).ready(function() {
 	
 	
 	$("#sign-up-lnk").click(function(event){
+					// Makes an AJAX request to the "Register" URL.
 	    request = $.ajax({
 	        url: "Register",
 	        type: "get"
 	    });
 	    
 	    request.done(function (response, textStatus, jqXHR){
+         // Executes after a request is completed, updating a popup element with the response
+         // and fading it in.
         	$(".mid-popup").html(response).fadeIn();
 	    });
 	    
@@ -108,6 +162,7 @@ $(document).ready(function() {
 	
 	
 	$(document).on('click', "#sign-up-btn", function(event){
+					// Handles a click event on the "#sign-up-btn" element.
 	    if (request) request.abort();
 
 	    $(".mid-popup .close").hide();
@@ -127,6 +182,7 @@ $(document).ready(function() {
 	    
 	 // on success
 	    request.done(function (response, textStatus, jqXHR){
+						// Handles a successful or failed AJAX response.
 	    	var json = $.parseJSON(response);
 	    	
 	        if (json["errors"] == null) {
@@ -153,6 +209,7 @@ $(document).ready(function() {
 
 	    // on failure
 	    request.fail(function (jqXHR, textStatus, errorThrown){
+						// Handles a failed HTTP request by displaying an error message and animation.
 	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
 	    	$(".msg-container .msg").text("Weird network error. Please try again!");
 	    	$(".msg-container").hide().slideToggle();
@@ -160,6 +217,7 @@ $(document).ready(function() {
 
 	    // akin to Java's finally clause
 	    request.always(function () {
+						// Cleans up form data and enables input fields.
 	    	$("#sign-up input[name='password']").val("");
 	    	$("#sign-up input[name='pass-conf']").val("");
 	        $inputs.prop("disabled", false);
@@ -172,17 +230,20 @@ $(document).ready(function() {
 	
 	
 	$(document).on('keypress', "#sign-up", function(e){
+		// Triggers a form submission on pressing the Enter key.
 		if (e.which == 13) $("#sign-up-btn").click();
 	});
 	
 	
 	$("#change-pass-lnk").click(function(event){		
+		// Makes an AJAX request to the "ChangePassword" URL.
 		request = $.ajax({
 	        url: "ChangePassword",
 	        type: "get"
 	    });
 	    
 	    request.done(function (response, textStatus, jqXHR){
+         // Executes when an AJAX request is successfully completed.
         	$(".mid-popup").html(response).fadeIn();
 	    });
 	    
@@ -191,6 +252,7 @@ $(document).ready(function() {
 	
 	
 	$(document).on('click', "#change-pass-btn", function(event){		
+		// Submits a password change form via AJAX.
 		if (request) request.abort();
 
 	    $(".mid-popup .close").hide();
@@ -210,6 +272,7 @@ $(document).ready(function() {
 	    
 	    // on success
 	    request.done(function (response, textStatus, jqXHR){
+						// Handles a successful or failed password update.
 	    	var json = $.parseJSON(response);
 	    	
 	        if (json["errors"] == null) {
@@ -230,6 +293,7 @@ $(document).ready(function() {
 
 	    // on failure
 	    request.fail(function (jqXHR, textStatus, errorThrown){
+						// Handles network request failure by changing the UI to display an error message.
 	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
 	    	$(".msg-container .msg").text("Weird network error. Please try again!");
 	    	$(".msg-container").hide().slideToggle();
@@ -237,6 +301,7 @@ $(document).ready(function() {
 
 	    // akin to Java's finally clause
 	    request.always(function () {
+						// Clears form fields, enables inputs, hides a loader, and shows a close button.
 	    	$inputs.val("");
 	        $inputs.prop("disabled", false);
 	        $(".mid-popup #form-loader").hide();
@@ -248,11 +313,13 @@ $(document).ready(function() {
 	
 	
 	$(document).on('keypress', "#change-pass", function(e){
+		// Triggers on key press event.
 		if (e.which == 13) $("#change-pass-btn").click();
 	});
 	
 	
 	$("#searchbox").submit(function(e) {
+		// Handles an HTML form submission.
 		e.preventDefault();
 		
 		if ($("#searchbox input").val() == "") {
@@ -272,6 +339,7 @@ $(document).ready(function() {
 	    
 
 		$(".mid-popup").fadeOut(function() {
+						// Executes an AJAX request to the server.
 		    request = $.ajax({
 		        url: "SearchUsers",
 		        type: "post",
@@ -280,11 +348,13 @@ $(document).ready(function() {
 		    
 		    // on success
 		    request.done(function (response, textStatus, jqXHR){
+							// Processes a completed AJAX request.
 		    	$(".mid-popup").html(response).fadeIn();
 		    });
 	
 		    // on failure
 		    request.fail(function (jqXHR, textStatus, errorThrown){
+							// Handles an AJAX request failure by displaying an error message.
 		    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
 		    	$(".msg-container .msg").text("Weird network error. Please try again!");
 		    	$(".msg-container").hide().slideToggle();
@@ -292,6 +362,7 @@ $(document).ready(function() {
 	
 		    // akin to Java's finally clause
 		    request.always(function () {
+										// Enables form inputs, hides a loader, and shows a close button.
 		        $inputs.prop("disabled", false);
 		        $(".mid-popup #form-loader").hide();
 		        $(".mid-popup .close").show();
@@ -301,8 +372,10 @@ $(document).ready(function() {
 	
 	
 	$("#update-profile-btn").click(function(e) {
+		// Handles a button click event.
 		var boxes = $(".profile-info table").find("td:last-child");
 		$(boxes).each(function() {
+			// Replaces table cells with text inputs.
 			var val = $(this).text();
 			var name = $(this).attr("name");
 			var str = '<input type="text" name="' + name + '" value="' + val + '" />';
@@ -320,16 +393,19 @@ $(document).ready(function() {
 	
 	
 	$("#save-profile-btn").click(function(e) {
+		// Handles a click event.
 		$("#profile-form").submit();
 	});
 	
 	
 	$(".inbox table td:nth-child(2) a").click(function(e) {
+		// Handles click events on certain table elements.
 		e.preventDefault();
 		var data = $(this).attr("href").split("?")[1];
 
 		var row = $(this).parent().parent();
 		$(row).find("td").each(function() {
+			// Sets font weight to normal.
 			$(this).css("font-weight", "normal");
 		});
 		
@@ -341,6 +417,7 @@ $(document).ready(function() {
 	    
 	    // on success
 	    request.done(function (response, textStatus, jqXHR){
+						// Handles AJAX request responses.
 	    	var json = null;
 	    	
 	    	try {
@@ -361,6 +438,7 @@ $(document).ready(function() {
 
 	    // on failure
 	    request.fail(function (jqXHR, textStatus, errorThrown){
+						// Displays an error message to the user.
 	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
 	    	$(".msg-container .msg").text("Weird network error. Please try again!");
 	    	$(".msg-container").hide().slideToggle();
@@ -369,6 +447,7 @@ $(document).ready(function() {
 	
 	
 	$(document).on('click', "#msg-lnk", function(e){
+		// Handles a click event on an element.
 		e.preventDefault();
 		
 		$(".mid-popup .close").hide();
@@ -384,6 +463,7 @@ $(document).ready(function() {
 		
 		// on success
 	    request.done(function (response, textStatus, jqXHR){
+      // Processes a JSON response from an AJAX request.
     		var json = null;
 	    	
 	    	try {
@@ -398,6 +478,7 @@ $(document).ready(function() {
 		        $(".msg-container").hide().slideToggle();
 	    	} catch (e) {
 		        $(".mid-popup").fadeOut('fast', function() {
+											// Executes after the fadeOut animation completes.
 		    	    $(".mid-popup").html(response).fadeIn();
 		        });
 	    	}
@@ -405,6 +486,7 @@ $(document).ready(function() {
 
 	    // on failure
 	    request.fail(function (jqXHR, textStatus, errorThrown){
+						// Handles a failed AJAX request by displaying an error message and image.
 	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
 	    	$(".msg-container .msg").text("Weird network error. Please try again!");
 	    	$(".msg-container").hide().slideToggle();
@@ -412,6 +494,7 @@ $(document).ready(function() {
 
 	    // akin to Java's finally clause
 	    request.always(function () {
+									// Hides the form loader and shows the close button.
 	        $(".mid-popup #form-loader").hide();
 	        $(".mid-popup .close").show();
 	    });
@@ -419,6 +502,7 @@ $(document).ready(function() {
 	
 	
 	$(document).on('submit', "#create-msg", function(e){
+		// Handles form submission and sends an AJAX request.
 		e.preventDefault();
 		if (request) request.abort();
 
@@ -439,6 +523,7 @@ $(document).ready(function() {
 	    
 	    // on success
 	    request.done(function (response, textStatus, jqXHR){
+						// Handles a successful AJAX request.
 	    	var json = $.parseJSON(response);
 	    	
 	        if (json["errors"] == null) {
@@ -460,6 +545,7 @@ $(document).ready(function() {
 
 	    // on failure
 	    request.fail(function (jqXHR, textStatus, errorThrown){
+						// Handles error cases.
 	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
 	    	$(".msg-container .msg").text("Weird network error. Please try again!");
 	    	$(".msg-container").hide().slideToggle();
@@ -467,6 +553,7 @@ $(document).ready(function() {
 
 	    // akin to Java's finally clause
 	    request.always(function () {
+									// Enables form inputs, hides a loader, and shows a close button.
 	        $inputs.prop("disabled", false);
 	        $(".mid-popup #form-loader").hide();
 	        $(".mid-popup .close").show();
@@ -475,6 +562,7 @@ $(document).ready(function() {
 	
 	
 	$(document).on('click', "#add-receiver-btn", function(e){
+		// Adds a recipient to a list when a button is clicked.
 		var name = $("#create-msg select").val();
 		var field = $("#create-msg input[name='to']");
 		var list = field.val();
@@ -487,6 +575,7 @@ $(document).ready(function() {
 	
 	
 	$("#add-frnd").submit(function(e) {
+		// Handles form submission.
 		e.preventDefault();
 		if (request) request.abort();
 	    
@@ -501,6 +590,7 @@ $(document).ready(function() {
 	    
 	    // on success
 	    request.done(function (response, textStatus, jqXHR){
+						// Handles a successful or failed friend request.
 	    	var json = $.parseJSON(response);
 	    	
 	        if (json["errors"] == null) {
@@ -525,6 +615,7 @@ $(document).ready(function() {
 
 	    // on failure
 	    request.fail(function (jqXHR, textStatus, errorThrown){
+						// Handles a failed Ajax request.
 	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
 	    	$(".msg-container .msg").text("Weird network error. Please try again!");
 	    	$(".msg-container").hide().slideToggle();
@@ -533,6 +624,7 @@ $(document).ready(function() {
 	
 	
 	$(document).on('submit', "#accept-frnd", function(e) {
+		// Handles form submission.
 		e.preventDefault();
 		if (request) request.abort();
 	    
@@ -547,6 +639,7 @@ $(document).ready(function() {
 	    
 	    // on success
 	    request.done(function (response, textStatus, jqXHR){
+						// Handles a successful or failed AJAX request.
 	    	var json = $.parseJSON(response);
 	    	
 	        if (json["errors"] == null) {
@@ -567,6 +660,7 @@ $(document).ready(function() {
 
 	    // on failure
 	    request.fail(function (jqXHR, textStatus, errorThrown){
+						// Handles a failed network request by displaying an error message and image.
 	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
 	    	$(".msg-container .msg").text("Weird network error. Please try again!");
 	    	$(".msg-container").hide().slideToggle();
@@ -575,6 +669,7 @@ $(document).ready(function() {
 	
 	
 	$(document).on('click', "[id^=del]", function(e) {
+		// Handles deletion of friends.
 		if (request) request.abort();
 		var id = $(this).attr("id").split("-")[1];
     	var row = $(this).parent().parent();
@@ -586,6 +681,7 @@ $(document).ready(function() {
 	    
 	    // on success
 	    request.done(function (response, textStatus, jqXHR){
+						// Handles a successful or failed AJAX request.
 	    	var json = $.parseJSON(response);
 	    	
 	        if (json["errors"] == null) {
@@ -607,6 +703,7 @@ $(document).ready(function() {
 
 	    // on failure
 	    request.fail(function (jqXHR, textStatus, errorThrown){
+						// Displays a network error message.
 	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
 	    	$(".msg-container .msg").text("Weird network error. Please try again!");
 	    	$(".msg-container").hide().slideToggle();
@@ -615,6 +712,7 @@ $(document).ready(function() {
 	
 	
 	$(document).on('click', ".quiz #name", function(e) {
+		// Converts a text element into an input field on click.
 		if ($(this).html().indexOf('type="text"') == -1) {
 			var val = $(this).text();
 			$(this).html('<input type="text" name="name" value="' + val + '" />');
@@ -625,6 +723,7 @@ $(document).ready(function() {
 	
 
 	$(document).on('focusout', ".quiz #name", function(e) {
+		// Executes when a text input within a quiz loses focus.
 		var val = $(this.children[0]).val();
 		$(this).html(val);
 		$(this).css("padding", "5px 0px");
@@ -633,6 +732,7 @@ $(document).ready(function() {
 	
 	
 	$(document).on('click', ".quiz .meta #description", function(e) {
+		// Turns a text description into a textarea on click.
 		if ($(this).html().indexOf('textarea') == -1) {
 			var val = $(this).text();
 			$(this).html('<textarea name="description" style="margin-top:-3px;margin-left:-3px">' + val + '</textarea>');
@@ -642,6 +742,7 @@ $(document).ready(function() {
 	
 
 	$(document).on('focusout', ".quiz .meta #description", function(e) {
+		// Executes when a field loses focus, updating its contents and sending quiz data.
 		var val = $(this.children[0]).val();
 		$(this).html(val);
 		sendQuizData();
@@ -649,20 +750,29 @@ $(document).ready(function() {
 	
 	
 	$(document).on('change', ".quiz .meta #page_format", function(e) {
+		// Listens for a change event on the specified element and then calls the sendQuizData
+		// function.
 		sendQuizData();
 	});
 
 	
 	$(document).on('change', ".quiz .meta #order", function(e) {
+		// Triggers when a change occurs to an element.
 		sendQuizData();
 	});
 	
 
 	$(document).on('change', ".quiz .meta #immediate_correction", function(e) {
+		// Triggers when the selected element changes.
 		sendQuizData();
 	});
 	
 	
+	/**
+	 * @description Submits form data to a server via an AJAX request. It disables form
+	 * input fields, sends data to a "Quiz" endpoint, and upon success or failure, updates
+	 * form fields and displays a message.
+	 */
 	function sendQuizData() {
 		$("#navbar-form-loader").css("visibility", "visible");
 	    var $inputs = $("#quiz-form").find("input, textarea");
@@ -686,12 +796,14 @@ $(document).ready(function() {
 	    
 	 // on success
 	    request.done(function (response, textStatus, jqXHR){
+						// Executes upon completion of an AJAX request.
 	    	var json = $.parseJSON(response);	    	
 	        if (json["errors"] == null) $id.val(json["id"]);
 	    });
 
 	    // on failure
 	    request.fail(function (jqXHR, textStatus, errorThrown){
+						// Displays an error message to the user.
 	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
 	    	$(".msg-container .msg").text("Weird network error. Please refresh page and try again!");
 	    	$(".msg-container").hide().slideToggle();
@@ -699,6 +811,7 @@ $(document).ready(function() {
 	    
 	    // akin to Java's finally clause
 	    request.always(function () {
+									// Enables form inputs and hides a loader.
 	        $inputs.prop("disabled", false);
 	        $("#navbar-form-loader").css("visibility", "hidden");
 	    });
@@ -706,6 +819,7 @@ $(document).ready(function() {
 	
 	
 	$("#add_btn").click(function(e){
+		// Handles the click event of the "#add_btn" element.
 		if ($("#ques:hidden").length == 1) {
 			sendQuizData();
 			$("#ques").show();
@@ -726,6 +840,7 @@ $(document).ready(function() {
 	
 	
 	$(document).on('click', ".quiz form[id=ques] p[name=ques_text]", function(e) {
+		// Triggers on document click, replacing paragraph text with a textarea.
 		if ($(this).html().indexOf('textarea') == -1) {
 			var val = $(this).text();
 			var parent = $(this).parent();
@@ -736,6 +851,7 @@ $(document).ready(function() {
 	
 
 	$(document).on('focusout', ".quiz form[id*=ques] textarea[name=ques_text]", function(e) {
+		// Handles the focus-out event of a textarea.
 		var val = $(this).val();
 		var parent = $(this).parent();
 		$(parent).html('<p name="ques_text">' + val + '</p>');
@@ -744,6 +860,7 @@ $(document).ready(function() {
 	
 	
 	$(document).on('change', ".quiz form[id*=ques] select", function(e) {
+		// Attaches an event listener to a dropdown menu.
 		if ($(this).val() == "3") {
 			$(this).parent().next().find('p').text("Enter image link here...");
 		} else {
@@ -753,10 +870,12 @@ $(document).ready(function() {
 		var $boxes = $(this).closest('.row').find('table.answers tr td:nth-child(3)');
 		if ($(this).val() == "2") {
 			$.each($boxes, function(i, val) {
+				// Makes input fields visible.
 				$(val).find('input').css('visibility', 'visible');
 			});
 		} else {
 			$.each($boxes, function(i, val) {
+				// Hides all input fields within specified elements.
 				$(val).find('input').css('visibility', 'hidden');
 			});
 		}
@@ -768,6 +887,12 @@ $(document).ready(function() {
 	});
 	
 	
+	/**
+	 * @description Submits a form to the server, disabling form inputs and displaying a
+	 * loader until the request is complete.
+	 *
+	 * @param {string|object} form - Used to specify the form element to be processed.
+	 */
 	function sendQuestionData(form) {
 		$("#navbar-form-loader").css("visibility", "visible");
 		
@@ -791,12 +916,15 @@ $(document).ready(function() {
 	    
 	 // on success
 	    request.done(function (response, textStatus, jqXHR){
+						// Handles a successful AJAX request by parsing the response as JSON and updating a
+						// form field with the 'id' value if no errors are present.
 	    	var json = $.parseJSON(response);
 	        if (json["errors"] == null) $id.val(json["id"]);
 	    });
 
 	    // on failure
 	    request.fail(function (jqXHR, textStatus, errorThrown){
+						// Handles request failure by displaying an error message.
 	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
 	    	$(".msg-container .msg").text("Weird network error. Please refresh page and try again!");
 	    	$(".msg-container").hide().slideToggle();
@@ -804,6 +932,7 @@ $(document).ready(function() {
 	    
 	    // akin to Java's finally clause
 	    request.always(function () {
+									// Enables form inputs and hides a loader.
 	        $inputs.prop("disabled", false);
 	        $("#navbar-form-loader").css("visibility", "hidden");
 	    });
@@ -811,6 +940,7 @@ $(document).ready(function() {
 	
 	
 	$(document).on('click', '.add_ans', function(e) {
+		// Adds new answer options to a table on click of a specific button.
 		var type = $(this).closest('.row').find('select[name=ques_type]').val();
 		$ans = $(this).closest('.row').find('table.answers');
 		var visibility = "visible";
@@ -833,6 +963,7 @@ $(document).ready(function() {
 	
 	
 	$(document).on('click', 'table.answers td:nth-child(2)', function(e) {
+		// Converts table cell content to editable text on click.
 		if ($(this).html().indexOf('type="text"') == -1) {
 			var val = $(this).text();
 			$(this).html('<input type="text" name="texts" value="' + val + '"/>');
@@ -842,6 +973,7 @@ $(document).ready(function() {
 	
 	
 	$(document).on('focusout', 'table.answers td:nth-child(2)', function(e) {
+		// Runs on document focus out.
 		var val = $(this.children[0]).val();
 		$(this).html('<p>' + val + '</p>');
 		sendAnswerData($(this).closest('form'));
@@ -849,9 +981,18 @@ $(document).ready(function() {
 	
 	
 	$(document).on('change', 'table.answers input[type=radio]', function(e) {
+		// Listens for radio button changes and sends data.
 		sendAnswerData($(this).closest('form'));
 	});
 	
+	/**
+	 * @description Submits data from a form to a server-side "Answer" endpoint via AJAX,
+	 * handling success and failure scenarios, and updating form fields or displaying
+	 * error messages accordingly.
+	 *
+	 * @param {object} form - Passed to the function to represent the form element being
+	 * processed.
+	 */
 	function sendAnswerData(form) {
 		$("#navbar-form-loader").css("visibility", "visible");
 
@@ -890,12 +1031,14 @@ $(document).ready(function() {
 	    
 	 // on success
 	    request.done(function (response, textStatus, jqXHR){
+						// Handles the success of an AJAX request.
 	    	var json = $.parseJSON(response);
 	        if (json["errors"] == null) $id.val(json["id"]);
 	    });
 
 	    // on failure
 	    request.fail(function (jqXHR, textStatus, errorThrown){
+						// Handles a network request failure by displaying an error message and image.
 	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
 	    	$(".msg-container .msg").text("Weird network error. Please refresh page and try again!");
 	    	$(".msg-container").hide().slideToggle();
@@ -903,12 +1046,14 @@ $(document).ready(function() {
 	    
 	    // akin to Java's finally clause
 	    request.always(function () {
+									// Sets the visibility of an element to hidden.
 	        $("#navbar-form-loader").css("visibility", "hidden");
 	    });
 	}
 	
 	
 	$(document).on('click', '.ans-del', function(e) {
+		// Deletes a table row on click.
 		console.log("x");
 		var form = $(this).closest('form');
 		var row = $(this).closest('tr');
@@ -918,6 +1063,7 @@ $(document).ready(function() {
 	
 	
 	$(document).on('click', '.ques-del', function(e) {
+		// Handles a delete button click event.
 		$("#navbar-form-loader").css("visibility", "visible");
 		
 		var row = $(this).closest('.question');
@@ -934,11 +1080,13 @@ $(document).ready(function() {
 	    
 	 // on success
 	    request.done(function (response, textStatus, jqXHR){
+						// Replaces an HTML element with an empty string.
 	    	$(row).replaceWith("");
 	    });
 
 	    // on failure
 	    request.fail(function (jqXHR, textStatus, errorThrown){
+						// Handles an error in an AJAX request.
 	    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
 	    	$(".msg-container .msg").text("Unable to delete question. Please try again!");
 	    	$(".msg-container").hide().slideToggle();
@@ -946,17 +1094,21 @@ $(document).ready(function() {
 	    
 	    // akin to Java's finally clause
 	    request.always(function () {
+									// Immediately sets the visibility of the element with the id "navbar-form-loader"
+									// to hidden.
 	        $("#navbar-form-loader").css("visibility", "hidden");
 	    });
 	});
 	
 	
 	$(document).on('keypress', ".question", function(e){
+		// Handles keypress events on elements with class "question".
 		if (e.which == 13) return false;
 	});
 	
 	
 	$("#show-quiz").submit(function(e) {
+		// Handles the submission of a form.
 		e.preventDefault();
 		$("#quiz_submit").blur();
 		$form = $(this);
@@ -972,11 +1124,13 @@ $(document).ready(function() {
 	
 	
 	$("#my_quizzes_lnk").click(function(e) {
+		// Handles a click event on #my_quizzes_lnk.
 		e.preventDefault();
 		if (request) request.abort();
 		$("#navbar-form-loader").css("visibility", "visible");
 		
 		$(".mid-popup").fadeOut(function() {
+						// Executes an asynchronous GET request to the server.
 		    request = $.ajax({
 		        url: "MyQuizzes",
 		        type: "get"
@@ -984,11 +1138,13 @@ $(document).ready(function() {
 		    
 		    // on success
 		    request.done(function (response, textStatus, jqXHR){
+							// Executes after an AJAX request is completed.
 		    	$(".mid-popup").html(response).fadeIn();
 		    });
 	
 		    // on failure
 		    request.fail(function (jqXHR, textStatus, errorThrown){
+							// Handles errors by displaying an error message and image.
 		    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
 		    	$(".msg-container .msg").text("Weird network error. Please try again!");
 		    	$(".msg-container").hide().slideToggle();
@@ -996,17 +1152,27 @@ $(document).ready(function() {
 	
 		    // akin to Java's finally clause
 		    request.always(function () {
+							// Sets the visibility of an element to hidden.
 		    	$("#navbar-form-loader").css("visibility", "hidden");
 		    });
 		});
 	});
 	
 	
+	/**
+	 * @description Submits a form data to a server through an AJAX request to retrieve
+	 * a grade report. It shows a loader, handles successful and failed responses, and
+	 * hides the loader upon completion.
+	 *
+	 * @param {object} form - Converted to a serialized string using the `serialize`
+	 * method of jQuery.
+	 */
 	function getGradeReport(form) {
 		$("#navbar-form-loader").css("visibility", "visible");
 		var data = form.serialize();
 		
 		$(".mid-popup").fadeOut(function() {
+						// Makes an AJAX request.
 		    request = $.ajax({
 		        url: "TakeQuiz",
 		        type: "post",
@@ -1015,11 +1181,14 @@ $(document).ready(function() {
 		    
 		    // on success
 		    request.done(function (response, textStatus, jqXHR){
+							// Executes when an AJAX request is done,
+							// displaying the response in a popup element.
 		    	$(".mid-popup").html(response).fadeIn();
 		    });
 	
 		    // on failure
 		    request.fail(function (jqXHR, textStatus, errorThrown){
+							// Handles an error in an AJAX request.
 		    	$(".msg-container .msg-img").css("background", "url(assets/img/error.png)");
 		    	$(".msg-container .msg").text("Trouble retrieving grade report. Please try again!");
 		    	$(".msg-container").hide().slideToggle();
@@ -1027,6 +1196,7 @@ $(document).ready(function() {
 	
 		    // akin to Java's finally clause
 		    request.always(function () {
+							// Hides an HTML element.
 		    	$("#navbar-form-loader").css("visibility", "hidden");
 		    });
 		});

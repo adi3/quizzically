@@ -6,6 +6,10 @@ import quizzically.config.MyDBInfo;
 import quizzically.lib.MySql;
 import quizzically.lib.QueryBuilder;
 
+/**
+ * This class represents user achievements in a system, with methods to create,
+ * retrieve, and earn achievements based on user activity.
+ */
 public class Achievement extends Model {
 	private static final int NULL_VALUE = -1;
 	private static final String TABLE = "achievements";
@@ -34,12 +38,32 @@ public class Achievement extends Model {
 	}
 	
 	
+	/**
+	 * Creates a new Achievement object with a specified type and user ID, saves it to
+	 * the database, and returns the Achievement object with its ID set to the generated
+	 * key.
+	 *
+	 * @param type type of achievement being created, used as a parameter in the `Achievement`
+	 * constructor.
+	 *
+	 * @param userId identifier of the user associated with the achievement being created.
+	 *
+	 * @returns an instance of the Achievement class with a generated ID.
+	 */
 	private static Achievement create(int type, int userId) {
 		Achievement ach = new Achievement(NULL_VALUE, type, userId);
 		ach.save(true); // dehydrates, inserts into DB and sets id to generated key
 		return ach;
 	}
 	
+	/**
+	 * Retrieves an achievement from the database based on its ID, utilizing a hydrator
+	 * to convert the retrieved data into an Achievement object.
+	 *
+	 * @param id unique identifier of the achievement to be retrieved.
+	 *
+	 * @returns an instance of the Achievement class, hydrated from database data.
+	 */
 	private static Achievement retrieve(int id){
 		return (Achievement) Model.retrieve(TABLE, id, new AchievementHydrator());
 	}
@@ -111,6 +135,15 @@ public class Achievement extends Model {
 	}
 
 	
+	/**
+	 * Retrieves a list of achievements earned by a specified user, identified by the
+	 * `userId` parameter, from a database table using a query builder and hydrator.
+	 *
+	 * @param userId unique identifier for the user whose earned achievements are being
+	 * retrieved.
+	 *
+	 * @returns a list of Achievement objects earned by the specified user.
+	 */
 	public static List<Achievement> earnedAchievements(int userId) {
 		MySql sql = MySql.getInstance();
 		QueryBuilder qb = QueryBuilder.selectInstance(TABLE, ACHIEVEMENTS_COLUMNS);
@@ -120,6 +153,17 @@ public class Achievement extends Model {
 		return Arrays.asList(Arrays.copyOf(models, models.length, Achievement[].class));
 	}
 	
+	/**
+	 * Extracts unique achievement types from a list of achievements and returns them as
+	 * a set. It iterates over the achievements, adding each type to the set, which
+	 * automatically eliminates duplicates. The function returns a collection of distinct
+	 * achievement types.
+	 *
+	 * @param achievements collection of achievements from which the function extracts
+	 * unique types.
+	 *
+	 * @returns a set of unique integer values representing earned achievement types.
+	 */
 	private static Set<Integer> achievementTypesEarned(List<Achievement> achievements){
 		Set<Integer> typesEarned = new HashSet<Integer>();
 		for(Achievement ach: achievements){
@@ -129,18 +173,44 @@ public class Achievement extends Model {
 	}
 	
 	
+	/**
+	 * Returns the value of the `id` variable.
+	 * It has no parameters and does not modify any data.
+	 *
+	 * @returns an integer value representing an identifier.
+	 */
 	public int id() {
 		return id;
 	}
 	
+	/**
+	 * Returns the value of the `type` variable.
+	 *
+	 * @returns an integer value representing the type.
+	 */
 	public int type() {
 		return type;
 	}
 	
+	/**
+	 * Returns the value of the `userId` variable.
+	 *
+	 * @returns an integer representing the user's ID.
+	 */
 	public int userId() {
 		return userId;
 	}
 	
+	/**
+	 * Returns a string representation of an object based on its `type` field, mapping
+	 * specific types to predefined string values, and returning `null` for unknown types.
+	 *
+	 * @returns a string representing the author type, such as "AMATEUR AUTHOR" or "PROLIFIC
+	 * AUTHOR".
+	 *
+	 * The output is a string representing an author type, which can be one of five values:
+	 * AMATEUR AUTHOR, PROLIFIC AUTHOR, PRODIGIOUS AUTHOR, LEGIONARY, or CONQUEROR.
+	 */
 	@Override
 	public String toString() {
 		switch(type){
@@ -159,6 +229,13 @@ public class Achievement extends Model {
 		}
 	}
 	
+	/**
+	 * Returns an array of strings representing column names for an achievements table.
+	 * The actual column names are stored in the `ACHIEVEMENTS_COLUMNS` constant. This
+	 * function is likely used for data retrieval or display purposes.
+	 *
+	 * @returns an array of strings containing column names for achievements.
+	 */
 	@Override
 	public String[] cols() {
 		return ACHIEVEMENTS_COLUMNS;

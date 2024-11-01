@@ -5,6 +5,11 @@ import quizzically.lib.*;
 
 import java.util.*;
 
+/**
+ * Represents an answer to a question in a database, with attributes for correctness,
+ * position, and associated text, and provides methods for creation, retrieval, and
+ * deletion.
+ */
 public class Answer extends Model {
 	private static final String TABLE = MyDBInfo.ANSWERS_TABLE;
 	private static final String[] ANSWERS_COLUMNS = new String[]{"question_id", "position", "correct"};
@@ -23,30 +28,73 @@ public class Answer extends Model {
 		this.answerTexts = answerTexts;
 	}
 	
+	/**
+	 * Returns a boolean value indicating whether a condition or state is correct.
+	 *
+	 * @returns a boolean value representing the correctness of a particular state.
+	 */
 	public boolean correct() {
 		return correct;
 	}
 
+	/**
+	 * Sets a boolean value indicating whether an answer is correct, updating the internal
+	 * state of the object with the provided `correct` parameter. It assigns the value
+	 * directly to the `correct` field without any validation or side effects.
+	 *
+	 * @param correct value to be assigned to the `correct` field.
+	 */
 	public void setCorrect(boolean correct) {
 		this.correct = correct;
 	}
 	
+	/**
+	 * Returns the value of the `questionID` variable.
+	 * This function appears to be a getter method for accessing the `questionID` field.
+	 *
+	 * @returns an integer value representing the question ID.
+	 */
 	public int questionId() {
 		return questionID;
 	}
 	
+	/**
+	 * Returns the current position, which is stored in the variable `position`.
+	 * The function simply retrieves and returns this value.
+	 *
+	 * @returns the current position value, which is an integer.
+	 */
 	public int position() {
 		return position;
 	}
 
+	/**
+	 * Sets the position to a specified integer value, updating an instance variable named
+	 * `position`. The function takes an integer as input and assigns it to the `position`
+	 * variable. This allows the position to be dynamically updated.
+	 *
+	 * @param position new position value to be assigned to the object's `position` field.
+	 */
 	public void setPosition(int position) {
 		this.position = position;
 	}
 	
+	/**
+	 * Returns a set of answer texts.
+	 *
+	 * @returns a set of AnswerText objects.
+	 */
 	public Set<AnswerText> answerTexts() {
 		return answerTexts;
 	}
 
+	/**
+	 * Populates a set of `AnswerText` objects based on a given set of strings, then
+	 * assigns this set to the `answerTexts` variable.
+	 *
+	 * @param texts set of answer texts to be added to the `answerTexts` collection, where
+	 * each text is associated with a unique `id` and the given text string.
+	 */
 	public void setAnswerTextsStrings(Set<String> texts) {
 		Set<AnswerText> ats = new HashSet<AnswerText>();
 		for (String s : texts) {
@@ -56,6 +104,13 @@ public class Answer extends Model {
 		answerTexts = ats;
 	}
 	
+	/**
+	 * Sets the `answerTexts` field to the provided `texts` set.
+	 * It appears to be a setter function for the `answerTexts` field, likely used for
+	 * data storage or synchronization purposes.
+	 *
+	 * @param texts set of answer texts to be stored in the `answerTexts` field.
+	 */
 	public void setAnswerTexts(Set<AnswerText> texts) {
 		answerTexts = texts;
 		// TODO update db..?
@@ -97,6 +152,10 @@ public class Answer extends Model {
 		return answer;
 	}
 
+	/**
+	 * Performs a database deletion of the current entity, along with its associated
+	 * AnswerTexts, based on the specified conditions and table constraints.
+	 */
 	public void delete() {
 		MySql sql = MySql.getInstance();
 		QueryBuilder qb = QueryBuilder.deleteInstance(TABLE, cols());
@@ -171,6 +230,12 @@ public class Answer extends Model {
 		return id() == ((Answer)obj).id();
 	}
 	
+	/**
+	 * Returns an array of column names, specifically referencing a predefined constant
+	 * `ANSWERS_COLUMNS`.
+	 *
+	 * @returns an array of strings representing column names.
+	 */
 	public String[] cols() {
 		return ANSWERS_COLUMNS;
 	}
