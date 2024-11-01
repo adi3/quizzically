@@ -6,6 +6,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Converts a ResultSet into a list of HashMaps where each HashMap represents a row
+ * in the database table.
+ */
 public class SqlResult extends ArrayList<HashMap<String, String>> {
 
 	public SqlResult(ResultSet rs) {

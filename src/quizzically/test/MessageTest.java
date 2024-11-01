@@ -11,8 +11,17 @@ import org.junit.Test;
 import quizzically.models.Message;
 import quizzically.models.User;
 
+/**
+ * This class contains three test methods, test, putTest, and getTest, which exercise
+ * the functionality of the Message class, including message creation, saving, and
+ * retrieval from a database.
+ */
 public class MessageTest {
 
+	/**
+	 * Creates two `User` objects and a `Message` object, then asserts that the message's
+	 * text, sender, and recipient match the expected values.
+	 */
 	@Test
 	public void test() {
 		User from = new User("adisin");
@@ -27,6 +36,11 @@ public class MessageTest {
 		assertEquals(msg.getToUser(), to);		
 	}
 	
+	/**
+	 * Tests the creation and saving of a new message.
+	 * It creates two user objects and a message object with a given text and user IDs,
+	 * then asserts that the message is saved successfully.
+	 */
 	@Test
 	public void putTest() {
 		User from = new User("adisin");
@@ -37,6 +51,11 @@ public class MessageTest {
 		assertTrue(status);
 	}
 	
+	/**
+	 * Tests the retrieval of messages for a specified user by calling the `getMessages`
+	 * method, which returns an ArrayList of Message objects, and then prints the ID,
+	 * message, and date of each message in the list.
+	 */
 	@Test
 	public void getTest() {
 		User to = new User("drb");

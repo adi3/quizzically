@@ -1,5 +1,10 @@
 package quizzically.models;
 
+/**
+ * Defines an abstract base class for responses to questions,
+ * with a factory method to create a response object
+ * based on the question type and user input.
+ */
 public abstract class Response {
 
 	/**

@@ -1,5 +1,8 @@
 package quizzically.models;
 
+/**
+ * Represents a response with text content, extending the Response class.
+ */
 public class TextResponse extends Response {
 	private String text;
 

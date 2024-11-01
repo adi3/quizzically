@@ -6,6 +6,10 @@ import java.util.ArrayList;
 
 import quizzically.config.MyDBInfo;
 
+/**
+ * Provides a set of static factory methods to create QueryBuilder instances for
+ * SELECT, INSERT, UPDATE, and DELETE queries.
+ */
 public class QueryBuilder {
 	public enum Type {
 		SELECT, INSERT, UPDATE, DELETE
@@ -13,6 +17,14 @@ public class QueryBuilder {
 
 	public enum Order {
 		ASCENDING, DESCENDING;
+		/**
+		 * Returns a string representation of an enumeration value based on its type. The
+		 * function handles two cases, ASCENDING and DESCENDING, and throws a RuntimeException
+		 * for any other case. The returned string is a three-character abbreviation of the
+		 * enumeration value.
+		 *
+		 * @returns either "ASC" or "DESC", depending on the Order case.
+		 */
 		public String toString() {
 			switch (this) {
 				case ASCENDING:
@@ -29,6 +41,13 @@ public class QueryBuilder {
 		EQUALS, NOT_EQUAL, GREATER_THAN, LESS_THAN, IN, NOT_IN,
 			GREATER_THAN_OR_EQUAL, LESS_THAN_OR_EQUAL,
 			NOT_NULL;
+		/**
+		 * Converts an enum value into a corresponding SQL operator string. It uses a switch
+		 * statement to map each enum value to its respective SQL operator. If an invalid
+		 * enum value is encountered, it throws a RuntimeException.
+		 *
+		 * @returns a string representation of comparison operators, such as "=" or ">", etc.
+		 */
 		public String toString() {
 			switch (this) {
 				case EQUALS:
@@ -121,11 +140,30 @@ public class QueryBuilder {
 		this.limit = limit;
 	}
 
+	/**
+	 * Adds a NOT NULL constraint to the specified field, asserting the operator is indeed
+	 * NOT NULL, and then delegates the actual constraint addition to another function.
+	 *
+	 * @param field field name that the constraint is being applied to.
+	 *
+	 * @param op constraint operator, which is asserted to be `NOT_NULL` before being
+	 * used to add a constraint.
+	 */
 	public void addConstraint(String field, Operator op) {
 		assert(op == Operator.NOT_NULL);
 		addConstraint(field, op, new NullType());
 	}
 
+	/**
+	 * Adds a new constraint to a collection of constraints.
+	 * A constraint is created with the specified field, operator, and value.
+	 *
+	 * @param field field name or attribute being constrained.
+	 *
+	 * @param op operator used to compare the field value with the specified value.
+	 *
+	 * @param value value associated with the specified `field` and `Operator` in the constraint.
+	 */
 	public void addConstraint(String field, Operator op, Object value) {
 		constraints.add(new Constraint(field, op, value));
 	}
@@ -138,14 +176,30 @@ public class QueryBuilder {
 		constraints.add(new Constraint(field, op, value));
 	}
 
+	/**
+	 * Returns the name of a MySQL database.
+	 *
+	 * @returns the name of a MySQL database.
+	 */
 	private String db() {
 		return MyDBInfo.MYSQL_DATABASE_NAME;
 	}
 
+	/**
+	 * Returns the value of the `table` variable.
+	 *
+	 * @returns the value of the `table` variable.
+	 */
 	private String table() {
 		return table;
 	}
 
+	/**
+	 * Constructs a SQL query string based on the provided query type and parameters. It
+	 * supports SELECT, DELETE queries and partially supports INSERT and UPDATE queries.
+	 *
+	 * @returns a SQL query string in string format, constructed based on the query type.
+	 */
 	public String sql() {
 		String sql = "";
 		switch (type) {
@@ -218,6 +272,11 @@ public class QueryBuilder {
 		}
 	}
 
+	/**
+	 * Returns an array of column names.
+	 *
+	 * @returns an array of strings representing column names.
+	 */
 	private String[] cols() {
 		return cols;
 	}
@@ -237,6 +296,10 @@ public class QueryBuilder {
 		return where;
 	}
 
+	/**
+	 * Represents a constraint in a query, encapsulating a field, operator, and values,
+	 * and provides a string representation for use in SQL queries.
+	 */
 	private class Constraint {
 		private String field;
 		private Operator op;
@@ -252,10 +315,25 @@ public class QueryBuilder {
 			this.values = values;
 		}
 
+		/**
+		 * Returns an array of values from the underlying collection. The returned array is
+		 * likely a cached reference to the internal `values` array. Accessing this function
+		 * does not trigger a recalculation of the values.
+		 *
+		 * @returns an array of objects containing the values of a collection.
+		 */
 		public Object[] values() {
 			return values;
 		}
 
+		/**
+		 * Converts the object's state into a string representation, depending on its operator
+		 * type. If the operator is NOT_IN or IN, it formats a string with placeholders for
+		 * values in parentheses. Otherwise, it returns a string with the field name, operator,
+		 * and placeholder.
+		 *
+		 * @returns a string representation of a query condition, including field name and operator.
+		 */
 		public String toString() {
 			String placeholder = "?";
 			if (op == Operator.NOT_IN || op == Operator.IN) {
